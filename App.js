@@ -10,9 +10,8 @@ export default function App() {
         alignSelf="center"
         bg="primary.500"
         _text={{
-          fontSize: 'md',
-          fontWeight: 'medium',
-          color: 'warmGray.50',
+          fontFamily: 'heading',
+          color: 'platinum.500',
           letterSpacing: 'lg',
         }}
         style={{ marginBottom: 'auto', marginTop: 'auto' }}
