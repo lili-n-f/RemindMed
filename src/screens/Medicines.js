@@ -22,6 +22,7 @@ import { theme } from "../../nativeBaseConfig";
 const image = { uri: "https://i.ibb.co/fQVtYhf/fondopantallamedicinas.png" };
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Icon, { Icons } from "../components/Icons";
+import PillCard from "../components/PillCard";
 
 export default function Medicines() {
   const [durationType, setDurationType] = useState(1);
@@ -76,6 +77,7 @@ export default function Medicines() {
           Agrega tu medicamento
         </Button>
       </View>
+      <PillCard></PillCard>
       <Modal
         isOpen={showModal}
         onClose={() => setShowModal(false)}
