@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { Switch } from "native-base";
+import DateTimePicker from "@react-native-community/datetimepicker";
 //brooooo por qué los datepickers no me funcionan???????????????????? aaaaaa
 
 const Horario = () => {
