@@ -14,41 +14,53 @@ import {
   Select,
   StatusBar,
   Radio,
-} from "native-base";
-import { ImageBackground, StyleSheet, View, TextInput } from "react-native";
-import React, { useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { theme } from "../../nativeBaseConfig";
-const image = { uri: "https://i.ibb.co/fQVtYhf/fondopantallamedicinas.png" };
-import DateTimePicker from "@react-native-community/datetimepicker";
-import Icon, { Icons } from "../components/Icons";
+} from 'native-base';
+import { ImageBackground, StyleSheet, View, TextInput } from 'react-native';
+import React, { useState } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { theme } from '../../nativeBaseConfig';
+const image = { uri: 'https://i.ibb.co/fQVtYhf/fondopantallamedicinas.png' };
+import DateTimePicker from '@react-native-community/datetimepicker';
+import Icon, { Icons } from '../components/Icons';
+
+const daysOfWeek = [
+  { key: 'D', selected: false },
+  { key: 'L', selected: false },
+  { key: 'M', selected: false },
+  { key: 'Mi', selected: false },
+  { key: 'J', selected: false },
+  { key: 'V', selected: false },
+  { key: 'S', selected: false },
+];
 
 export default function Medicines() {
   const [untilDate, setUntilDate] = useState(new Date());
   const [durationType, setDurationType] = useState(1);
   //const [days, setDays] = useState([]); //para los horarios de cada día
-  const [name, setName] = useState("");
+  const [name, setName] = useState('');
   const [dose, setDose] = useState(0);
-  const [doseType, setDoseType] = useState("");
-  const [notes, setNotes] = useState("");
-  const [finalDate, setFinalDate] = useState("01/01/1970");
+  const [doseType, setDoseType] = useState('');
+  const [notes, setNotes] = useState('');
+  const [finalDate, setFinalDate] = useState('01/01/1970');
   const [repetitions, setRepetitions] = useState(1);
-  const [duration, setDuration] = useState("01/01/1970");
-  const [intervalType, setIntervalType] = useState("Semanas");
+  const [duration, setDuration] = useState('01/01/1970');
+  const [intervalType, setIntervalType] = useState('Semanas');
   const [interval, setInterval] = useState(1);
+
+  const [days, setDays] = useState(daysOfWeek);
 
   const [showModal, setShowModal] = useState(false);
 
   const [showTime, setShowTime] = useState(false);
-  const [textTime, setTextTime] = useState("00:00");
+  const [textTime, setTextTime] = useState('00:00');
 
   const [showDate, setShowDate] = useState(false);
-  const [textDate, setTextDate] = useState("dd/MM/yyyy");
+  const [textDate, setTextDate] = useState('dd/MM/yyyy');
 
   const onChangeTime = (event, selectedTime) => {
     const currentTime = selectedTime;
     setShowTime(false);
-    let tempTime = currentTime.getHours() + ":" + currentTime.getMinutes();
+    let tempTime = currentTime.getHours() + ':' + currentTime.getMinutes();
     setTextTime(tempTime);
   };
 
@@ -61,16 +73,22 @@ export default function Medicines() {
     setShowDate(false);
     let tempDate =
       currentDate.getDate() +
-      "/" +
+      '/' +
       (currentDate.getMonth() + 1) +
-      "/" +
+      '/' +
       currentDate.getFullYear();
     setTextDate(tempDate);
+  };
+
+  const onSelectDay = (index) => {
+    daysOfWeek[index].selected = !daysOfWeek[index].selected;
+    setDays(daysOfWeek);
   };
 
   const showDatePicker = () => {
     setShowDate(true);
   };
+
   return (
     <SafeAreaView>
       <StatusBar />
@@ -108,62 +126,30 @@ export default function Medicines() {
                 <Text color="black">Frecuencia</Text>
               </FormControl.Label>
               <Button.Group justifyContent="center" my="2">
-                <Button
-                  variant="subtle"
-                  width="10"
-                  height="10"
-                  borderRadius="50"
-                >
-                  D
-                </Button>
-                <Button
-                  variant="subtle"
-                  width="10"
-                  height="10"
-                  borderRadius="50"
-                >
-                  L
-                </Button>
-                <Button
-                  variant="subtle"
-                  width="10"
-                  height="10"
-                  borderRadius="50"
-                >
-                  M
-                </Button>
-                <Button
-                  variant="subtle"
-                  width="10"
-                  height="10"
-                  borderRadius="50"
-                >
-                  M
-                </Button>
-                <Button
-                  variant="subtle"
-                  width="10"
-                  height="10"
-                  borderRadius="50"
-                >
-                  J
-                </Button>
-                <Button
-                  variant="subtle"
-                  width="10"
-                  height="10"
-                  borderRadius="50"
-                >
-                  V
-                </Button>
-                <Button
-                  variant="subtle"
-                  width="10"
-                  height="10"
-                  borderRadius="50"
-                >
-                  S
-                </Button>
+                {days?.map((day, i) => (
+                  <Button
+                    variant="subtle"
+                    width="10"
+                    height="10"
+                    borderRadius="50"
+                    onPress={() => onSelectDay(i)}
+                    // backgroundColor={day.selected ? 'primary.500' : 'white'}
+                    style={
+                      day.selected ? styles.dayButtonClicked : styles.dayButton
+                    }
+                  >
+                    <Text
+                      //color={day.selected ? 'white' : 'black'}
+                      style={
+                        day.selected
+                          ? styles.textButtonClicked
+                          : styles.textButton
+                      }
+                    >
+                      {day.key}
+                    </Text>
+                  </Button>
+                ))}
               </Button.Group>
               <FormControl.Label>
                 <Text color="black">Horario</Text>
@@ -267,7 +253,7 @@ export default function Medicines() {
                         placeholder="1"
                         value={repetitions}
                         onChangeText={(value) => {
-                          if (value <= 0 || value.match("-")) {
+                          if (value <= 0 || value.match('-')) {
                             setRepetitions(1);
                           } else {
                             setRepetitions(value);
@@ -349,26 +335,17 @@ export default function Medicines() {
   );
 }
 
-/*
 const styles = StyleSheet.create({
-  titulo: {
-    color: "#E5E5E5",
-    fontWeight: "bold",
-    fontSize: 40,
+  dayButtonClicked: {
+    backgroundColor: '#52489c',
   },
-  container1: {
-    color: "#FFFF",
-    alignItems: "left",
-    top: 35,
-    margin: 20,
+  dayButton: {
+    backgroundColor: '#FFFFFF',
   },
-  container2: {
-    left: 10,
+  textButton: {
+    color: '#52489c',
   },
-  subtitulo: {
-    fontWeight: 600,
-    fontSize: 20,
-    color: "#E5E5E5",
+  textButtonClicked: {
+    color: '#FFFFFF',
   },
 });
-*/
