@@ -23,27 +23,41 @@ const image = { uri: "https://i.ibb.co/fQVtYhf/fondopantallamedicinas.png" };
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Icon, { Icons } from "../components/Icons";
 
-export default function Medicines() {
-  const [untilDate, setUntilDate] = useState(new Date());
-  const [durationType, setDurationType] = useState(1);
-  //const [days, setDays] = useState([]); //para los horarios de cada día
-  const [name, setName] = useState("");
-  const [dose, setDose] = useState(0);
-  const [doseType, setDoseType] = useState("");
-  const [notes, setNotes] = useState("");
-  const [finalDate, setFinalDate] = useState("01/01/1970");
-  const [repetitions, setRepetitions] = useState(1);
-  const [duration, setDuration] = useState("01/01/1970");
-  const [intervalType, setIntervalType] = useState("Semanas");
-  const [interval, setInterval] = useState(1);
+const daysOfWeek = [
+  { key: "D", selected: false },
+  { key: "L", selected: false },
+  { key: "M", selected: false },
+  { key: "M", selected: false },
+  { key: "J", selected: false },
+  { key: "V", selected: false },
+  { key: "S", selected: false },
+];
 
+export default function Medicines() {
   const [showModal, setShowModal] = useState(false);
+
+  const [name, setName] = useState("");
+  const [fromDate, setFromDate] = useState(new Date()); //para registrar la fecha de inicio
+
+  const [days, setDays] = useState(daysOfWeek);
 
   const [showTime, setShowTime] = useState(false);
   const [textTime, setTextTime] = useState("00:00");
 
+  const [interval, setInterval] = useState(1);
+  const [intervalType, setIntervalType] = useState("Semanas");
+
+  const [durationType, setDurationType] = useState(1); //1=por siempre; finalDate="01/01/1970". 2=hasta fecha; finalDate=fecha. 3=x repeticiones; finalDate=cálculo de fecha con repetitions y intervalType
+  const [finalDate, setFinalDate] = useState("01/01/1970");
+  const [repetitions, setRepetitions] = useState(1);
+
+  const [dose, setDose] = useState(0);
+  const [doseType, setDoseType] = useState("");
+
+  const [notes, setNotes] = useState("");
+
   const [showDate, setShowDate] = useState(false);
-  const [textDate, setTextDate] = useState("dd/MM/yyyy");
+  const [textDate, setTextDate] = useState("DD/MM/YYYY");
 
   const onChangeTime = (event, selectedTime) => {
     const currentTime = selectedTime;
@@ -343,7 +357,7 @@ export default function Medicines() {
                 }}
               />
 
-              <Button title="¡Listo!" onPress={() => {}} />
+              <Button onPress={() => {}}>¡Listo!</Button>
             </FormControl>
           </Modal.Body>
         </Modal.Content>
@@ -351,27 +365,3 @@ export default function Medicines() {
     </SafeAreaView>
   );
 }
-
-/*
-const styles = StyleSheet.create({
-  titulo: {
-    color: "#E5E5E5",
-    fontWeight: "bold",
-    fontSize: 40,
-  },
-  container1: {
-    color: "#FFFF",
-    alignItems: "left",
-    top: 35,
-    margin: 20,
-  },
-  container2: {
-    left: 10,
-  },
-  subtitulo: {
-    fontWeight: 600,
-    fontSize: 20,
-    color: "#E5E5E5",
-  },
-});
-*/
