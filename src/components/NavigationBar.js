@@ -2,7 +2,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { TouchableOpacity, StyleSheet, Text, View } from 'react-native';
 import Medicines from '../screens/Medicines';
 import Profile from '../screens/Profile';
-import Welcome from '../screens/Welcome';
 import Icon, { Icons } from './Icons';
 
 const TabArr = [
