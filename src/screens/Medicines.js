@@ -15,13 +15,14 @@ import {
   StatusBar,
   Radio,
 } from "native-base";
-import { ImageBackground, StyleSheet, View, TextInput } from "react-native";
+import { ImageBackground, StyleSheet, View, TextInput, TouchableOpacity, Image } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { theme } from "../../nativeBaseConfig";
 const image = { uri: "https://i.ibb.co/fQVtYhf/fondopantallamedicinas.png" };
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Icon, { Icons } from "../components/Icons";
+const image2 = { uri: "https://i.postimg.cc/sf4fvjwL/relojito.png" }
 
 export default function Medicines() {
   const [untilDate, setUntilDate] = useState(new Date());
@@ -72,6 +73,7 @@ export default function Medicines() {
     setShowDate(true);
   };
   return (
+
     <SafeAreaView>
       <StatusBar />
       <View>
@@ -84,91 +86,134 @@ export default function Medicines() {
         onClose={() => setShowModal(false)}
         avoidKeyboard
       >
-        <Modal.Content minW="90%" backgroundColor="primary.200">
+        <Modal.Content minW="90%">
+          <ImageBackground
+          source={image}
+          resizeMode="cover"
+          style={{ width: '100%', height: '100%' }}
+          >
           <Modal.CloseButton />
-          <Modal.Header backgroundColor="primary.200">
+          <Modal.Header backgroundColor="blue.500">
+            <Text color="platinum.500" fontWeight="bold">
             Nuevo medicamento
+            </Text>
           </Modal.Header>
           <Modal.Body>
             <FormControl isRequired>
+            <View style={styles.containerQ}>
               <FormControl.Label>
-                <Text color="black">Nombre del medicamento</Text>
+                <Text color="platinum.500" fontWeight="bold" >Nombre del medicamento</Text>
               </FormControl.Label>
-              <Input
-                variant="outline"
-                borderColor="primary.300"
-                placeholder="nombre viejo"
-                placeholderTextColor="gray.500"
-                onChangeText={(text) => {
-                  setName(text);
-                }}
-                value={name}
-              />
+
+
+                <Input
+                  backgroundColor="white"
+                  borderRadius="20"
+                  variant="outline"
+                  borderColor="primary.300"
+                  placeholder="nombre viejo"
+                  placeholderTextColor="gray.500"
+                  onChangeText={(text) => {
+                    setName(text);
+                  }}
+                  value={name}
+                />
+              </View>
+              
+              <View style={styles.containerA}>
+
               <FormControl.Label>
-                <Text color="black">Frecuencia</Text>
+                <Text color="platinum.500" fontWeight="bold">Frecuencia</Text>
               </FormControl.Label>
               <Button.Group justifyContent="center" my="2">
                 <Button
+                  style={styles.days}
+                  fontSize="2"
+                  fontWeight="bold"
+                  backgroundColor="green.500"
+                  color="primary.700"
                   variant="subtle"
-                  width="10"
-                  height="10"
+                  width="8"
+                  height="8"
                   borderRadius="50"
                 >
                   D
                 </Button>
                 <Button
+                  fontWeight="bold"
+                  backgroundColor="green.500"
+                  color="primary.700"
                   variant="subtle"
-                  width="10"
-                  height="10"
+                  width="8"
+                  height="8"
                   borderRadius="50"
                 >
                   L
                 </Button>
                 <Button
+                  fontWeight="bold"
+                  backgroundColor="green.500"
+                  color="primary.700"
                   variant="subtle"
-                  width="10"
-                  height="10"
+                  width="8"
+                  height="8"
                   borderRadius="50"
                 >
                   M
                 </Button>
                 <Button
+                  fontWeight="bold"
+                  backgroundColor="green.500"
+                  color="primary.700"
                   variant="subtle"
-                  width="10"
-                  height="10"
+                  width="8"
+                  height="8"
                   borderRadius="50"
                 >
                   M
                 </Button>
                 <Button
+                  fontWeight="bold"
+                  backgroundColor="green.500"
+                  color="primary.700"
                   variant="subtle"
-                  width="10"
-                  height="10"
+                  width="8"
+                  height="8"
                   borderRadius="50"
                 >
                   J
                 </Button>
                 <Button
+                  fontWeight="bold"
+                  backgroundColor="green.500"
+                  color="primary.700"
                   variant="subtle"
-                  width="10"
-                  height="10"
+                  width="8"
+                  height="8"
                   borderRadius="50"
                 >
                   V
                 </Button>
                 <Button
+                  fontWeight="bold"
+                  backgroundColor="green.500"
+                  color="primary.700"
                   variant="subtle"
-                  width="10"
-                  height="10"
+                  width="8"
+                  height="8"
                   borderRadius="50"
                 >
                   S
                 </Button>
               </Button.Group>
+              </View>
+              <View style={styles.containerB}>
               <FormControl.Label>
-                <Text color="black">Horario</Text>
+                <Text color="white" fontWeight="bold">Horario</Text>
               </FormControl.Label>
               <Input
+                backgroundColor="white"
+                borderRadius="20"
                 isReadOnly="true"
                 textAlign="center"
                 variant="outline"
@@ -177,12 +222,14 @@ export default function Medicines() {
                 placeholderTextColor="gray.500"
                 width="40%"
                 InputRightElement={
-                  <Button rounded="none" h="full" onPress={showTimePicker}>
-                    relojito
-                  </Button>
+                  <TouchableOpacity style={styles.mequieromatar} rounded="none" h="full" onPress={showTimePicker}>
+                    <Image source={image2}/>
+
+{/* me rindo marico esa imagen no se quiere poner porque es un bicha y la odio demasiado                     */}
+                  </TouchableOpacity>
                 }
               />
-
+              </View>
               {showTime ? (
                 <DateTimePicker
                   mode="time"
@@ -190,102 +237,121 @@ export default function Medicines() {
                   onChange={onChangeTime}
                 />
               ) : null}
+            
+            <View style={styles.containerC}>
+                <FormControl.Label>
+                  <Text color="platinum.500" fontWeight="bold">Repetir cada</Text>
+                </FormControl.Label>
+                <HStack justifyContent="space-between">
+                  <Input
+                    backgroundColor="white"
+                    borderRadius="20"
+                    keyboardType="numeric"
+                    textAlign="center"
+                    variant="outline"
+                    borderColor="primary.300"
+                    placeholder="0"
+                    placeholderTextColor="gray.500"
+                    width="20%"
+                    value={interval}
+                    onChangeText={(value) => {
+                      if (
+                        value.match(/-/) ||
+                        value.match(/,/) ||
+                        value.match(/./)
+                      ) {
+                        setInterval(1);
+                      } else {
+                        setInterval(value);
+                      }
+                    }}
+                  />
+                  <Select
+                    backgroundColor="white"
+                    borderRadius="20"
+                    minWidth="75%"
+                    borderColor="primary.300"
+                    placeholderTextColor="gray.500"
+                    accessibilityLabel="Escoja el intervalo"
+                    placeholder="Escoja el intervalo"
+                    onValueChange={(itemValue) => {
+                      setIntervalType(itemValue);
+                    }}
+                  >
+                    <Select.Item label="Semanas" value="Semanas" />
+                    <Select.Item label="Días" value="Días" />
+                  </Select>
+                  
+                </HStack>
+                </View>
 
-              <FormControl.Label>
-                <Text color="black">Repetir cada</Text>
-              </FormControl.Label>
-              <HStack justifyContent="space-between">
-                <Input
-                  keyboardType="numeric"
-                  textAlign="center"
-                  variant="outline"
-                  borderColor="primary.300"
-                  placeholder="0"
-                  placeholderTextColor="gray.500"
-                  width="20%"
-                  value={interval}
-                  onChangeText={(value) => {
-                    if (
-                      value.match(/-/) ||
-                      value.match(/,/) ||
-                      value.match(/./)
-                    ) {
-                      setInterval(1);
-                    } else {
-                      setInterval(value);
-                    }
-                  }}
-                />
-                <Select
-                  minWidth="75%"
-                  borderColor="primary.300"
-                  placeholderTextColor="gray.500"
-                  accessibilityLabel="Escoja el intervalo"
-                  placeholder="Escoja el intervalo"
-                  onValueChange={(itemValue) => {
-                    setIntervalType(itemValue);
+              <View style={styles.containerD}>
+                <FormControl.Label>
+                  <Text color="platinum.500" fontWeight="bold">Duración</Text>
+                </FormControl.Label>
+                <Radio.Group
+                  name="duracionRadio"
+                  value={durationType}
+                  onChange={(value) => {
+                    setDurationType(value);
                   }}
                 >
-                  <Select.Item label="Semanas" value="Semanas" />
-                  <Select.Item label="Días" value="Días" />
-                </Select>
-              </HStack>
-              <FormControl.Label>
-                <Text color="black">Duración</Text>
-              </FormControl.Label>
-              <Radio.Group
-                name="duracionRadio"
-                value={durationType}
-                onChange={(value) => {
-                  setDurationType(value);
-                }}
-              >
-                <VStack space={3}>
-                  <Radio value={1}>
-                    <Text>Por siempre</Text>
-                  </Radio>
-                  <Radio value={2} onPress={showDatePicker}>
-                    <Text>Hasta {textDate}</Text>
-                    {showDate ? (
-                      <DateTimePicker
-                        mode="date"
-                        value={new Date()}
-                        minimumDate={new Date()}
-                        onChange={onChangeDate}
-                      />
-                    ) : null}
-                  </Radio>
-                  <Radio value={3}>
-                    <HStack width="10" space={2} alignItems="center">
-                      <Input
-                        textAlign="center"
-                        variant="filled"
-                        borderColor="primary.300"
-                        placeholderTextColor="gray.500"
-                        backgroundColor="primary.200"
-                        keyboardType="numeric"
-                        placeholder="1"
-                        value={repetitions}
-                        onChangeText={(value) => {
-                          if (value <= 0 || value.match("-")) {
-                            setRepetitions(1);
-                          } else {
-                            setRepetitions(value);
-                          }
-                        }}
-                      />
-                      <Text>veces</Text>
-                    </HStack>
-                  </Radio>
-                </VStack>
-              </Radio.Group>
+                  <VStack space={3}>
+                    <Radio value={1}>
+                      <Text color="white">Por siempre</Text>
+                    </Radio>
+                    <Radio value={2} onPress={showDatePicker}>
+                      <Text color="white">Hasta {textDate}</Text>
+                      {showDate ? (
+                        <DateTimePicker
+                          mode="date"
+                          value={new Date()}
+                          minimumDate={new Date()}
+                          onChange={onChangeDate}
+                        />
+                      ) : null}
+                    </Radio>
+                    <Radio value={3}>
+                      <HStack width="10" space={2} alignItems="center">
+                        <Input
+                        height="8"
+                        width="10"
+                          backgroundColor="green.500"
+                          textAlign="center"
+                          variant="filled"
+                          borderColor="green.500"
+                          placeholderTextColor="primary.800"
+                          borderRadius="20"
+                          keyboardType="numeric"
+                          placeholder="1"
+                          value={repetitions}
+                          onChangeText={(value) => {
+                            if (value <= 0 || value.match("-")) {
+                              setRepetitions(1);
+                            } else {
+                              setRepetitions(value);
+                            }
+                          }}
+                        />
+                        <Text color="white">veces</Text>
+                      </HStack>
+                    </Radio>
+                  </VStack>
+                </Radio.Group>
+                </View>
+
             </FormControl>
             <FormControl>
+
+            <View style={styles.containerE}>
+
               <FormControl.Label>
-                <Text color="black">Dosis</Text>
+                <Text color="platinum.500" fontWeight="bold">Dosis</Text>
               </FormControl.Label>
               <HStack justifyContent="space-between">
                 <Input
+                  backgroundColor="white"
+                  borderRadius="20"
                   textAlign="center"
                   variant="outline"
                   borderColor="primary.300"
@@ -302,6 +368,8 @@ export default function Medicines() {
                   }}
                 />
                 <Select
+                backgroundColor="white"
+                borderRadius="20"
                   minWidth="75%"
                   borderColor="primary.300"
                   placeholderTextColor="gray.500"
@@ -327,48 +395,120 @@ export default function Medicines() {
                   <Select.Item label="Inyección(es)" value="Inyección(es)" />
                 </Select>
               </HStack>
+              </View>
+              <View style={styles.containerE}>
               <FormControl.Label>
-                <Text color="black">Notas</Text>
+                <Text color="platinum.500" fontWeight="bold">Notas</Text>
               </FormControl.Label>
               <Input
+                backgroundColor="white"
+                borderRadius="20"
                 variant="filled"
                 borderColor="primary.300"
                 placeholderTextColor="gray.500"
-                backgroundColor="primary.200"
+
                 placeholder="Descripción o notas"
                 value={notes}
                 onChangeText={(value) => {
                   setNotes(value);
                 }}
               />
+              </View>
+
             </FormControl>
           </Modal.Body>
+          </ImageBackground>
         </Modal.Content>
       </Modal>
     </SafeAreaView>
+
   );
 }
 
-/*
+
 const styles = StyleSheet.create({
-  titulo: {
-    color: "#E5E5E5",
-    fontWeight: "bold",
-    fontSize: 40,
+
+  mequieromatar: {
+    backgroundColor:"#312b5e",
+    width:50,
+    height: 40,
+    alignItems: "center"
+
   },
-  container1: {
-    color: "#FFFF",
-    alignItems: "left",
-    top: 35,
-    margin: 20,
+  containerQ: {
+    backgroundColor:"#3e3675",
+    width: 280,
+    height:98,
+    padding:10,
+    borderRadius: 20
   },
-  container2: {
-    left: 10,
+
+  containerA: {
+    marginTop:15,
+    backgroundColor:"#3e3675",
+    width: 300,
+    height:98,
+    padding:10,
+    borderRadius: 20
   },
-  subtitulo: {
-    fontWeight: 600,
-    fontSize: 20,
-    color: "#E5E5E5",
+  days: {
+    textAlign:"center",
+    padding:0
   },
+  containerB: {
+    marginTop:15,
+    backgroundColor:"#3e3675",
+    width: 300,
+    height:98,
+    padding:10,
+    borderRadius: 20
+  },
+  containerC: {
+    marginTop:15,
+    backgroundColor:"#3e3675",
+    width: 300,
+    height:98,
+    padding:10,
+    borderRadius: 20
+  },
+
+  containerD: {
+    marginTop:15,
+    backgroundColor:"#3e3675",
+    width: 200,
+ 
+    padding:10,
+    borderRadius: 20
+  },
+
+  containerE: {
+    marginTop:15,
+    paddingBottom:15,
+
+    backgroundColor:"#3e3675",
+    width: 250,
+    height:98,
+    padding:10,
+    borderRadius: 20
+  },
+  // titulo: {
+  //   color: "#E5E5E5",
+  //   fontWeight: "bold",
+  //   fontSize: 40,
+  // },
+  // container1: {
+  //   color: "#FFFF",
+  //   alignItems: "left",
+  //   top: 35,
+  //   margin: 20,
+  // },
+  // container2: {
+  //   left: 10,
+  // },
+  // subtitulo: {
+  //   fontWeight: 600,
+  //   fontSize: 20,
+  //   color: "#E5E5E5",
+  // },
 });
-*/
+
