@@ -1,26 +1,25 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { TouchableOpacity, StyleSheet, Text, View } from 'react-native';
-import Medicines from '../screens/Medicines';
-import Profile from '../screens/Profile';
-import Welcome from '../screens/Welcome';
-import Icon, { Icons } from './Icons';
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { TouchableOpacity, StyleSheet, Text, View } from "react-native";
+import Medicines from "../screens/Medicines";
+import Profile from "../screens/Profile";
+import Icon, { Icons } from "./Icons";
 
 const TabArr = [
   {
-    route: 'Medicinas',
-    label: 'Medicinas',
+    route: "Medicinas",
+    label: "Medicinas",
     type: Icons.MaterialCommunityIcons,
-    activeIcon: 'pill',
-    inActiveIcon: 'pill',
+    activeIcon: "pill",
+    inActiveIcon: "pill",
     component: Medicines,
   },
 
   {
-    route: 'Perfil',
-    label: 'Perfil',
+    route: "Perfil",
+    label: "Perfil",
     type: Icons.Ionicons,
-    activeIcon: 'person',
-    inActiveIcon: 'person-outline',
+    activeIcon: "person",
+    inActiveIcon: "person-outline",
     component: Profile,
   },
 ];
@@ -40,11 +39,11 @@ const TabButton = (props) => {
       <Icon
         type={item.type}
         name={focused ? item.activeIcon : item.inActiveIcon}
-        color={focused ? '#52489c' : '#bab6d7'}
+        color={focused ? "#52489c" : "#bab6d7"}
       />
       <Text
         style={{
-          color: focused ? '#52489c' : '#bab6d7',
+          color: focused ? "#52489c" : "#bab6d7",
         }}
       >
         {item.label}
@@ -60,7 +59,7 @@ export default function NavigationBar() {
         headerShown: false,
         tabBarStyle: {
           height: 60,
-          position: 'absolute',
+          position: "absolute",
           bottom: 16,
           right: 16,
           left: 16,
@@ -87,7 +86,7 @@ export default function NavigationBar() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
