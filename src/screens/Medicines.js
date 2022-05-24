@@ -192,7 +192,6 @@ export default function Medicine() {
         </View>
 
         <Button title="¡Listo!" onPress={() => {}} />
-        
       </ImageBackground>
     </View>
   );
