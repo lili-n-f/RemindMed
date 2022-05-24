@@ -128,6 +128,7 @@ export default function Medicines() {
               <Button.Group justifyContent="center" my="2">
                 {days?.map((day, i) => (
                   <Button
+                    key={day.key}
                     variant="subtle"
                     width="10"
                     height="10"
