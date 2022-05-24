@@ -14,20 +14,10 @@ import {
   Select,
   StatusBar,
   Radio,
-} from "native-base";
-import { StyleSheet, View } from "react-native";
-import React, { useState } from "react";
-import DateTimePicker from "@react-native-community/datetimepicker";
-
-const daysOfWeek = [
-  { key: "D", selected: false },
-  { key: "L", selected: false },
-  { key: "M", selected: false },
-  { key: "M", selected: false },
-  { key: "J", selected: false },
-  { key: "V", selected: false },
-  { key: "S", selected: false },
-];
+} from 'native-base';
+import { StyleSheet, View } from 'react-native';
+import React, { useState } from 'react';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const PillForm = ({ newPill }) => {
   const [nameError, setNameError] = useState(false);
@@ -35,34 +25,42 @@ const PillForm = ({ newPill }) => {
   const [intervalError, setIntervalError] = useState(false);
   const [durationError, setDurationError] = useState(false);
   const [dayError, setDayError] = useState(false);
+  //BOTONES DE DIAS DE LA SEMANA
+  const [lunes, setLunes] = useState(false);
+  const [martes, setMartes] = useState(false);
+  const [miercoles, setMiercoles] = useState(false);
+  const [jueves, setJueves] = useState(false);
+  const [viernes, setViernes] = useState(false);
+  const [sabado, setSabado] = useState(false);
+  const [domingo, setDomingo] = useState(false);
 
-  const [name, setName] = useState("");
+  const [name, setName] = useState('');
   const [fromDate, setFromDate] = useState(new Date()); //para registrar la fecha de inicio
 
-  const [days, setDays] = useState(daysOfWeek);
+  const [days, setDays] = useState([0, 0, 0, 0, 0, 0, 0]);
 
   const [showTime, setShowTime] = useState(false);
-  const [textTime, setTextTime] = useState("--:--");
+  const [textTime, setTextTime] = useState('--:--');
 
-  const [interval, setInterval] = useState("1");
-  const [intervalType, setIntervalType] = useState("");
+  const [interval, setInterval] = useState('1');
+  const [intervalType, setIntervalType] = useState('');
 
   const [durationType, setDurationType] = useState(1); //1=por siempre; finalDate="01/01/1970". 2=hasta fecha; finalDate=fecha. 3=x repeticiones; finalDate=cálculo de fecha con repetitions y intervalType
-  const [finalDate, setFinalDate] = useState("01/01/1970");
-  const [repetitions, setRepetitions] = useState("1");
+  const [finalDate, setFinalDate] = useState('01/01/1970');
+  const [repetitions, setRepetitions] = useState('1');
 
-  const [dose, setDose] = useState("0");
-  const [doseType, setDoseType] = useState("");
+  const [dose, setDose] = useState('0');
+  const [doseType, setDoseType] = useState('');
 
-  const [notes, setNotes] = useState("");
+  const [notes, setNotes] = useState('');
 
   const [showDate, setShowDate] = useState(false);
-  const [textDate, setTextDate] = useState("DD/MM/YYYY");
+  const [textDate, setTextDate] = useState('DD/MM/YYYY');
 
   const onChangeTime = (event, selectedTime) => {
     const currentTime = selectedTime;
     setShowTime(false);
-    let tempTime = currentTime.getHours() + ":" + currentTime.getMinutes();
+    let tempTime = currentTime.getHours() + ':' + currentTime.getMinutes();
     setTextTime(tempTime);
   };
 
@@ -75,9 +73,9 @@ const PillForm = ({ newPill }) => {
     setShowDate(false);
     let tempDate =
       currentDate.getDate() +
-      "/" +
+      '/' +
       (currentDate.getMonth() + 1) +
-      "/" +
+      '/' +
       currentDate.getFullYear();
     setTextDate(tempDate);
   };
@@ -94,19 +92,19 @@ const PillForm = ({ newPill }) => {
     setDayError(false);
 
     if (newPill) {
-      if (!name || name === "" || /^\s*$/.test(name)) {
+      if (!name || name === '' || /^\s*$/.test(name)) {
         setNameError(true);
       }
-      if (textTime === "--:--") {
+      if (textTime === '--:--') {
         setHourError(true);
       }
-      if (intervalType === "" || interval === "") {
+      if (intervalType === '' || interval === '') {
         setIntervalError(true);
       }
       if (
         (durationType != 1 && durationType != 2 && durationType != 3) ||
-        (durationType == 3 && repetitions === "") ||
-        (durationType == 2 && textDate === "DD/MM/YYYY")
+        (durationType == 3 && repetitions === '') ||
+        (durationType == 2 && textDate === 'DD/MM/YYYY')
       ) {
         setDurationError(true);
       }
@@ -190,13 +188,13 @@ const PillForm = ({ newPill }) => {
             value={interval}
             onChangeText={(value) => {
               if (
-                value.includes(".") ||
-                value.includes("-") ||
-                value.includes(",") ||
-                value.includes(" ") ||
-                value === "0"
+                value.includes('.') ||
+                value.includes('-') ||
+                value.includes(',') ||
+                value.includes(' ') ||
+                value === '0'
               ) {
-                setInterval("1");
+                setInterval('1');
               } else {
                 setInterval(value);
               }
@@ -222,7 +220,7 @@ const PillForm = ({ newPill }) => {
           </Text>
         ) : null}
 
-        {intervalType === "Semanas" ? (
+        {intervalType === 'Semanas' ? (
           <View>
             <FormControl.Label>
               <Text color="black">Frecuencia</Text>
@@ -234,7 +232,14 @@ const PillForm = ({ newPill }) => {
               <Button variant="subtle" width="10" height="10" borderRadius="50">
                 L
               </Button>
-              <Button variant="subtle" width="10" height="10" borderRadius="50">
+              <Button
+                variant="subtle"
+                width="10"
+                height="10"
+                borderRadius="50"
+                onPress={() => (days[2] = 1)}
+                bg={days[2] === 1 ? 'primary.500' : 'green.500'}
+              >
                 M
               </Button>
               <Button variant="subtle" width="10" height="10" borderRadius="50">
@@ -294,12 +299,12 @@ const PillForm = ({ newPill }) => {
                   value={repetitions}
                   onChangeText={(value) => {
                     if (
-                      value.startsWith("0") ||
-                      value.includes("-") ||
-                      value.includes(",") ||
-                      value.includes(" ")
+                      value.startsWith('0') ||
+                      value.includes('-') ||
+                      value.includes(',') ||
+                      value.includes(' ')
                     ) {
-                      setRepetitions("1");
+                      setRepetitions('1');
                     } else {
                       setRepetitions(value);
                     }
@@ -331,12 +336,12 @@ const PillForm = ({ newPill }) => {
             keyboardType="numeric"
             onChangeText={(value) => {
               if (
-                value.startsWith("0") ||
-                value.includes("-") ||
-                value.includes(",") ||
-                value.includes(" ")
+                value.startsWith('0') ||
+                value.includes('-') ||
+                value.includes(',') ||
+                value.includes(' ')
               ) {
-                setDose("");
+                setDose('');
               } else {
                 setDose(value);
               }
@@ -398,7 +403,7 @@ const PillForm = ({ newPill }) => {
 const styles = StyleSheet.create({
   error: {
     fontSize: 10,
-    color: "gray",
+    color: 'gray',
   },
 });
 
