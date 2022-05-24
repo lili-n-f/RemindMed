@@ -1,5 +1,5 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { TouchableOpacity, StyleSheet, Text, View } from 'react-native';
+import { TouchableOpacity, StyleSheet, Text } from 'react-native';
 import Medicines from '../screens/Medicines';
 import Profile from '../screens/Profile';
 import Icon, { Icons } from './Icons';

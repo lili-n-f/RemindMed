@@ -1,5 +1,5 @@
 import { Box } from 'native-base';
-import react from 'react';
+import React from 'react';
 
 export default function Medicine() {
   return <Box>estoy en medicina</Box>;
