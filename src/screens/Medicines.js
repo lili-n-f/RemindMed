@@ -1,6 +1,6 @@
 import { Box } from 'native-base';
 import react from 'react';
 
-export default function Profile() {
-  return <Box>aaaaaa</Box>;
+export default function Medicine() {
+  return <Box>estoy en medicina</Box>;
 }
