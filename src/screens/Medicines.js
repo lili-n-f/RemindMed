@@ -44,8 +44,8 @@ export default function Medicines() {
   const [showTime, setShowTime] = useState(false);
   const [textTime, setTextTime] = useState("00:00");
 
-  const [interval, setInterval] = useState(1);
-  const [intervalType, setIntervalType] = useState("Semanas");
+  const [interval, setInterval] = useState("1");
+  const [intervalType, setIntervalType] = useState("Días");
 
   const [durationType, setDurationType] = useState(1); //1=por siempre; finalDate="01/01/1970". 2=hasta fecha; finalDate=fecha. 3=x repeticiones; finalDate=cálculo de fecha con repetitions y intervalType
   const [finalDate, setFinalDate] = useState("01/01/1970");
@@ -119,67 +119,6 @@ export default function Medicines() {
                 value={name}
               />
               <FormControl.Label>
-                <Text color="black">Frecuencia</Text>
-              </FormControl.Label>
-              <Button.Group justifyContent="center" my="2">
-                <Button
-                  variant="subtle"
-                  width="10"
-                  height="10"
-                  borderRadius="50"
-                >
-                  D
-                </Button>
-                <Button
-                  variant="subtle"
-                  width="10"
-                  height="10"
-                  borderRadius="50"
-                >
-                  L
-                </Button>
-                <Button
-                  variant="subtle"
-                  width="10"
-                  height="10"
-                  borderRadius="50"
-                >
-                  M
-                </Button>
-                <Button
-                  variant="subtle"
-                  width="10"
-                  height="10"
-                  borderRadius="50"
-                >
-                  M
-                </Button>
-                <Button
-                  variant="subtle"
-                  width="10"
-                  height="10"
-                  borderRadius="50"
-                >
-                  J
-                </Button>
-                <Button
-                  variant="subtle"
-                  width="10"
-                  height="10"
-                  borderRadius="50"
-                >
-                  V
-                </Button>
-                <Button
-                  variant="subtle"
-                  width="10"
-                  height="10"
-                  borderRadius="50"
-                >
-                  S
-                </Button>
-              </Button.Group>
-              <FormControl.Label>
                 <Text color="black">Horario</Text>
               </FormControl.Label>
               <Input
@@ -220,11 +159,12 @@ export default function Medicines() {
                   value={interval}
                   onChangeText={(value) => {
                     if (
-                      value.match(/-/) ||
-                      value.match(/,/) ||
-                      value.match(/./)
+                      value.includes(".") ||
+                      value.includes("-") ||
+                      value.includes(",") ||
+                      value.includes(" ")
                     ) {
-                      setInterval(1);
+                      setInterval("1");
                     } else {
                       setInterval(value);
                     }
@@ -244,6 +184,73 @@ export default function Medicines() {
                   <Select.Item label="Días" value="Días" />
                 </Select>
               </HStack>
+
+              {intervalType === "Semanas" ? (
+                <View>
+                  <FormControl.Label>
+                    <Text color="black">Frecuencia</Text>
+                  </FormControl.Label>
+                  <Button.Group justifyContent="center" my="2">
+                    <Button
+                      variant="subtle"
+                      width="10"
+                      height="10"
+                      borderRadius="50"
+                    >
+                      D
+                    </Button>
+                    <Button
+                      variant="subtle"
+                      width="10"
+                      height="10"
+                      borderRadius="50"
+                    >
+                      L
+                    </Button>
+                    <Button
+                      variant="subtle"
+                      width="10"
+                      height="10"
+                      borderRadius="50"
+                    >
+                      M
+                    </Button>
+                    <Button
+                      variant="subtle"
+                      width="10"
+                      height="10"
+                      borderRadius="50"
+                    >
+                      M
+                    </Button>
+                    <Button
+                      variant="subtle"
+                      width="10"
+                      height="10"
+                      borderRadius="50"
+                    >
+                      J
+                    </Button>
+                    <Button
+                      variant="subtle"
+                      width="10"
+                      height="10"
+                      borderRadius="50"
+                    >
+                      V
+                    </Button>
+                    <Button
+                      variant="subtle"
+                      width="10"
+                      height="10"
+                      borderRadius="50"
+                    >
+                      S
+                    </Button>
+                  </Button.Group>
+                </View>
+              ) : null}
+
               <FormControl.Label>
                 <Text color="black">Duración</Text>
               </FormControl.Label>
@@ -281,8 +288,13 @@ export default function Medicines() {
                         placeholder="1"
                         value={repetitions}
                         onChangeText={(value) => {
-                          if (value <= 0 || value.match("-")) {
-                            setRepetitions(1);
+                          if (
+                            value.startsWith("0") ||
+                            value.includes("-") ||
+                            value.includes(",") ||
+                            value.includes(" ")
+                          ) {
+                            setRepetitions("1");
                           } else {
                             setRepetitions(value);
                           }
@@ -308,9 +320,15 @@ export default function Medicines() {
                   keyboardType="number-pad"
                   width="20%"
                   value={dose}
+                  keyboardType="numeric"
                   onChangeText={(value) => {
-                    if (value < 0 || value.match(/-/)) {
-                      setDose(0);
+                    if (
+                      value.startsWith("0") ||
+                      value.includes("-") ||
+                      value.includes(",") ||
+                      value.includes(" ")
+                    ) {
+                      setDose("0");
                     } else {
                       setDose(value);
                     }
