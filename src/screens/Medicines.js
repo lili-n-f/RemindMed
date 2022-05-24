@@ -83,6 +83,7 @@ export default function Medicines() {
   const onSelectDay = (index) => {
     daysOfWeek[index].selected = !daysOfWeek[index].selected;
     setDays(daysOfWeek);
+    console.log('a');
   };
 
   const showDatePicker = () => {
@@ -135,6 +136,10 @@ export default function Medicines() {
                     borderRadius="50"
                     onPress={() => onSelectDay(i)}
                     // backgroundColor={day.selected ? 'primary.500' : 'white'}
+                    // style={({ pressed }) => [
+                    //   { backgroundColor: day.selected ? 'black' : 'white' },
+                    //   styles.btn,
+                    // ]}
                     style={
                       day.selected ? styles.dayButtonClicked : styles.dayButton
                     }
