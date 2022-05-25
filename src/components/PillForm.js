@@ -1,5 +1,5 @@
 import { db } from '../../firebase';
-import { collection, addDoc, setDoc } from 'firebase/firestore';
+import { collection, addDoc, updateDoc } from 'firebase/firestore';
 import {
   VStack,
   HStack,
@@ -15,7 +15,7 @@ import React, { useState } from 'react';
 import Icon, { Icons } from './Icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-const PillForm = ({ newPill }) => {
+const PillForm = ({ newPill, itinerario = null }) => {
   const [nameError, setNameError] = useState(false);
   const [hourError, setHourError] = useState(false);
   const [intervalError, setIntervalError] = useState(false);
@@ -30,7 +30,7 @@ const PillForm = ({ newPill }) => {
   const [sabado, setSabado] = useState(false);
   const [domingo, setDomingo] = useState(false);
 
-  const [name, setName] = useState('');
+  const [name, setName] = useState(itinerario?.nombre ?? '');
   const [fromDate, setFromDate] = useState(new Date()); //para registrar la fecha de inicio
 
   const [monday, setMonday] = useState(false);
@@ -42,19 +42,23 @@ const PillForm = ({ newPill }) => {
   const [sunday, setSunday] = useState(false);
 
   const [showTime, setShowTime] = useState(false);
-  const [textTime, setTextTime] = useState('--:--');
+  const [textTime, setTextTime] = useState(itinerario?.horario ?? '--:--');
 
-  const [interval, setInterval] = useState('1');
+  const [interval, setInterval] = useState(itinerario?.intervalo ?? '1');
   const [intervalType, setIntervalType] = useState('');
 
-  const [durationType, setDurationType] = useState(1); //1=por siempre; finalDate="01/01/1970". 2=hasta fecha; finalDate=fecha. 3=x repeticiones; finalDate=cálculo de fecha con repetitions y intervalType
-  const [finalDate, setFinalDate] = useState('01/01/1970');
+  const [durationType, setDurationType] = useState(
+    itinerario?.tipo_duracion ?? 1
+  ); //1=por siempre; finalDate="01/01/1970". 2=hasta fecha; finalDate=fecha. 3=x repeticiones; finalDate=cálculo de fecha con repetitions y intervalType
+  const [finalDate, setFinalDate] = useState(
+    itinerario?.fecha_final ?? '01/01/1970'
+  );
   const [repetitions, setRepetitions] = useState('1');
 
-  const [dose, setDose] = useState('0');
-  const [doseType, setDoseType] = useState('');
+  const [dose, setDose] = useState(itinerario?.dosis ?? '0');
+  const [doseType, setDoseType] = useState(itinerario?.dosis_tipo ?? '');
 
-  const [notes, setNotes] = useState('');
+  const [notes, setNotes] = useState(itinerario?.notas ?? '');
 
   const [showDate, setShowDate] = useState(false);
   const [textDate, setTextDate] = useState('DD/MM/YYYY');
@@ -94,6 +98,12 @@ const PillForm = ({ newPill }) => {
     } catch (e) {
       console.error('Error adding document: ', e);
     }
+  }
+  async function modify(doc) {
+    const ref = doc(db, 'usuarios', doc.id);
+
+    // Set the "capital" field of the city 'DC'
+    await updateDoc(ref, doc);
   }
 
   function onSubmit() {
@@ -186,6 +196,7 @@ const PillForm = ({ newPill }) => {
           notas: notes, //ojoooo notas es opcional, puede estar vacío
         };
         console.log(JSON.stringify(newMed));
+
         upload(newMed);
 
         // const user = fireDB.collection('usuarios').doc('l02GN8GokJvk9YPexPpy'); //HARDCODEADO!!! HAY QUE CAMBIARLO!!!
@@ -295,7 +306,7 @@ const PillForm = ({ newPill }) => {
               placeholder="0"
               placeholderTextColor="gray.500"
               width="20%"
-              value={interval}
+              value={interval.toString()}
               onChangeText={(value) => {
                 if (
                   value.includes('.') ||
@@ -321,6 +332,7 @@ const PillForm = ({ newPill }) => {
               onValueChange={(itemValue) => {
                 setIntervalType(itemValue);
               }}
+              defaultValue={itinerario?.dias ? 'Semanas' : 'Días'}
             >
               <Select.Item label="Semanas" value="Semanas" />
               <Select.Item label="Días" value="Días" />
@@ -332,7 +344,7 @@ const PillForm = ({ newPill }) => {
             </Text>
           ) : null}
         </View>
-        {intervalType === 'Semanas' ? (
+        {intervalType === 'Semanas' || itinerario?.dias ? (
           <View style={styles.containerA}>
             <FormControl.Label>
               <Text color="platinum.500" fontWeight="bold">
@@ -342,7 +354,11 @@ const PillForm = ({ newPill }) => {
             <Button.Group justifyContent="center" my="2">
               <Button
                 style={styles.days}
-                backgroundColor={domingo ? 'cyan.500' : 'white'}
+                backgroundColor={
+                  domingo || itinerario?.dias[0]?.selected
+                    ? 'cyan.500'
+                    : 'white'
+                }
                 onPress={() => setDomingo(!domingo)}
                 color="primary.700"
                 fontWeight="bold"
@@ -356,7 +372,9 @@ const PillForm = ({ newPill }) => {
               </Button>
               <Button
                 fontWeight="bold"
-                backgroundColor={lunes ? 'cyan.500' : 'white'}
+                backgroundColor={
+                  lunes || itinerario?.dias[1]?.selected ? 'cyan.500' : 'white'
+                }
                 onPress={() => setLunes(!lunes)}
                 color="primary.700"
                 variant="subtle"
@@ -370,7 +388,9 @@ const PillForm = ({ newPill }) => {
               <Button
                 fontWeight="bold"
                 onPress={() => setMartes(!martes)}
-                backgroundColor={martes ? 'cyan.500' : 'white'}
+                backgroundColor={
+                  martes || itinerario?.dias[2]?.selected ? 'cyan.500' : 'white'
+                }
                 color="primary.700"
                 variant="subtle"
                 width="8"
@@ -382,7 +402,11 @@ const PillForm = ({ newPill }) => {
               </Button>
               <Button
                 fontWeight="bold"
-                backgroundColor={miercoles ? 'cyan.500' : 'white'}
+                backgroundColor={
+                  miercoles || itinerario?.dias[3]?.selected
+                    ? 'cyan.500'
+                    : 'white'
+                }
                 onPress={() => setMiercoles(!miercoles)}
                 color="primary.700"
                 variant="subtle"
@@ -395,7 +419,9 @@ const PillForm = ({ newPill }) => {
               </Button>
               <Button
                 fontWeight="bold"
-                backgroundColor={jueves ? 'cyan.500' : 'white'}
+                backgroundColor={
+                  jueves || itinerario?.dias[4]?.selected ? 'cyan.500' : 'white'
+                }
                 onPress={() => setJueves(!jueves)}
                 color="primary.700"
                 variant="subtle"
@@ -408,7 +434,11 @@ const PillForm = ({ newPill }) => {
               </Button>
               <Button
                 fontWeight="bold"
-                backgroundColor={viernes ? 'cyan.500' : 'white'}
+                backgroundColor={
+                  viernes || itinerario?.dias[5]?.selected
+                    ? 'cyan.500'
+                    : 'white'
+                }
                 onPress={() => setViernes(!viernes)}
                 color="primary.700"
                 variant="subtle"
@@ -421,7 +451,9 @@ const PillForm = ({ newPill }) => {
               </Button>
               <Button
                 fontWeight="bold"
-                backgroundColor={sabado ? 'cyan.500' : 'white'}
+                backgroundColor={
+                  sabado || itinerario?.dias[6]?.selected ? 'cyan.500' : 'white'
+                }
                 onPress={() => setSabado(!sabado)}
                 color="primary.700"
                 variant="subtle"
