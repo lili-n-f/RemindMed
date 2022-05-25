@@ -1,19 +1,6 @@
 import React, { useState } from 'react';
-import { getDatabase, ref, child, get } from 'firebase/database';
-import {
-  Box,
-  VStack,
-  HStack,
-  Button,
-  Text,
-  Modal,
-  FormControl,
-  Input,
-  ScrollView,
-} from 'native-base';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { StyleSheet, View } from 'react-native';
-import { getCurrentTimestamp } from 'react-native/Libraries/Utilities/createPerformanceLogger';
+import { ScrollView } from 'native-base';
+
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase';
 import PillCard from './PillCard';
