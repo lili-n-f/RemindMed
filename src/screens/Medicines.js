@@ -21,22 +21,22 @@ export default function Medicines() {
         onClose={() => setShowModal(false)}
         avoidKeyboard
       >
-        <Modal.Content minW="90%">
-          <ImageBackground
+        <Modal.Content minW="90%" backgroundColor="primary.200">
+          {/* <ImageBackground
             source={image}
             resizeMode="cover"
             style={{ width: '100%', height: '100%' }}
-          >
-            <Modal.CloseButton />
-            <Modal.Header backgroundColor="blue.500">
-              <Text color="platinum.500" fontWeight="bold">
-                Nuevo medicamento
-              </Text>
-            </Modal.Header>
-            <Modal.Body>
-              <PillForm newPill={true} />
-            </Modal.Body>
-          </ImageBackground>
+          > */}
+          <Modal.CloseButton />
+          <Modal.Header backgroundColor="primary.500">
+            <Text color="platinum.500" fontWeight="bold">
+              Nuevo medicamento
+            </Text>
+          </Modal.Header>
+          <Modal.Body>
+            <PillForm newPill={true} />
+          </Modal.Body>
+          {/* </ImageBackground> */}
         </Modal.Content>
       </Modal>
     </SafeAreaView>

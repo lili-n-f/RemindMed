@@ -8,11 +8,10 @@ import {
   Select,
   Radio,
 } from 'native-base';
-import { StyleSheet, TouchableOpacity, View, Image } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import React, { useState } from 'react';
+import Icon, { Icons } from './Icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
-
-const image2 = { uri: 'https://i.postimg.cc/sf4fvjwL/relojito.png' };
 
 const PillForm = ({ newPill }) => {
   const [nameError, setNameError] = useState(false);
@@ -120,7 +119,15 @@ const PillForm = ({ newPill }) => {
 
   return (
     <View>
-      <FormControl isRequired>
+      <FormControl
+        isRequired
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
         <View style={styles.containerQ}>
           <FormControl.Label>
             <Text color="platinum.500" fontWeight="bold">
@@ -160,7 +167,7 @@ const PillForm = ({ newPill }) => {
             borderColor="primary.300"
             placeholder={textTime}
             placeholderTextColor="gray.500"
-            width="40%"
+            width="100%"
             InputRightElement={
               <TouchableOpacity
                 style={styles.mequieromatar}
@@ -168,7 +175,12 @@ const PillForm = ({ newPill }) => {
                 h="full"
                 onPress={showTimePicker}
               >
-                <Image source={image2} />
+                <Icon
+                  type={Icons.MaterialIcons}
+                  name="alarm"
+                  color={'#52489c'}
+                  size={35}
+                />
 
                 {/* me rindo marico esa imagen no se quiere poner porque es un bicha y la odio demasiado                     */}
               </TouchableOpacity>
@@ -250,7 +262,7 @@ const PillForm = ({ newPill }) => {
             <Button.Group justifyContent="center" my="2">
               <Button
                 style={styles.days}
-                backgroundColor={domingo ? 'green.500' : 'white'}
+                backgroundColor={domingo ? 'cyan.500' : 'white'}
                 onPress={() => setDomingo(!domingo)}
                 color="primary.700"
                 fontWeight="bold"
@@ -260,11 +272,11 @@ const PillForm = ({ newPill }) => {
                 borderRadius="50"
                 padding="0"
               >
-                D
+                <Text color={domingo ? 'white' : 'black'}>D</Text>
               </Button>
               <Button
                 fontWeight="bold"
-                backgroundColor={lunes ? 'green.500' : 'white'}
+                backgroundColor={lunes ? 'cyan.500' : 'white'}
                 onPress={() => setLunes(!lunes)}
                 color="primary.700"
                 variant="subtle"
@@ -273,12 +285,12 @@ const PillForm = ({ newPill }) => {
                 borderRadius="50"
                 padding="0"
               >
-                L
+                <Text color={lunes ? 'white' : 'black'}>L</Text>
               </Button>
               <Button
                 fontWeight="bold"
                 onPress={() => setMartes(!martes)}
-                backgroundColor={martes ? 'green.500' : 'white'}
+                backgroundColor={martes ? 'cyan.500' : 'white'}
                 color="primary.700"
                 variant="subtle"
                 width="8"
@@ -286,11 +298,11 @@ const PillForm = ({ newPill }) => {
                 padding="0"
                 borderRadius="50"
               >
-                M
+                <Text color={martes ? 'white' : 'black'}>M</Text>
               </Button>
               <Button
                 fontWeight="bold"
-                backgroundColor={miercoles ? 'green.500' : 'white'}
+                backgroundColor={miercoles ? 'cyan.500' : 'white'}
                 onPress={() => setMiercoles(!miercoles)}
                 color="primary.700"
                 variant="subtle"
@@ -299,11 +311,11 @@ const PillForm = ({ newPill }) => {
                 borderRadius="50"
                 padding="0"
               >
-                M
+                <Text color={miercoles ? 'white' : 'black'}>M</Text>
               </Button>
               <Button
                 fontWeight="bold"
-                backgroundColor={jueves ? 'green.500' : 'white'}
+                backgroundColor={jueves ? 'cyan.500' : 'white'}
                 onPress={() => setJueves(!jueves)}
                 color="primary.700"
                 variant="subtle"
@@ -312,11 +324,11 @@ const PillForm = ({ newPill }) => {
                 borderRadius="50"
                 padding="0"
               >
-                J
+                <Text color={jueves ? 'white' : 'black'}>J</Text>
               </Button>
               <Button
                 fontWeight="bold"
-                backgroundColor={viernes ? 'green.500' : 'white'}
+                backgroundColor={viernes ? 'cyan.500' : 'white'}
                 onPress={() => setViernes(!viernes)}
                 color="primary.700"
                 variant="subtle"
@@ -325,11 +337,11 @@ const PillForm = ({ newPill }) => {
                 borderRadius="50"
                 padding="0"
               >
-                V
+                <Text color={viernes ? 'white' : 'black'}>V</Text>
               </Button>
               <Button
                 fontWeight="bold"
-                backgroundColor={sabado ? 'green.500' : 'white'}
+                backgroundColor={sabado ? 'cyan.500' : 'white'}
                 onPress={() => setSabado(!sabado)}
                 color="primary.700"
                 variant="subtle"
@@ -338,7 +350,7 @@ const PillForm = ({ newPill }) => {
                 borderRadius="50"
                 padding="0"
               >
-                S
+                <Text color={sabado ? 'white' : 'black'}>S</Text>
               </Button>
             </Button.Group>
             {dayError ? (
@@ -380,10 +392,9 @@ const PillForm = ({ newPill }) => {
                   <Input
                     height="8"
                     width="10"
-                    backgroundColor="green.500"
+                    backgroundColor="white"
                     textAlign="center"
                     variant="filled"
-                    borderColor="green.500"
                     placeholderTextColor="primary.800"
                     borderRadius="20"
                     keyboardType="numeric"
@@ -495,8 +506,12 @@ const PillForm = ({ newPill }) => {
           onPress={() => {
             onSubmit();
           }}
+          style={styles.submitButton}
+          bg="cyan.500"
         >
-          ¡Listo!
+          <Text fontWeight="bold" color="white">
+            ¡Listo!
+          </Text>
         </Button>
       </FormControl>
     </View>
@@ -504,15 +519,24 @@ const PillForm = ({ newPill }) => {
 };
 
 const styles = StyleSheet.create({
+  submitButton: {
+    marginTop: 15,
+    width: '60%',
+    marginLeft: '20%',
+    borderRadius: 20,
+  },
   mequieromatar: {
-    backgroundColor: '#312b5e',
     width: 50,
     height: 40,
+    display: 'flex',
     alignItems: 'center',
+    justifyContent: 'center',
+    // borderWidth: 1,
+    // borderLeftColor: '#3e3675',
   },
   containerQ: {
     backgroundColor: '#3e3675',
-    width: 280,
+    width: '98%',
     height: 98,
     padding: 10,
     borderRadius: 20,
@@ -521,7 +545,7 @@ const styles = StyleSheet.create({
   containerA: {
     marginTop: 15,
     backgroundColor: '#3e3675',
-    width: 300,
+    width: '98%',
     height: 98,
     padding: 10,
     borderRadius: 20,
@@ -533,7 +557,7 @@ const styles = StyleSheet.create({
   containerB: {
     marginTop: 15,
     backgroundColor: '#3e3675',
-    width: 300,
+    width: '98%',
     height: 98,
     padding: 10,
     borderRadius: 20,
@@ -541,7 +565,7 @@ const styles = StyleSheet.create({
   containerC: {
     marginTop: 15,
     backgroundColor: '#3e3675',
-    width: 300,
+    width: '98%',
     height: 98,
     padding: 10,
     borderRadius: 20,
@@ -550,7 +574,7 @@ const styles = StyleSheet.create({
   containerD: {
     marginTop: 15,
     backgroundColor: '#3e3675',
-    width: 200,
+    width: '98%',
 
     padding: 10,
     borderRadius: 20,
@@ -561,7 +585,7 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
 
     backgroundColor: '#3e3675',
-    width: 250,
+    width: '98%',
     height: 98,
     padding: 10,
     borderRadius: 20,
