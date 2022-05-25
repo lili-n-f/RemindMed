@@ -1,5 +1,5 @@
-/*import { fireDB } from "../../firebase";
-import firebase from "firebase/app";*/
+import { fireDB } from '../../firebase';
+//import firebase from 'firebase/app';
 
 import {
   VStack,
@@ -177,11 +177,21 @@ const PillForm = ({ newPill }) => {
           notas: notes, //ojoooo notas es opcional, puede estar vacío
         };
         console.log(JSON.stringify(newMed));
+        fireDB
+          .collection('usuarios')
+          .doc()
+          .set({ itinerario: newMed })
+          .then(() => {
+            console.log('Document successfully written!');
+          })
+          .catch((error) => {
+            console.error('Error writing document: ', error);
+          });
 
-        /*const user = fireDB.collection("usuarios").doc("l02GN8GokJvk9YPexPpy"); //HARDCODEADO!!! HAY QUE CAMBIARLO!!!
-        user.update({
-          itinerario: firebase.firestore.FieldValue.arrayUnion(newMed),
-        });*/
+        // const user = fireDB.collection('usuarios').doc('l02GN8GokJvk9YPexPpy'); //HARDCODEADO!!! HAY QUE CAMBIARLO!!!
+        // user.update({
+        //   itinerario: firebase.firestore.FieldValue.arrayUnion(newMed),
+        // });
       }
     }
   }
