@@ -1,3 +1,6 @@
+/*import { fireDB } from "../../firebase";
+import firebase from "firebase/app";*/
+
 import {
   VStack,
   HStack,
@@ -30,6 +33,14 @@ const PillForm = ({ newPill }) => {
 
   const [name, setName] = useState('');
   const [fromDate, setFromDate] = useState(new Date()); //para registrar la fecha de inicio
+
+  const [monday, setMonday] = useState(false);
+  const [tuesday, setTuesday] = useState(false);
+  const [wednesday, setWednesday] = useState(false);
+  const [thursday, setThursday] = useState(false);
+  const [friday, setFriday] = useState(false);
+  const [saturday, setSaturday] = useState(false);
+  const [sunday, setSunday] = useState(false);
 
   const [showTime, setShowTime] = useState(false);
   const [textTime, setTextTime] = useState('--:--');
@@ -100,22 +111,80 @@ const PillForm = ({ newPill }) => {
       ) {
         setDurationError(true);
       }
-      // if (noDaysSelected()) {
-      //   setDayError(true);
-      // }
+      if (
+        intervalType === 'Semanas' &&
+        !(
+          monday ||
+          tuesday ||
+          wednesday ||
+          thursday ||
+          friday ||
+          saturday ||
+          sunday
+        )
+      ) {
+        setDayError(true);
+      }
+
+      //AQUÍ HAY UN BUG RARO, A PESAR DE TENER ERRORES EN TRUE ENTRA AQUÍ,,, WHY
+      if (
+        !nameError &&
+        !hourError &&
+        !intervalError &&
+        !durationError &&
+        !dayError
+      ) {
+        console.log('a');
+        let dias;
+        intervalType === 'Semanas'
+          ? (dias = [
+              { key: 'Sunday', selected: sunday },
+              { key: 'Monday', selected: monday },
+              { key: 'Tuesday', selected: tuesday },
+              { key: 'Wednesday', selected: wednesday },
+              { key: 'Thursday', selected: thursday },
+              { key: 'Friday', selected: friday },
+              { key: 'Saturday', selected: saturday },
+            ])
+          : (dias = null);
+
+        let finalDate;
+        if (durationType == 2) {
+          finalDate = new Date(textDate);
+        } else {
+          finalDate = null;
+        }
+        let repet_restantes;
+
+        if (durationType == 3) {
+          repet_restantes = parseInt(repetitions, 10);
+        } else {
+          repet_restantes = null;
+        }
+
+        var newMed = {
+          activo: true,
+          nombre: name,
+          fecha_registro: new Date(), //esto para hacer los cálculos de las fechas finales
+          horario: textTime,
+          intervalo: parseInt(interval, 10),
+          dias: dias, //SI ESTE VALOR ES NULL, SE SABE QUE EL INTERVALO ES EN DÍAS, de lo contrario, semanas
+          tipo_duracion: durationType, //1: por siempre, 2: hasta una fecha específica, 3: repeticiones
+          fecha_final: finalDate,
+          repet_restantes: repet_restantes, //SE DEBE ACTUALIZAR CADA VEZ QUE SUENE LA ALARMA (OJO caso de intervalo en días es literal, caso de intervalo en semanas es por cada semana)
+          dosis: dose, //ojoooo estos campos son opcionales, por tanto si dosis es 0 o vacío no se llenó
+          dosis_tipo: doseType, //ojoooo si doseType es vacío la dosis no se llenó
+          notas: notes, //ojoooo notas es opcional, puede estar vacío
+        };
+        console.log(JSON.stringify(newMed));
+
+        /*const user = fireDB.collection("usuarios").doc("l02GN8GokJvk9YPexPpy"); //HARDCODEADO!!! HAY QUE CAMBIARLO!!!
+        user.update({
+          itinerario: firebase.firestore.FieldValue.arrayUnion(newMed),
+        });*/
+      }
     }
   }
-
-  // function noDaysSelected() {
-  //   let found = false;
-  //   for (let day of days) {
-  //     if (day.selected) {
-  //       found = true;
-  //       break;
-  //     }
-  //   }
-  //   return !found;
-  // }
 
   return (
     <View>
