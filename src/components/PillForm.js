@@ -1,6 +1,5 @@
-import { fireDB } from '../../firebase';
-//import firebase from 'firebase/app';
-
+import { db } from '../../firebase';
+import { collection, addDoc, setDoc } from 'firebase/firestore';
 import {
   VStack,
   HStack,
@@ -86,6 +85,16 @@ const PillForm = ({ newPill }) => {
   const showDatePicker = () => {
     setShowDate(true);
   };
+
+  async function upload(doc) {
+    try {
+      const ref = collection(db, 'usuarios');
+      const docRef = await addDoc(ref, doc);
+      console.log('Document written with ID: ', docRef.id);
+    } catch (e) {
+      console.error('Error adding document: ', e);
+    }
+  }
 
   function onSubmit() {
     setNameError(false);
@@ -177,16 +186,7 @@ const PillForm = ({ newPill }) => {
           notas: notes, //ojoooo notas es opcional, puede estar vacío
         };
         console.log(JSON.stringify(newMed));
-        fireDB
-          .collection('usuarios')
-          .doc()
-          .set({ itinerario: newMed })
-          .then(() => {
-            console.log('Document successfully written!');
-          })
-          .catch((error) => {
-            console.error('Error writing document: ', error);
-          });
+        upload(newMed);
 
         // const user = fireDB.collection('usuarios').doc('l02GN8GokJvk9YPexPpy'); //HARDCODEADO!!! HAY QUE CAMBIARLO!!!
         // user.update({

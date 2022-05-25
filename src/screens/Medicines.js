@@ -1,16 +1,14 @@
-import { Button, Modal, StatusBar, Text } from 'native-base';
-import { ImageBackground, View } from 'react-native';
+import { Button, Modal, StatusBar } from 'native-base';
+import { View } from 'react-native';
 import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import PillForm from '../components/PillForm';
-const image = { uri: 'https://i.ibb.co/fQVtYhf/fondopantallamedicinas.png' };
 
 export default function Medicines() {
   const [showModal, setShowModal] = useState(false);
   return (
     <SafeAreaView>
       <StatusBar />
-
       <View>
         <Button onPress={() => setShowModal(true)} size="lg">
           Agrega tu medicamento
@@ -22,21 +20,13 @@ export default function Medicines() {
         avoidKeyboard
       >
         <Modal.Content minW="90%" backgroundColor="primary.200">
-          {/* <ImageBackground
-            source={image}
-            resizeMode="cover"
-            style={{ width: '100%', height: '100%' }}
-          > */}
           <Modal.CloseButton />
-          <Modal.Header backgroundColor="primary.500">
-            <Text color="platinum.500" fontWeight="bold">
-              Nuevo medicamento
-            </Text>
+          <Modal.Header backgroundColor="primary.200">
+            Nuevo medicamento
           </Modal.Header>
           <Modal.Body>
             <PillForm newPill={true} />
           </Modal.Body>
-          {/* </ImageBackground> */}
         </Modal.Content>
       </Modal>
     </SafeAreaView>

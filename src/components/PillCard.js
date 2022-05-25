@@ -1,10 +1,23 @@
+import {
+  Box,
+  VStack,
+  HStack,
+  Button,
+  Text,
+  Modal,
+  FormControl,
+  Input,
+} from "native-base";
+import { SafeAreaView } from "react-native-safe-area-context";
+import React, { useState } from "react";
+
 export default function PillCard() {
   const [showModal, setShowModal] = useState(false);
 
   return (
     <SafeAreaView>
       <Box alignItems="center">
-        <Box width="80%" bg="primary.500" borderRadius="20">
+        <Box width="80%" bg="primary.500" borderRadius="20" my="5">
           <VStack space="2">
             <Box px="4" pt="4">
               <Text color="white" pb="2">
@@ -12,35 +25,23 @@ export default function PillCard() {
               </Text>
               <Text color="white">Dosis</Text>
             </Box>
-            <HStack space={3} justifyContent="space-between" px="4" pb="4">
+            <HStack
+              space={3}
+              justifyContent="space-between"
+              alignItems="center"
+              px="4"
+              pb="4"
+            >
               <Text color="white">Días</Text>
-              <Button onPress={() => setShowModal(true)}>Editar</Button>
+              <HStack space={2}>
+                <Button variant="subtle" onPress={() => setShowModal(true)}>
+                  Editar
+                </Button>
+                <Button>Eliminar</Button>
+              </HStack>
             </HStack>
           </VStack>
         </Box>
-        <Modal
-          isOpen={showModal}
-          onClose={() => setShowModal(false)}
-          avoidKeyboard
-        >
-          <Modal.Content maxW="80%" backgroundColor="primary.200">
-            <Modal.CloseButton />
-            <Modal.Header backgroundColor="primary.200">Edición</Modal.Header>
-            <Modal.Body>
-              <FormControl isRequired>
-                <FormControl.Label>
-                  <Text color="black">Nombre del medicamento</Text>
-                </FormControl.Label>
-                <Input
-                  variant="outline"
-                  borderColor="primary.300"
-                  placeholder="nombre viejo"
-                  placeholderTextColor="gray.500"
-                />
-              </FormControl>
-            </Modal.Body>
-          </Modal.Content>
-        </Modal>
       </Box>
     </SafeAreaView>
   );
