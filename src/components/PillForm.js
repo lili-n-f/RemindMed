@@ -163,6 +163,7 @@ const PillForm = ({ newPill }) => {
             borderRadius="20"
             isReadOnly="true"
             textAlign="center"
+            fontSize="lg"
             variant="outline"
             borderColor="primary.300"
             placeholder={textTime}
