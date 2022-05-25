@@ -174,10 +174,10 @@ const PillForm = ({ newPill }) => {
         };
         console.log(JSON.stringify(newMed));
 
-        /*const user = fireDB.collection("usuarios").doc("l02GN8GokJvk9YPexPpy"); //HARDCODEADO!!! HAY QUE CAMBIARLO!!!
+        const user = fireDB.collection("usuarios").doc("l02GN8GokJvk9YPexPpy"); //HARDCODEADO!!! HAY QUE CAMBIARLO!!!
         user.update({
           itinerario: firebase.firestore.FieldValue.arrayUnion(newMed),
-        });*/
+        });
       }
     }
   }
