@@ -11,9 +11,9 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StyleSheet } from 'react-native';
 import React, { useState } from 'react';
-import { getCurrentTimestamp } from 'react-native/Libraries/Utilities/createPerformanceLogger';
+import PillForm from './PillForm';
 
-export default function PillCard({ name, dosis, repetitions }) {
+export default function PillCard({ name, dosis, repetitions, datos }) {
   const [showModal, setShowModal] = useState(false);
 
   return (
@@ -71,6 +71,21 @@ export default function PillCard({ name, dosis, repetitions }) {
           </VStack>
         </Box>
       </Box>
+      <Modal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        avoidKeyboard
+      >
+        <Modal.Content minW="90%" backgroundColor="primary.200">
+          <Modal.CloseButton />
+          <Modal.Header backgroundColor="primary.200">
+            Modificar medicamento
+          </Modal.Header>
+          <Modal.Body>
+            <PillForm newPill={false} itinerario={datos} />
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
     </SafeAreaView>
   );
 }

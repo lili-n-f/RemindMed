@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ScrollView } from 'native-base';
+import { Button, ScrollView } from 'native-base';
 
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase';
@@ -7,6 +7,7 @@ import PillCard from './PillCard';
 
 export default function DisplayMedicines() {
   const [data, setData] = useState([]);
+  const [refresh, setRefresh] = useState(false);
 
   async function getData() {
     const dataList = [];
@@ -22,15 +23,18 @@ export default function DisplayMedicines() {
   }
   React.useEffect(() => {
     getData();
-  }, []);
+  }, [refresh]);
 
   return (
     <ScrollView style={{ height: '88%' }}>
+      <Button onPress={() => setRefresh(!refresh)}>refrescar</Button>
       {data?.map((itinerario) => (
         <PillCard
+          key={itinerario.id}
           name={itinerario.nombre}
           dosis={itinerario.dosis + ' ' + itinerario.dosis_tipo}
           repetitions={null}
+          datos={itinerario}
         ></PillCard>
       ))}
     </ScrollView>
