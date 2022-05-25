@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import PillForm from '../components/PillForm';
+import DisplayMedicines from '../components/DisplayMedicines';
 
 export default function Medicines() {
   const [showModal, setShowModal] = useState(false);
@@ -13,6 +14,9 @@ export default function Medicines() {
         <Button onPress={() => setShowModal(true)} size="lg">
           Agrega tu medicamento
         </Button>
+      </View>
+      <View>
+        <DisplayMedicines />
       </View>
       <Modal
         isOpen={showModal}
