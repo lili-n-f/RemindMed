@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, ScrollView } from "native-base";
+import { Button, ScrollView, Text } from "native-base";
 
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebase";
@@ -21,14 +21,27 @@ export default function DisplayMedicines() {
     });
     setData(dataList);
   }
+  const dataReformed = data.filter((itinerario) => itinerario.activo === true);
+
   React.useEffect(() => {
     getData();
   }, [refresh]);
 
   return (
-    <ScrollView style={{ height: "88%" }}>
-      <Button onPress={() => setRefresh(!refresh)}>refrescar</Button>
-      {data?.map((itinerario) => (
+    <ScrollView marginTop="16">
+      <Button
+        alignSelf="center"
+        borderRadius="20"
+        width="346"
+        height="68"
+        bg={"cyan.500"}
+        onPress={() => setRefresh(!refresh)}
+      >
+        <Text fontWeight="bold" fontSize="20" color="#324848">
+          REFRESCAR
+        </Text>
+      </Button>
+      {dataReformed?.map((itinerario) => (
         <PillCard
           key={itinerario.id}
           name={itinerario.nombre}
