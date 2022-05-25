@@ -9,7 +9,9 @@ import {
   Input,
 } from "native-base";
 import { SafeAreaView } from "react-native-safe-area-context";
+import {StyleSheet} from "react-native";
 import React, { useState } from "react";
+import { getCurrentTimestamp } from "react-native/Libraries/Utilities/createPerformanceLogger";
 
 export default function PillCard() {
   const [showModal, setShowModal] = useState(false);
@@ -20,10 +22,10 @@ export default function PillCard() {
         <Box width="80%" bg="primary.500" borderRadius="20" my="5">
           <VStack space="2">
             <Box px="4" pt="4">
-              <Text color="white" pb="2">
-                Nombre de la medicina
+              <Text color="white" pb="2" style={styles.titulo_tarjeta}>
+                Diclofecnat Potasico
               </Text>
-              <Text color="white">Dosis</Text>
+              <Text  color="white" fontWeight={"medium"} fontSize="18" top={"-2"} style={styles.subtitulo_tarjetas}>10 mg</Text>
             </Box>
             <HStack
               space={3}
@@ -32,12 +34,12 @@ export default function PillCard() {
               px="4"
               pb="4"
             >
-              <Text color="white">Días</Text>
+              <Text color="white" fontWeight={"medium"} fontSize="18" top={"-15"} style={styles.subtitulo_tarjetas}>8 Días</Text>
               <HStack space={2}>
-                <Button variant="subtle" onPress={() => setShowModal(true)}>
+                <Button variant="subtle" borderRadius={"10"} onPress={() => setShowModal(true)}>
                   Editar
                 </Button>
-                <Button>Eliminar</Button>
+                <Button variant="subtle" colorScheme={"red"} borderRadius={"10"}>Eliminar</Button>
               </HStack>
             </HStack>
           </VStack>
@@ -46,3 +48,32 @@ export default function PillCard() {
     </SafeAreaView>
   );
 }
+
+
+const styles = StyleSheet.create({
+  titulo: {
+    color: "#E5E5E5",
+    fontWeight: "bold",
+    fontSize: 40,
+  },
+  container1: {
+    color: "#FFFF",
+    alignItems: "left",
+    top: 35,
+    margin: 20,
+  },
+  container2: {
+    left: 10,
+  },
+  titulo_tarjeta: {
+    fontWeight: "bold",
+    fontSize: 20,
+    color: "#F6F6F6",
+  },
+  subtitulo_tarjetas: {
+    fontWeight: 'bold',
+    fontSize: 17,
+    color: '#E3E3E3',
+  },
+});
+
