@@ -2,12 +2,15 @@ import { Button, Modal, StatusBar } from "native-base";
 import { View } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { theme } from "../../nativeBaseConfig";
+const image = { uri: "https://i.ibb.co/fQVtYhf/fondopantallamedicinas.png" };
+import DateTimePicker from "@react-native-community/datetimepicker";
+import Icon, { Icons } from "../components/Icons";
+import PillCard from "../components/PillCard";
 import PillForm from "../components/PillForm";
-import DisplayMedicines from "../components/DisplayMedicines";
 
 export default function Medicines() {
   const [showModal, setShowModal] = useState(false);
-  const [showModalCard, setShowModalCard] = useState(false);
   return (
     <SafeAreaView>
       <StatusBar />
@@ -16,9 +19,7 @@ export default function Medicines() {
           Agrega tu medicamento
         </Button>
       </View>
-      <View>
-        <DisplayMedicines />
-      </View>
+      <PillCard></PillCard>
       <Modal
         isOpen={showModal}
         onClose={() => setShowModal(false)}

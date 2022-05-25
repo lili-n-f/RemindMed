@@ -9,13 +9,10 @@ import {
   Input,
 } from "native-base";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { StyleSheet } from "react-native";
 import React, { useState } from "react";
-import { getCurrentTimestamp } from "react-native/Libraries/Utilities/createPerformanceLogger";
-import PillForm from "./PillForm";
 
-export default function PillCard({ name, dosis, repetitions }) {
-  const [showModalCard, setShowModalCard] = useState(false);
+export default function PillCard() {
+  const [showModal, setShowModal] = useState(false);
 
   return (
     <SafeAreaView>
@@ -23,18 +20,10 @@ export default function PillCard({ name, dosis, repetitions }) {
         <Box width="80%" bg="primary.500" borderRadius="20" my="5">
           <VStack space="2">
             <Box px="4" pt="4">
-              <Text color="white" pb="2" style={styles.titulo_tarjeta}>
-                {name}
+              <Text color="white" pb="2">
+                Nombre de la medicina
               </Text>
-              <Text
-                color="white"
-                fontWeight={"medium"}
-                fontSize="18"
-                top={"-2"}
-                style={styles.subtitulo_tarjetas}
-              >
-                {dosis}
-              </Text>
+              <Text color="white">Dosis</Text>
             </Box>
             <HStack
               space={3}
@@ -43,77 +32,17 @@ export default function PillCard({ name, dosis, repetitions }) {
               px="4"
               pb="4"
             >
-              <Text
-                color="white"
-                fontWeight={"medium"}
-                fontSize="18"
-                top={"-15"}
-                style={styles.subtitulo_tarjetas}
-              >
-                {repetitions}
-              </Text>
+              <Text color="white">Días</Text>
               <HStack space={2}>
-                <Button
-                  variant="subtle"
-                  borderRadius={"10"}
-                  onPress={() => setShowModalCard(true)}
-                >
+                <Button variant="subtle" onPress={() => setShowModal(true)}>
                   Editar
                 </Button>
-                <Button
-                  variant="subtle"
-                  colorScheme={"red"}
-                  borderRadius={"10"}
-                >
-                  Eliminar
-                </Button>
+                <Button>Eliminar</Button>
               </HStack>
             </HStack>
           </VStack>
         </Box>
       </Box>
-      <Modal
-        isOpen={showModalCard}
-        onClose={() => setShowModalCard(false)}
-        avoidKeyboard
-      >
-        <Modal.Content minW="90%" backgroundColor="primary.200">
-          <Modal.CloseButton />
-          <Modal.Header backgroundColor="primary.200">
-            Editar medicamento
-          </Modal.Header>
-          <Modal.Body>
-            <PillForm newPill={false} />
-          </Modal.Body>
-        </Modal.Content>
-      </Modal>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  titulo: {
-    color: "#E5E5E5",
-    fontWeight: "bold",
-    fontSize: 40,
-  },
-  container1: {
-    color: "#FFFF",
-    alignItems: "left",
-    top: 35,
-    margin: 20,
-  },
-  container2: {
-    left: 10,
-  },
-  titulo_tarjeta: {
-    fontWeight: "bold",
-    fontSize: 20,
-    color: "#F6F6F6",
-  },
-  subtitulo_tarjetas: {
-    fontWeight: "bold",
-    fontSize: 17,
-    color: "#E3E3E3",
-  },
-});
