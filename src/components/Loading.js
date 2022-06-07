@@ -1,9 +1,23 @@
-import { HStack, Spinner } from 'native-base';
+import { Spinner, View } from 'native-base';
 
-export default function Loading() {
+export default function Loading({ children, loading }) {
   return (
-    <HStack space={8} justifyContent="center" alignItems="center">
-      <Spinner size="lg" color="primary.500" />
-    </HStack>
+    <View h="full" w="full">
+      {loading ? (
+        <Spinner
+          size="lg"
+          color="primary.300"
+          width="full"
+          height="full"
+          style={{
+            position: 'absolute',
+            zIndex: 100,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            alignSelf: 'center',
+          }}
+        />
+      ) : null}
+      <>{children}</>
+    </View>
   );
 }
