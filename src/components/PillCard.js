@@ -11,13 +11,9 @@ export default function PillCard({
   repetitions,
   datos,
   handleShowForm,
+  handleDelete,
   style,
 }) {
-  async function deleted() {
-    const ref = doc(db, 'usuarios', datos.id);
-    await updateDoc(ref, { activo: false });
-  }
-
   return (
     <SafeAreaView>
       <Box alignItems="center" marginBottom={style ? '8' : '0'}>
@@ -65,7 +61,7 @@ export default function PillCard({
                   variant="subtle"
                   colorScheme={'red'}
                   borderRadius={'10'}
-                  onPress={() => deleted()}
+                  onPress={() => handleDelete(datos)}
                 >
                   Eliminar
                 </Button>

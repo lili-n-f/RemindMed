@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, ScrollView, Text } from 'native-base';
 
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, doc, getDocs, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import PillCard from './PillCard';
 import PillFormPage from '../screens/PillFormPage';
@@ -18,7 +18,9 @@ export default function DisplayMedicines() {
       console.log(doc.id, ' => ', doc.data());
       const object = doc.data();
       object['id'] = doc.id;
-      dataList.push(object);
+      if (object.activo) {
+        dataList.push(object);
+      }
     });
     setData(dataList);
   }
@@ -29,6 +31,12 @@ export default function DisplayMedicines() {
   };
   const handleHideForm = () => {
     setItinerario(false);
+  };
+
+  const handleDelete = async (datos) => {
+    const ref = doc(db, 'usuarios', datos.id);
+    await updateDoc(ref, { activo: false });
+    getData();
   };
 
   React.useEffect(() => {
@@ -56,6 +64,7 @@ export default function DisplayMedicines() {
           datos={itinerario}
           handleShowForm={handleShowForm}
           style={i === dataReformed?.length - 1}
+          handleDelete={handleDelete}
         ></PillCard>
       ))}
     </ScrollView>
