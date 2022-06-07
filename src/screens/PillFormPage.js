@@ -2,15 +2,24 @@ import React from 'react';
 import { SafeAreaView, StatusBar } from 'react-native';
 import PillForm from '../components/PillForm';
 
-export default function PillFormPage({ newPill, itinerario = null }) {
+export default function PillFormPage({
+  newPill = true,
+  itinerario = null,
+  handleGoBack = null,
+}) {
   return (
     <SafeAreaView
       style={{
-        marginBottom: 75,
+        marginBottom: itinerario ? 0 : 30,
       }}
     >
       <StatusBar />
-      <PillForm newPill={newPill} />
+
+      <PillForm
+        newPill={newPill}
+        itinerario={itinerario}
+        handleGoBack={handleGoBack}
+      />
     </SafeAreaView>
   );
 }

@@ -15,7 +15,7 @@ import React, { useState } from 'react';
 import Icon, { Icons } from './Icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-const PillForm = ({ newPill, itinerario = null }) => {
+const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
   const [nameError, setNameError] = useState(false);
   const [hourError, setHourError] = useState(false);
   const [intervalError, setIntervalError] = useState(false);
@@ -100,8 +100,13 @@ const PillForm = ({ newPill, itinerario = null }) => {
     }
   }
   async function modify(docu) {
-    const ref = doc(db, 'usuarios', itinerario.id);
-    await updateDoc(ref, docu);
+    try {
+      const ref = doc(db, 'usuarios', itinerario?.id);
+      await updateDoc(ref, docu);
+      handleGoBack();
+    } catch (e) {
+      console.error('Error adding document: ', e);
+    }
   }
 
   function onSubmit() {
@@ -248,8 +253,10 @@ const PillForm = ({ newPill, itinerario = null }) => {
   }
 
   return (
-    <ScrollView style={{ paddingHorizontal: 10 }}>
+    <ScrollView>
       <FormControl
+        width={'90%'}
+        alignSelf={'center'}
         isRequired
         style={{
           display: 'flex',
@@ -258,15 +265,20 @@ const PillForm = ({ newPill, itinerario = null }) => {
           alignItems: 'center',
         }}
       >
-        <Text
-          bold
-          fontSize="3xl"
-          mb="5"
-          mt="5"
-          textAlign={'center'}
-          color="cyan.500"
-        >
-          Agrega un nuevo medicamento
+        {itinerario ? (
+          <Button
+            borderRadius="full"
+            onPress={() => handleGoBack()}
+            mt="5"
+            style={{ alignSelf: 'flex-start' }}
+          >
+            <Icon type={Icons.AntDesign} name={'back'} color={'white'} />
+          </Button>
+        ) : null}
+        <Text bold fontSize="3xl" mb="5" textAlign={'center'} color="cyan.500">
+          {itinerario
+            ? 'Modifica el medicamento'
+            : 'Agrega un nuevo medicamento'}
         </Text>
         <View style={styles.containerQ}>
           <FormControl.Label>
@@ -585,7 +597,7 @@ const PillForm = ({ newPill, itinerario = null }) => {
           ) : null}
         </View>
       </FormControl>
-      <FormControl>
+      <FormControl width={'90%'} alignSelf={'center'} pb="10">
         <View style={styles.containerE}>
           <FormControl.Label>
             <Text color="platinum.500" fontWeight="bold">
@@ -668,7 +680,13 @@ const PillForm = ({ newPill, itinerario = null }) => {
           onPress={() => {
             onSubmit();
           }}
-          style={styles.submitButton}
+          style={{
+            marginTop: 15,
+            marginBottom: itinerario ? -10 : 20,
+            width: '60%',
+            marginLeft: '20%',
+            borderRadius: 20,
+          }}
           bg="cyan.500"
         >
           <Text fontWeight="bold" color="white">
@@ -681,13 +699,6 @@ const PillForm = ({ newPill, itinerario = null }) => {
 };
 
 const styles = StyleSheet.create({
-  submitButton: {
-    marginTop: 15,
-    marginBottom: 20,
-    width: '60%',
-    marginLeft: '20%',
-    borderRadius: 20,
-  },
   mequieromatar: {
     width: 50,
     height: 40,
@@ -699,7 +710,7 @@ const styles = StyleSheet.create({
   },
   containerQ: {
     backgroundColor: '#3e3675',
-    width: '98%',
+    width: '100%',
     height: 98,
     padding: 10,
     borderRadius: 20,
@@ -708,7 +719,7 @@ const styles = StyleSheet.create({
   containerA: {
     marginTop: 15,
     backgroundColor: '#3e3675',
-    width: '98%',
+    width: '100%',
     height: 98,
     padding: 10,
     borderRadius: 20,
@@ -720,7 +731,7 @@ const styles = StyleSheet.create({
   containerB: {
     marginTop: 15,
     backgroundColor: '#3e3675',
-    width: '98%',
+    width: '100%',
     height: 98,
     padding: 10,
     borderRadius: 20,
@@ -728,7 +739,7 @@ const styles = StyleSheet.create({
   containerC: {
     marginTop: 15,
     backgroundColor: '#3e3675',
-    width: '98%',
+    width: '100%',
     height: 98,
     padding: 10,
     borderRadius: 20,
@@ -737,7 +748,7 @@ const styles = StyleSheet.create({
   containerD: {
     marginTop: 15,
     backgroundColor: '#3e3675',
-    width: '98%',
+    width: '100%',
 
     padding: 10,
     borderRadius: 20,
@@ -748,7 +759,7 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
 
     backgroundColor: '#3e3675',
-    width: '98%',
+    width: '100%',
     height: 98,
     padding: 10,
     borderRadius: 20,

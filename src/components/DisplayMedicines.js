@@ -4,10 +4,11 @@ import { Button, ScrollView, Text } from 'native-base';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase';
 import PillCard from './PillCard';
+import PillFormPage from '../screens/PillFormPage';
 
 export default function DisplayMedicines() {
   const [data, setData] = useState([]);
-  const [refresh, setRefresh] = useState(false);
+  const [itinerario, setItinerario] = useState(null);
 
   async function getData() {
     const dataList = [];
@@ -23,31 +24,38 @@ export default function DisplayMedicines() {
   }
   const dataReformed = data.filter((itinerario) => itinerario.activo === true);
 
+  const handleShowForm = (itinerario) => {
+    setItinerario(itinerario);
+  };
+  const handleHideForm = () => {
+    setItinerario(false);
+  };
+
   React.useEffect(() => {
     getData();
-  }, [refresh]);
+  }, []);
 
-  return (
+  React.useEffect(() => {
+    getData();
+  }, [itinerario]);
+
+  return itinerario ? (
+    <PillFormPage
+      newPill={false}
+      itinerario={itinerario}
+      handleGoBack={handleHideForm}
+    />
+  ) : (
     <ScrollView marginTop="5">
-      <Button
-        alignSelf="center"
-        borderRadius="20"
-        width="346"
-        height="68"
-        bg={'cyan.500'}
-        onPress={() => setRefresh(!refresh)}
-      >
-        <Text fontWeight="bold" fontSize="20" color="#324848">
-          REFRESCAR
-        </Text>
-      </Button>
-      {dataReformed?.map((itinerario) => (
+      {dataReformed?.map((itinerario, i) => (
         <PillCard
           key={itinerario.id}
           name={itinerario.nombre}
           dosis={itinerario.dosis + ' ' + itinerario.dosis_tipo}
           repetitions={null}
           datos={itinerario}
+          handleShowForm={handleShowForm}
+          style={i === dataReformed?.length - 1}
         ></PillCard>
       ))}
     </ScrollView>

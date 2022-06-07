@@ -1,32 +1,27 @@
-import {
-  Box,
-  VStack,
-  HStack,
-  Button,
-  Text,
-  Modal,
-  FormControl,
-  Input,
-} from "native-base";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { StyleSheet } from "react-native";
-import React, { useState } from "react";
-import PillForm from "./PillForm";
-import { db } from "../../firebase";
-import { updateDoc, doc } from "firebase/firestore";
+import { Box, VStack, HStack, Button, Text } from 'native-base';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { StyleSheet } from 'react-native';
+import React from 'react';
+import { db } from '../../firebase';
+import { updateDoc, doc } from 'firebase/firestore';
 
-export default function PillCard({ name, dosis, repetitions, datos }) {
-  const [showModal, setShowModal] = useState(false);
-
+export default function PillCard({
+  name,
+  dosis,
+  repetitions,
+  datos,
+  handleShowForm,
+  style,
+}) {
   async function deleted() {
-    const ref = doc(db, "usuarios", datos.id);
+    const ref = doc(db, 'usuarios', datos.id);
     await updateDoc(ref, { activo: false });
   }
 
   return (
     <SafeAreaView>
-      <Box alignItems="center">
-        <Box width="80%" bg="primary.500" borderRadius="20" my="5">
+      <Box alignItems="center" marginBottom={style ? '8' : '0'}>
+        <Box width="90%" bg="primary.500" borderRadius="20" mt="5">
           <VStack space="2">
             <Box px="4" pt="4">
               <Text color="white" pb="2" style={styles.titulo_tarjeta}>
@@ -34,9 +29,9 @@ export default function PillCard({ name, dosis, repetitions, datos }) {
               </Text>
               <Text
                 color="white"
-                fontWeight={"medium"}
+                fontWeight={'medium'}
                 fontSize="18"
-                top={"-2"}
+                top={'-2'}
                 style={styles.subtitulo_tarjetas}
               >
                 {dosis}
@@ -51,9 +46,9 @@ export default function PillCard({ name, dosis, repetitions, datos }) {
             >
               <Text
                 color="white"
-                fontWeight={"medium"}
+                fontWeight={'medium'}
                 fontSize="18"
-                top={"-15"}
+                top={'-15'}
                 style={styles.subtitulo_tarjetas}
               >
                 {repetitions}
@@ -61,15 +56,15 @@ export default function PillCard({ name, dosis, repetitions, datos }) {
               <HStack space={2}>
                 <Button
                   variant="subtle"
-                  borderRadius={"10"}
-                  onPress={() => setShowModal(true)}
+                  borderRadius={'10'}
+                  onPress={() => handleShowForm(datos)}
                 >
                   Editar
                 </Button>
                 <Button
                   variant="subtle"
-                  colorScheme={"red"}
-                  borderRadius={"10"}
+                  colorScheme={'red'}
+                  borderRadius={'10'}
                   onPress={() => deleted()}
                 >
                   Eliminar
@@ -79,34 +74,19 @@ export default function PillCard({ name, dosis, repetitions, datos }) {
           </VStack>
         </Box>
       </Box>
-      <Modal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        avoidKeyboard
-      >
-        <Modal.Content minW="90%" backgroundColor="primary.200">
-          <Modal.CloseButton />
-          <Modal.Header backgroundColor="primary.200">
-            Modificar medicamento
-          </Modal.Header>
-          <Modal.Body>
-            <PillForm newPill={false} itinerario={datos} />
-          </Modal.Body>
-        </Modal.Content>
-      </Modal>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   titulo: {
-    color: "#E5E5E5",
-    fontWeight: "bold",
+    color: '#E5E5E5',
+    fontWeight: 'bold',
     fontSize: 40,
   },
   container1: {
-    color: "#FFFF",
-    alignItems: "left",
+    color: '#FFFF',
+    alignItems: 'left',
     top: 35,
     margin: 20,
   },
@@ -114,13 +94,13 @@ const styles = StyleSheet.create({
     left: 10,
   },
   titulo_tarjeta: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     fontSize: 20,
-    color: "#F6F6F6",
+    color: '#F6F6F6',
   },
   subtitulo_tarjetas: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     fontSize: 17,
-    color: "#E3E3E3",
+    color: '#E3E3E3',
   },
 });

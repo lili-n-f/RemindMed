@@ -15,8 +15,8 @@ const TabArr = [
     component: Medicines,
   },
   {
-    route: 'Agregar Medicina',
-    label: 'Agregar Medicina',
+    route: 'Agregar',
+    label: 'Agregar',
     type: Icons.Ionicons,
     activeIcon: 'add-circle',
     inActiveIcon: 'add-circle-outline',
