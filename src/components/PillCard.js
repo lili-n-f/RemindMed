@@ -17,7 +17,7 @@ export default function PillCard({
   return (
     <SafeAreaView>
       <Box alignItems="center" marginBottom={style ? '8' : '0'}>
-        <Box width="90%" bg="primary.500" borderRadius="20" mt="5">
+        <Box width="90%" bg="primary.500" borderRadius="20" mt="5" marginTop={-10}>
           <VStack space="2">
             <Box px="4" pt="4">
               <Text color="white" pb="2" style={styles.titulo_tarjeta}>

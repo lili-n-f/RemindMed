@@ -275,7 +275,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
             <Icon type={Icons.AntDesign} name={'back'} color={'white'} />
           </Button>
         ) : null}
-        <Text bold fontSize="3xl" mb="5" textAlign={'center'} color="cyan.500">
+        <Text bold fontSize="3xl" mb="5" textAlign={'center'} color="cyan.100">
           {itinerario
             ? 'Modifica el medicamento'
             : 'Agrega un nuevo medicamento'}
