@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Button, ScrollView, Text } from 'native-base';
-
+import { useIsFocused } from '@react-navigation/native';
 import { collection, doc, getDocs, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import PillCard from './PillCard';
 import PillFormPage from '../screens/PillFormPage';
 
 export default function DisplayMedicines() {
+  const isFocused = useIsFocused();
   const [data, setData] = useState([]);
   const [itinerario, setItinerario] = useState(null);
 
@@ -15,7 +16,7 @@ export default function DisplayMedicines() {
     const querySnapshot = await getDocs(collection(db, 'usuarios'));
     querySnapshot.forEach((doc) => {
       // doc.data() is never undefined for query doc snapshots
-      console.log(doc.id, ' => ', doc.data());
+      //console.log(doc.id, ' => ', doc.data());
       const object = doc.data();
       object['id'] = doc.id;
       if (object.activo) {
@@ -40,12 +41,10 @@ export default function DisplayMedicines() {
   };
 
   React.useEffect(() => {
-    getData();
-  }, []);
-
-  React.useEffect(() => {
-    getData();
-  }, [itinerario]);
+    if (isFocused) {
+      getData();
+    }
+  }, [itinerario, isFocused]);
 
   return itinerario ? (
     <PillFormPage
