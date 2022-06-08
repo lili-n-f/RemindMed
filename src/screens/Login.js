@@ -2,17 +2,13 @@ import { Box, StatusBar, Input, Text, FormControl, Button } from "native-base";
 import react from "react";
 import React, { useState } from 'react';
 import { ImageBackground, StyleSheet, View} from 'react-native';
-import Login from "./Login";
 
-const image = { uri: 'https://i.ibb.co/pJ1GYQb/Android-Small-1.png' };
+const image = { uri: 'https://i.ibb.co/wSBCgBb/Android-Large-12.png' };
 
 
-export default function Register() {
+export default function Login() {
     const [borderBottomColor, setBorderBottomColor] = useState();
-    const [login, setLogin] = useState(false);
-  return login ? (<Login />) 
-  
-  : (
+  return (
 
     <ImageBackground
         source={image}
@@ -20,7 +16,7 @@ export default function Register() {
         style={{ width: '100%', height: '100%' }}>
      <View style = {styles.containerTitle}>
         <Box>
-            <Text color="platinum.500" fontSize="35" fontWeight="bold" >Regístrate</Text>
+            <Text color="platinum.500" fontSize="35" fontWeight="bold" >Inicia</Text>
         </Box>
     </View>
     <View>
@@ -38,10 +34,10 @@ export default function Register() {
             <View style={styles.containerInput}>
                 <Input
 
-                placeholder="Email"
+                placeholder="ESTE ES EL LOGIN"
                 placeholderTextColor="platinum.600"
                 borderBottomWidth="2"
-                borderColor="blue.500"
+                borderColor="primary.500"
                 borderBottomColor="platinum.500"
                 fontSize="20"
                 marginBottom="5"
@@ -59,7 +55,7 @@ export default function Register() {
                 placeholder="Contraseña"
                 placeholderTextColor="platinum.600"
                 borderBottomWidth="2"
-                borderColor="blue.500"
+                borderColor="primary.500"
                 borderBottomColor="platinum.500"
                 fontSize="20"
                 marginBottom="5"
@@ -67,20 +63,6 @@ export default function Register() {
                 selectionColor="green.500" 
                 color= "platinum.500"
                 ></Input>
-                <Input
-                secureTextEntry = {true}
-                placeholder="Confirmar contraseña"
-                placeholderTextColor="platinum.600"
-                borderBottomWidth="2"
-                borderColor="blue.500"
-                borderBottomColor="platinum.500"
-                fontSize="20"
-                marginBottom="5"
-                borderRadius="0"
-                selectionColor="green.500" 
-                color= "platinum.500"
-                ></Input>
-                <Text color="green.500" fontWeight="bold" onPress={() => setLogin(true)}>¿Ya tienes un perfil? Inicia sesión aquí</Text>
                 <View style={styles.buttonA}>
                 <Button style={styles.buttonC}>
                     <Text color="platinum.500" fontWeight="bold" fontSize="15">Continuar</Text>
@@ -97,8 +79,8 @@ export default function Register() {
 
 const styles = StyleSheet.create({
     containerTitle: {
-        marginTop: 30,
-        marginLeft: 20
+        marginTop: 40,
+        marginLeft: 25
     },
     containerInput: {
         marginTop: 130,
@@ -109,7 +91,7 @@ const styles = StyleSheet.create({
     buttonC: {
         width:146,
         height:41,
-        marginTop:15,
+        marginTop:10,
         backgroundColor: "#59C3C3",
         borderRadius:20,
         justifyContent: 'center',
@@ -125,3 +107,7 @@ const styles = StyleSheet.create({
     // inputOnFocus: { borderBottomColor: '#A2D729' },
     // inputOnBlur: {  borderBottomColor: '#CFCFCF' }
   });
+
+
+
+ 
