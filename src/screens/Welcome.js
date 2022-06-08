@@ -1,7 +1,7 @@
 import { ImageBackground, StyleSheet, View, Text } from 'react-native';
 import { Divider, Box, Button } from 'native-base';
 import React, { useState } from 'react';
-import NavigationBar from '../components/NavigationBar';
+import Register from "./Register";
 
 const image = { uri: 'https://i.ibb.co/X5v02CZ/fondopantallainicio.png' };
 
@@ -9,7 +9,7 @@ export default function Welcome() {
   const [begin, setBegin] = useState(false);
 
   return begin ? (
-    <NavigationBar />
+    <Register />
   ) : (
     <ImageBackground
       source={image}
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
   startButtonTitle: {
     color: '#52489C',
     fontWeight: '600',
-    fontSize: 20,
+    fontSize: 15,
   }
 
 });
