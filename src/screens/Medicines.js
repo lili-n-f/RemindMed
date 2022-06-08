@@ -1,4 +1,4 @@
-import { StatusBar,} from 'native-base';
+import { StatusBar, Text} from 'native-base';
 import { View, ImageBackground, StyleSheet } from 'react-native';
 import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -15,7 +15,8 @@ export default function Medicines() {
     >
       <SafeAreaView>
         <StatusBar />
-        <View style={{ paddingBottom: 60 }}>
+        <Text></Text>
+        <View>
           <DisplayMedicines />
         </View>
       </SafeAreaView>

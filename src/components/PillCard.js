@@ -2,8 +2,6 @@ import { Box, VStack, HStack, Button, Text } from 'native-base';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StyleSheet } from 'react-native';
 import React from 'react';
-import { db } from '../../firebase';
-import { updateDoc, doc } from 'firebase/firestore';
 
 export default function PillCard({
   name,

@@ -73,6 +73,7 @@ export default function NavigationBar() {
           left: 16,
           borderRadius: 16,
         },
+        tabBarHideOnKeyboard: true,
       }}
     >
       {TabArr.map((item, index) => {
