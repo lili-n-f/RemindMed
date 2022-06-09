@@ -1,14 +1,16 @@
 import { Box, StatusBar, Input, Text, FormControl, Button } from "native-base";
 import react from "react";
 import React, { useState } from 'react';
-import { ImageBackground, StyleSheet, View} from 'react-native';
+import { ImageBackground, StyleSheet, View, TextInput } from 'react-native';
 import Login from "./Login";
 
 const image = { uri: 'https://i.ibb.co/pJ1GYQb/Android-Small-1.png' };
 
 
 export default function Register() {
-    const [borderBottomColor, setBorderBottomColor] = useState();
+    const [focus, setFocus] = useState(false);
+    const [focus2, setFocus2] = useState(false);
+    const [focus3, setFocus3] = useState(false);        
     const [login, setLogin] = useState(false);
   return login ? (<Login />) 
   
@@ -36,50 +38,46 @@ export default function Register() {
             }}
         >
             <View style={styles.containerInput}>
-                <Input
 
+
+            <TextInput
+                style={focus ? styles.inputOnFocus : styles.inputOnBlur}
+                onFocus={() => setFocus(true)}
+                onBlur={() => setFocus(false)}
+                selectionColor="#A2D729"
                 placeholder="Email"
-                placeholderTextColor="platinum.600"
-                borderBottomWidth="2"
-                borderColor="blue.500"
-                borderBottomColor="platinum.500"
-                fontSize="20"
-                marginBottom="5"
-                borderRadius="0"
-                selectionColor="green.500"                          
-                // onFocus={() => setBorderBottomColor('#A2D729')}
-                // onBlur={() => setBorderBottomColor('#CFCFCF')}
-                // style = {{
-                //     borderBottomColor,
-                //   }}    
-                color= "platinum.500"
-                ></Input>
-                <Input
-                secureTextEntry = {true}
+                placeholderTextColor = "#CFCFCF"     
+                textContentType="password"          
+                ></TextInput>
+
+
+                
+                <TextInput
+                style={focus2 ? styles.inputOnFocus : styles.inputOnBlur}
+                onFocus={() => setFocus2(true)}
+                onBlur={() => setFocus2(false)}
+                selectionColor="#A2D729"
                 placeholder="Contraseña"
-                placeholderTextColor="platinum.600"
-                borderBottomWidth="2"
-                borderColor="blue.500"
-                borderBottomColor="platinum.500"
-                fontSize="20"
-                marginBottom="5"
-                borderRadius="0"
-                selectionColor="green.500" 
-                color= "platinum.500"
-                ></Input>
-                <Input
-                secureTextEntry = {true}
+                placeholderTextColor = "#CFCFCF"     
+                textContentType="password"   
+                secureTextEntry={true}   
+                ></TextInput>
+
+
+
+                <TextInput
+                style={focus3 ? styles.inputOnFocus : styles.inputOnBlur}
+                onFocus={() => setFocus3(true)}
+                onBlur={() => setFocus3(false)}
+                selectionColor="#A2D729"
                 placeholder="Confirmar contraseña"
-                placeholderTextColor="platinum.600"
-                borderBottomWidth="2"
-                borderColor="blue.500"
-                borderBottomColor="platinum.500"
-                fontSize="20"
-                marginBottom="5"
-                borderRadius="0"
-                selectionColor="green.500" 
-                color= "platinum.500"
-                ></Input>
+                placeholderTextColor = "#CFCFCF"     
+                textContentType="password"       
+                secureTextEntry={true}   
+                ></TextInput>
+
+
+
                 <Text color="green.500" fontWeight="bold" onPress={() => setLogin(true)}>¿Ya tienes un perfil? Inicia sesión aquí</Text>
                 <View style={styles.buttonA}>
                 <Button style={styles.buttonC}>
@@ -120,8 +118,40 @@ const styles = StyleSheet.create({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center'     
-    }
+    },
+    inputsStyle: {
+        width: 295,
+        height: 35,
+        fontSize: 20,
+        borderBottomWidth: 2,
+        paddingLeft: 10,
+        paddingBottom: 2,
+        marginBottom: 10,
+        color: '#CFCFCF'
 
-    // inputOnFocus: { borderBottomColor: '#A2D729' },
-    // inputOnBlur: {  borderBottomColor: '#CFCFCF' }
+    },
+    inputOnFocus: {         
+        width: 295,
+        height: 40,
+        fontSize: 20,
+        borderBottomWidth: 2,
+        paddingLeft: 10,
+        paddingBottom: 2,
+        marginBottom: 10,
+        color: '#CFCFCF',
+        borderBottomColor: '#A2D729'
+    
+    },
+    inputOnBlur: {  
+        width: 295,
+        height: 40,
+        fontSize: 20,
+        borderBottomWidth: 2,
+        paddingLeft: 10,
+        paddingBottom: 2,
+        marginBottom: 10,
+        color: '#CFCFCF',
+        borderBottomColor: '#CFCFCF'
+
+     }
   });

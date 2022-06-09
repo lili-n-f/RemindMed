@@ -1,7 +1,7 @@
 import { Box, StatusBar, Input, Text, FormControl, Button } from "native-base";
 import react from "react";
 import React, { useState } from 'react';
-import { ImageBackground, StyleSheet, View} from 'react-native';
+import { ScrollView, ImageBackground, StyleSheet, View} from 'react-native';
 
 const image = { uri: 'https://i.ibb.co/wSBCgBb/Android-Large-12.png' };
 
@@ -9,11 +9,11 @@ const image = { uri: 'https://i.ibb.co/wSBCgBb/Android-Large-12.png' };
 export default function Login() {
     const [borderBottomColor, setBorderBottomColor] = useState();
   return (
-
+    <ScrollView>
     <ImageBackground
         source={image}
         resizeMode = "cover"
-        style={{ width: '100%', height: '100%' }}>
+        style={{ width: '100%', height: '100%', position: "absolute" }}>
      <View style = {styles.containerTitle}>
         <Box>
             <Text color="platinum.500" fontSize="35" fontWeight="bold" >Inicia</Text>
@@ -73,6 +73,7 @@ export default function Login() {
         </View>
 
     </ImageBackground>
+    </ScrollView>
 
   );
 }
