@@ -15,7 +15,7 @@ export default function Medicines() {
     >
       <SafeAreaView>
         <StatusBar />
-        <View style={{ paddingBottom: 60 }}>
+        <View>
           <DisplayMedicines />
         </View>
       </SafeAreaView>

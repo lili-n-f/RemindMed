@@ -1,5 +1,5 @@
-import { Box, StatusBar } from "native-base";
-import react from "react";
+import React from 'react';
+import { Box, StatusBar } from 'native-base';
 
 export default function Profile() {
   return (

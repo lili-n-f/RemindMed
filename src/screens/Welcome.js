@@ -33,7 +33,11 @@ export default function Welcome() {
           </Text>
         </View>
         <View style={{ alignItems: 'center', top: 60 }}>
-          <Button style={styles.startButton} bg="green.500" onPress={() => setBegin(true)}>
+          <Button
+            style={styles.startButton}
+            bg="green.500"
+            onPress={() => setBegin(true)}
+          >
             <Text style={styles.startButtonTitle}>Comenzar</Text>
           </Button>
         </View>
@@ -67,7 +71,6 @@ const styles = StyleSheet.create({
   startButtonTitle: {
     color: '#52489C',
     fontWeight: '600',
-    fontSize: 15,
-  }
-
+    fontSize: 20,
+  },
 });

@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
-import { Button, ScrollView, Text } from 'native-base';
+import { ScrollView, View } from 'native-base';
 import { useIsFocused } from '@react-navigation/native';
 import { collection, doc, getDocs, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import PillCard from './PillCard';
 import PillFormPage from '../screens/PillFormPage';
+import Loading from './Loading';
 
 export default function DisplayMedicines() {
   const isFocused = useIsFocused();
   const [data, setData] = useState([]);
   const [itinerario, setItinerario] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   async function getData() {
+    setLoading(true);
     const dataList = [];
     const querySnapshot = await getDocs(collection(db, 'usuarios'));
     querySnapshot.forEach((doc) => {
@@ -44,7 +47,11 @@ export default function DisplayMedicines() {
     if (isFocused) {
       getData();
     }
-  }, [itinerario, isFocused]);
+  }, [isFocused]);
+
+  React.useEffect(() => {
+    setLoading(false);
+  }, [data]);
 
   return itinerario ? (
     <PillFormPage
@@ -53,19 +60,21 @@ export default function DisplayMedicines() {
       handleGoBack={handleHideForm}
     />
   ) : (
-    <ScrollView marginTop="5">
-      {dataReformed?.map((itinerario, i) => (
-        <PillCard
-          key={itinerario.id}
-          name={itinerario.nombre}
-          dosis={itinerario.dosis + ' ' + itinerario.dosis_tipo}
-          repetitions={null}
-          datos={itinerario}
-          handleShowForm={handleShowForm}
-          style={i === dataReformed?.length - 1}
-          handleDelete={handleDelete}
-        ></PillCard>
-      ))}
-    </ScrollView>
+    <Loading loading={loading}>
+      <ScrollView marginTop="5" style={{ marginBottom: 60 }}>
+        {dataReformed?.map((itinerario, i) => (
+          <PillCard
+            key={itinerario.id}
+            name={itinerario.nombre}
+            dosis={itinerario.dosis + ' ' + itinerario.dosis_tipo}
+            repetitions={null}
+            datos={itinerario}
+            handleShowForm={handleShowForm}
+            style={i === dataReformed?.length - 1}
+            handleDelete={handleDelete}
+          ></PillCard>
+        ))}
+      </ScrollView>
+    </Loading>
   );
 }
