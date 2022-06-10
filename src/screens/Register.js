@@ -46,8 +46,7 @@ export default function Register() {
                 onBlur={() => setFocus(false)}
                 selectionColor="#A2D729"
                 placeholder="Email"
-                placeholderTextColor = "#CFCFCF"     
-                textContentType="password"          
+                placeholderTextColor = "#CFCFCF"          
                 ></TextInput>
 
 
