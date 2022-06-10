@@ -21,6 +21,7 @@ import Loading from '../components/Loading';
 const image = { uri: 'https://i.ibb.co/ypq3LQ1/fondo.png' };
 
 export default function Medicines() {
+  //Aqui comienza la búsqueda de madicamentos por categoria
   const isFocused = useIsFocused();
   const [itinerario, setItinerario] = useState(null);
   const [data, setData] = useState([]);
@@ -29,6 +30,7 @@ export default function Medicines() {
 
   const [category, setCategory] = useState(itinerario?.categoria ?? "");
   
+  //Traemos la información de Firebase
   async function getData() {
     const dataList = [];
     const querySnapshot = await getDocs(collection(db, 'usuarios'));
@@ -43,20 +45,21 @@ export default function Medicines() {
     setdataFiltrada(dataList);
   }
 
+  //Para que se traiga automaticamente al entrar al componente
   React.useEffect(() => {
     if (isFocused) {
       getData();
     }
   }, [isFocused]);
   
-  
+  //Para eliminar un medicamento
   const handleDelete = async (datos) => {
     const ref = doc(db, 'usuarios', datos.id);
     await updateDoc(ref, { activo: false });
     getData();
   };
 
-  
+  //Para que aparezca efecto de cargando
   React.useEffect(() => {
     setLoading(false);
   }, [data]);
@@ -91,7 +94,7 @@ export default function Medicines() {
                   setCategory(value);
                 }}
               >
-                <Select.Item
+                <Select.Item //selección de cada categoria que fue seleccionada para el filtrado
                   label="Analgésico (aliviar dolor)"
                   value="Analgésico"
                 />
@@ -167,7 +170,10 @@ export default function Medicines() {
             </Button>
           </View>
           <Loading loading={loading}>
-            <DisplayMedicines data={category==="todos"? data: dataFiltrada} handleDelete={handleDelete}/>
+            <DisplayMedicines data={category==="todos"? data: dataFiltrada} handleDelete={handleDelete}
+            //Cuando no se quiere filtrar por una categoría en especifico se selecciona la opción de todos en la cual se mostrara la lista original que contiene a todos los medicamentos
+            //En cambio cuando se seleccione cualquier ora opción se utilizará la lista de data filtrada según la categoría al presionar el botón
+            />
           </Loading>
         </View>
       </SafeAreaView>
