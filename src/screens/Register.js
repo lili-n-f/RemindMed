@@ -3,15 +3,20 @@ import react from "react";
 import React, { useState } from 'react';
 import { ImageBackground, StyleSheet, View, TextInput } from 'react-native';
 import Login from "./Login";
+import Welcome from "./Welcome";
 
 const image = { uri: 'https://i.ibb.co/pJ1GYQb/Android-Small-1.png' };
 
 
 export default function Register() {
+    const [login, setLogin] = useState(false);
     const [focus, setFocus] = useState(false);
     const [focus2, setFocus2] = useState(false);
     const [focus3, setFocus3] = useState(false);        
-    const [login, setLogin] = useState(false);
+
+    
+
+
   return login ? (<Login />) 
   
   : (
@@ -77,7 +82,11 @@ export default function Register() {
 
 
 
-                <Text color="green.500" fontWeight="bold" onPress={() => setLogin(true)}>¿Ya tienes un perfil? Inicia sesión aquí</Text>
+                <Text color="green.500" fontWeight="bold" onPress={() => setLogin(true)}>
+                    ¿Ya tienes un perfil? Inicia sesión aquí
+                    </Text>
+
+
                 <View style={styles.buttonA}>
                 <Button style={styles.buttonC}>
                     <Text color="platinum.500" fontWeight="bold" fontSize="15">Continuar</Text>

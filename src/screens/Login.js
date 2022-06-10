@@ -10,9 +10,8 @@ export default function Login() {
     const [focus, setFocus] = useState(false);
     const [focus2, setFocus2] = useState(false);
 
-    
   return (
-    <ScrollView>
+
     <ImageBackground
         source={image}
         resizeMode = "cover"
@@ -36,6 +35,7 @@ export default function Login() {
         >
             <View style={styles.containerInput}>
 
+
             <TextInput
                 style={focus ? styles.inputOnFocus : styles.inputOnBlur}
                 onFocus={() => setFocus(true)}
@@ -46,8 +46,7 @@ export default function Login() {
                 ></TextInput>
 
 
-                
-                <TextInput
+            <TextInput
                 style={focus2 ? styles.inputOnFocus : styles.inputOnBlur}
                 onFocus={() => setFocus2(true)}
                 onBlur={() => setFocus2(false)}
@@ -61,7 +60,7 @@ export default function Login() {
 
                 <View style={styles.buttonA}>
                 <Button style={styles.buttonC}>
-                    <Text color="platinum.500" fontWeight="bold" fontSize="15">Continuar</Text>
+                    <Text color="platinum.500" fontWeight="bold" fontSize="15">Iniciar</Text>
                 </Button>
                 </View>
             </View>
@@ -69,7 +68,7 @@ export default function Login() {
         </View>
 
     </ImageBackground>
-    </ScrollView>
+
 
   );
 }
