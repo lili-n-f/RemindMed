@@ -1,12 +1,6 @@
 import { Box, Text, FormControl, Button } from "native-base";
 import React, { useState, useContext } from "react";
-import {
-  ImageBackground,
-  StyleSheet,
-  View,
-  TextInput,
-  Alert,
-} from "react-native";
+import { ImageBackground, StyleSheet, View, TextInput } from "react-native";
 import { login } from "../../firebase.js";
 import { UserContext } from "../../ContextProvider";
 import Loading from "../components/Loading.js";
@@ -30,7 +24,7 @@ export default function Login() {
     try {
       await login(email, password);
     } catch (e) {
-      Alert.alert("Correo o contraseña inválida.");
+      console.log("Correo o contraseña inválida.");
     }
   };
 

@@ -23,11 +23,11 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Registro con email");
-    console.log(user);
     try {
+      // "falta" sería el nombre del usuario, pero hace falta ese campo en el form del registro
       await register("falta", email, password);
     } catch (e) {
-      Alert.alert("Correo o contraseña inválida.");
+      console.log("Correo o contraseña inválida.");
     }
   };
 

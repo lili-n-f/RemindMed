@@ -1,6 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
-import { collection, addDoc } from "firebase/firestore";
+import { getFirestore, setDoc, doc } from "firebase/firestore";
 import {
   getAuth,
   signInWithEmailAndPassword,
@@ -9,7 +8,6 @@ import {
   signOut,
 } from "firebase/auth";
 import { GoogleAuthProvider } from "firebase/auth";
-import { Alert } from "react-native";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAreJKr3j90FE7CH2Z96El1DHNGQf2YSJU",
@@ -42,7 +40,8 @@ const register = async (name, email, password) => {
   try {
     const res = await createUserWithEmailAndPassword(auth, email, password);
     const user = res.user;
-    await addDoc(collection(db, "users"), {
+    //campos que tendrá la cuenta en sí, agregar según consideren
+    await setDoc(doc(db, "users", user.uid), {
       uid: user.uid,
       name: name,
       email: email,
@@ -55,7 +54,7 @@ const register = async (name, email, password) => {
 const sendPasswordReset = async (email) => {
   try {
     await sendPasswordResetEmail(auth, email);
-    Alert.alert("Password reset link sent!");
+    console.log("Password reset link sent!");
   } catch (err) {
     console.error(err);
   }
