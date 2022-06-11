@@ -25,20 +25,36 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
   const [durationError, setDurationError] = useState(false);
   const [dayError, setDayError] = useState(false);
   //BOTONES DE DIAS DE LA SEMANA
-  const [lunes, setLunes] = useState(false);
-  const [martes, setMartes] = useState(false);
-  const [miercoles, setMiercoles] = useState(false);
-  const [jueves, setJueves] = useState(false);
-  const [viernes, setViernes] = useState(false);
-  const [sabado, setSabado] = useState(false);
-  const [domingo, setDomingo] = useState(false);
+  const [lunes, setLunes] = useState(itinerario?.dias?.[1]?.selected ?? false);
+  const [martes, setMartes] = useState(
+    itinerario?.dias?.[2]?.selected ?? false
+  );
+  const [miercoles, setMiercoles] = useState(
+    itinerario?.dias?.[3]?.selected ?? false
+  );
+  const [jueves, setJueves] = useState(
+    itinerario?.dias?.[4]?.selected ?? false
+  );
+  const [viernes, setViernes] = useState(
+    itinerario?.dias?.[5]?.selected ?? false
+  );
+  const [sabado, setSabado] = useState(
+    itinerario?.dias?.[6]?.selected ?? false
+  );
+  const [domingo, setDomingo] = useState(
+    itinerario?.dias?.[0]?.selected ?? false
+  );
 
   const [name, setName] = useState(itinerario?.nombre ?? '');
   const [fromDate, setFromDate] = useState(new Date()); //para registrar la fecha de inicio
 
   const [showTime, setShowTime] = useState(false);
-  const [textTime, setTextTime] = useState(itinerario?.horario ?? '--:--');
-  const [time, setTime] = useState(null);
+  const [textTime, setTextTime] = useState(
+    (itinerario?.horario?.toDate().getHours() ?? '--') +
+      ':' +
+      (itinerario?.horario?.toDate().getMinutes() ?? '--')
+  );
+  const [time, setTime] = useState(itinerario?.horario.toDate() ?? null);
 
   const [interval, setInterval] = useState(itinerario?.intervalo ?? '1');
   const [intervalType, setIntervalType] = useState(
@@ -60,7 +76,13 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
   const [notes, setNotes] = useState(itinerario?.notas ?? '');
 
   const [showDate, setShowDate] = useState(false);
-  const [textDate, setTextDate] = useState('DD/MM/YYYY');
+  const [textDate, setTextDate] = useState(
+    (itinerario?.fecha_final?.toDate().getUTCDate() ?? 'DD') +
+      '/' +
+      (itinerario?.fecha_final?.toDate().getUTCMonth() ?? 'MM') +
+      '/' +
+      (itinerario?.fecha_final?.toDate().getUTCFullYear() ?? 'YYYY')
+  );
 
   const onChangeTime = (event, selectedTime) => {
     const currentTime = selectedTime;
@@ -212,13 +234,13 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
       let dias;
       intervalType === 'Semanas'
         ? (dias = [
-            { key: 'Sunday', selected: sunday },
-            { key: 'Monday', selected: monday },
-            { key: 'Tuesday', selected: tuesday },
-            { key: 'Wednesday', selected: wednesday },
-            { key: 'Thursday', selected: thursday },
-            { key: 'Friday', selected: friday },
-            { key: 'Saturday', selected: saturday },
+            { key: 'Sunday', selected: domingo },
+            { key: 'Monday', selected: lunes },
+            { key: 'Tuesday', selected: martes },
+            { key: 'Wednesday', selected: miercoles },
+            { key: 'Thursday', selected: jueves },
+            { key: 'Friday', selected: viernes },
+            { key: 'Saturday', selected: sabado },
           ])
         : (dias = null);
 
@@ -239,7 +261,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
         activo: true,
         nombre: name,
         fecha_registro: new Date(), //esto para hacer los cálculos de las fechas finales
-        horario: textTime,
+        horario: time,
         intervalo: parseInt(interval, 10),
         dias: dias, //SI ESTE VALOR ES NULL, SE SABE QUE EL INTERVALO ES EN DÍAS, de lo contrario, semanas
         tipo_duracion: durationType, //1: por siempre, 2: hasta una fecha específica, 3: repeticiones
@@ -250,6 +272,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
         categoria: category, //ojooo si category es vacío no tiene categoría
         notas: notes, //ojoooo notas es opcional, puede estar vacío
       };
+      console.log(changeMed);
       modify(changeMed);
     }
   }
@@ -360,8 +383,6 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                     color={'#52489c'}
                     size={35}
                   />
-
-                  {/* me rindo marico esa imagen no se quiere poner porque es un bicha y la odio demasiado                     */}
                 </TouchableOpacity>
               }
             />
@@ -372,7 +393,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
           {showTime ? (
             <DateTimePicker
               mode="time"
-              value={new Date()}
+              value={itinerario?.horario?.toDate() ?? new Date()}
               onChange={onChangeTime}
             />
           ) : null}
@@ -418,13 +439,22 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                 placeholder="Escoja el intervalo"
                 onValueChange={(itemValue) => {
                   setIntervalType(itemValue);
+                  if (itemValue === 'Días') {
+                    setLunes(null);
+                    setMartes(null);
+                    setMiercoles(null);
+                    setJueves(null);
+                    setViernes(null);
+                    setSabado(null);
+                    setDomingo(null);
+                  }
                 }}
                 defaultValue={
                   itinerario === null
                     ? 'Días'
-                    : itinerario.dias === null
-                    ? 'Semanas'
-                    : 'Días'
+                    : itinerario?.dias === null
+                    ? 'Días'
+                    : 'Semanas'
                 }
               >
                 <Select.Item label="Semanas" value="Semanas" />
@@ -437,7 +467,14 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
               </Text>
             ) : null}
           </View>
-          {intervalType === 'Semanas' || itinerario?.dias ? (
+          {intervalType === 'Semanas' ||
+          lunes ||
+          martes ||
+          miercoles ||
+          jueves ||
+          viernes ||
+          sabado ||
+          domingo ? (
             <View style={styles.containerA}>
               <FormControl.Label>
                 <Text color="platinum.500" fontWeight="bold">
@@ -447,11 +484,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
               <Button.Group justifyContent="center" my="2">
                 <Button
                   style={styles.days}
-                  backgroundColor={
-                    domingo || itinerario?.dias[0]?.selected
-                      ? 'cyan.500'
-                      : 'white'
-                  }
+                  backgroundColor={domingo ? 'cyan.500' : 'white'}
                   onPress={() => setDomingo(!domingo)}
                   color="primary.700"
                   fontWeight="bold"
@@ -465,11 +498,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                 </Button>
                 <Button
                   fontWeight="bold"
-                  backgroundColor={
-                    lunes || itinerario?.dias[1]?.selected
-                      ? 'cyan.500'
-                      : 'white'
-                  }
+                  backgroundColor={lunes ? 'cyan.500' : 'white'}
                   onPress={() => setLunes(!lunes)}
                   color="primary.700"
                   variant="subtle"
@@ -483,11 +512,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                 <Button
                   fontWeight="bold"
                   onPress={() => setMartes(!martes)}
-                  backgroundColor={
-                    martes || itinerario?.dias[2]?.selected
-                      ? 'cyan.500'
-                      : 'white'
-                  }
+                  backgroundColor={martes ? 'cyan.500' : 'white'}
                   color="primary.700"
                   variant="subtle"
                   width="8"
@@ -499,11 +524,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                 </Button>
                 <Button
                   fontWeight="bold"
-                  backgroundColor={
-                    miercoles || itinerario?.dias[3]?.selected
-                      ? 'cyan.500'
-                      : 'white'
-                  }
+                  backgroundColor={miercoles ? 'cyan.500' : 'white'}
                   onPress={() => setMiercoles(!miercoles)}
                   color="primary.700"
                   variant="subtle"
@@ -516,11 +537,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                 </Button>
                 <Button
                   fontWeight="bold"
-                  backgroundColor={
-                    jueves || itinerario?.dias[4]?.selected
-                      ? 'cyan.500'
-                      : 'white'
-                  }
+                  backgroundColor={jueves ? 'cyan.500' : 'white'}
                   onPress={() => setJueves(!jueves)}
                   color="primary.700"
                   variant="subtle"
@@ -533,11 +550,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                 </Button>
                 <Button
                   fontWeight="bold"
-                  backgroundColor={
-                    viernes || itinerario?.dias[5]?.selected
-                      ? 'cyan.500'
-                      : 'white'
-                  }
+                  backgroundColor={viernes ? 'cyan.500' : 'white'}
                   onPress={() => setViernes(!viernes)}
                   color="primary.700"
                   variant="subtle"
@@ -550,11 +563,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                 </Button>
                 <Button
                   fontWeight="bold"
-                  backgroundColor={
-                    sabado || itinerario?.dias[6]?.selected
-                      ? 'cyan.500'
-                      : 'white'
-                  }
+                  backgroundColor={sabado ? 'cyan.500' : 'white'}
                   onPress={() => setSabado(!sabado)}
                   color="primary.700"
                   variant="subtle"

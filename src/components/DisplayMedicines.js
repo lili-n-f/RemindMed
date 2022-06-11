@@ -20,7 +20,11 @@ export default function DisplayMedicines({
         <PillCard
           key={itinerario.id}
           name={itinerario.nombre}
-          horario={itinerario.horario}
+          horario={
+            itinerario?.horario?.toDate().getHours() +
+            ':' +
+            itinerario?.horario?.toDate().getMinutes()
+          }
           dosis={itinerario.dosis + ' ' + itinerario.dosis_tipo}
           repetitions={null}
           datos={itinerario}
