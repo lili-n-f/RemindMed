@@ -24,8 +24,8 @@ export default function Register() {
     e.preventDefault();
     console.log("Registro con email");
     try {
-      // "falta" sería el nombre del usuario, pero hace falta ese campo en el form del registro
-      await register("falta", email, password);
+      // "" sería el nombre del usuario, pero hace falta ese campo en el form del registro
+      await register("", email, password);
     } catch (e) {
       console.log("Correo o contraseña inválida.");
     }
