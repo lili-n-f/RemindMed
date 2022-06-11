@@ -4,18 +4,14 @@ import {
   Button,
   Text,
   FormControl,
-  Input,
   Select,
-  Radio,
-  Box,
-  ScrollView,
 } from 'native-base';
 import { View, ImageBackground, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DisplayMedicines from '../components/DisplayMedicines';
 import { db } from '../../firebase';
-import React, { useEffect, useState } from 'react';
-import { CommonActions, useIsFocused } from '@react-navigation/native';
+import React, { useState } from 'react';
+import { useIsFocused } from '@react-navigation/native';
 import { collection, doc, getDocs, updateDoc } from 'firebase/firestore';
 import Loading from '../components/Loading';
 import PillFormPage from './PillFormPage';
@@ -23,17 +19,14 @@ import PillFormPage from './PillFormPage';
 const image = { uri: 'https://i.ibb.co/ypq3LQ1/fondo.png' };
 
 export default function Medicines() {
-  //Aqui comienza la búsqueda de madicamentos por categoria
   const isFocused = useIsFocused();
   const [itinerario, setItinerario] = useState(null);
   const [itinerarioModify, setItinerarioModify] = useState(null);
   const [data, setData] = useState([]);
   const [dataFiltrada, setdataFiltrada] = useState([]);
-  const [loading, setLoading] = useState(false);
 
-  const [category, setCategory] = useState(itinerario?.categoria ?? "");
-  
-  //Traemos la información de Firebase
+  const [category, setCategory] = useState(itinerario?.categoria ?? '');
+
   async function getData() {
     const dataList = [];
     const querySnapshot = await getDocs(collection(db, 'usuarios'));
@@ -48,14 +41,12 @@ export default function Medicines() {
     setdataFiltrada(dataList);
   }
 
-  //Para que se traiga automaticamente al entrar al componente
   React.useEffect(() => {
     if (isFocused) {
       getData();
     }
   }, [isFocused]);
-  
-  //Para eliminar un medicamento
+
   const handleDelete = async (datos) => {
     const ref = doc(db, 'usuarios', datos.id);
     await updateDoc(ref, { activo: false });
@@ -69,11 +60,6 @@ export default function Medicines() {
     getData();
   };
 
-  //Para que aparezca efecto de cargando
-  React.useEffect(() => {
-    setLoading(false);
-  }, [data]);
-
   return (
     <ImageBackground
       source={image}
@@ -82,120 +68,117 @@ export default function Medicines() {
     >
       <SafeAreaView>
         <StatusBar />
+        {itinerarioModify ? (
+          <PillFormPage
+            newPill={false}
+            itinerario={itinerarioModify}
+            handleGoBack={handleGoBack}
+          />
+        ) : (
           <View>
             <View style={styles.containerE}>
-                <FormControl.Label justifyContent={'center'}>
-                  <Text color="primary.500" fontWeight="bold">
+              <FormControl.Label justifyContent={'center'}>
+                <Text color="primary.500" fontWeight="bold">
                   Búsqueda por filtros
-                  </Text>
-                </FormControl.Label>
-                <HStack justifyContent="space-between">
-                  <Select
-                    backgroundColor="white"
-                    borderRadius="20"
-                    minWidth="100%"
-                    borderColor="primary.300"
-                    placeholderTextColor="gray.500"
-                    accessibilityLabel="Escoja la categoría"
-                    placeholder="Escoja la categoría"
-                    selectedValue={category}
-                    onValueChange={(value) => {
-                      setCategory(value);
-                    }}
-                  >
-                    <Select.Item //selección de cada categoria que fue seleccionada para el filtrado
-                      label="Analgésico (aliviar dolor)"
-                      value="Analgésico"
-                    />
-                    <Select.Item
-                      label="Antiácido (disminuir secreciones gástricas)"
-                      value="Antiácido"
-                    />
-                    <Select.Item
-                      label="Antialérgico (combatir reacciones alérgicas)"
-                      value="Antialérgicos"
-                    />
-                    <Select.Item
-                      label="Antibiótico (hacer frente a infecciones de bacterias)"
-                      value="Antibiótico"
-                    />
-                    <Select.Item
-                      label="Antidiarreico (aliviar diarrea)"
-                      value="Antidiarreico"
-                    />
-                    <Select.Item
-                      label="Antifúngico (hacer frente a infecciones de hongos)"
-                      value="Antifúngico"
-                    />
-                    <Select.Item
-                      label="Antiinflamatorio (reducir inflamación)"
-                      value="Antiinflamatorio"
-                    />
-                    <Select.Item
-                      label="Antiparasitario (hacer frente a infecciones de parásitos)"
-                      value="Antiparasitario"
-                    />
-                    <Select.Item
-                      label="Antipirético (reducir la fiebre)"
-                      value="Antipirético"
-                    />
-                    <Select.Item
-                      label="Antitusivo (reducir tos no productiva)"
-                      value="Antitusivo"
-                    />
-                    <Select.Item
-                      label="Antiviral (hacer frente a infecciones de virus)"
-                      value="Antiviral"
-                    />
-                    <Select.Item
-                      label="Laxante (resolver estreñimiento)"
-                      value="Laxante"
-                    />
-                    <Select.Item
-                      label="Mucolítico (eliminar secreciones bronquiales)"
-                      value="Mucolítico"
-                    />
-                    <Select.Item
-                      label="Todos"
-                      value="todos"
-                    />
-                  </Select>
-                </HStack>
-                  <Button
-                    onPress={() => {
-                      setdataFiltrada(
-                        data.filter(
-                          (itinerario) => itinerario.categoria === category
-                        )
-                      );
-                    }}
-                    style={{
-                      marginTop: 15,
-                      width: '60%',
-                      marginLeft: '20%',
-                      borderRadius: 20,
-                    }}
-                    bg="primary.500"
-                  >
-                    <Text fontWeight="bold" color="white">
-                      Buscar
-                    </Text>
-                  </Button>
-              </View>
-                <Loading loading={loading}>
-                  <DisplayMedicines
-                    data={category === 'todos' ? data : dataFiltrada}
-                    handleShowFormTwo={handleShowFormTwo}
-                    handleDelete={handleDelete}
+                </Text>
+              </FormControl.Label>
+              <HStack justifyContent="space-between">
+                <Select
+                  backgroundColor="white"
+                  borderRadius="20"
+                  minWidth="100%"
+                  borderColor="primary.300"
+                  placeholderTextColor="gray.500"
+                  accessibilityLabel="Escoja la categoría"
+                  placeholder="Escoja la categoría"
+                  selectedValue={category}
+                  onValueChange={(value) => {
+                    setCategory(value);
+                  }}
+                >
+                  <Select.Item
+                    label="Analgésico (aliviar dolor)"
+                    value="Analgésico"
                   />
-                </Loading>
-              <Loading loading={loading}>
-                <DisplayMedicines data={category==="todos"? data: dataFiltrada} handleDelete={handleDelete}
-                //Cuando no se quiere filtrar por una categoría en especifico se selecciona la opción de todos en la cual se mostrara la lista original que contiene a todos los medicamentos
-                //En cambio cuando se seleccione cualquier ora opción se utilizará la lista de data filtrada según la categoría al presionar el botón
-                />
-              </Loading>
+                  <Select.Item
+                    label="Antiácido (disminuir secreciones gástricas)"
+                    value="Antiácido"
+                  />
+                  <Select.Item
+                    label="Antialérgico (combatir reacciones alérgicas)"
+                    value="Antialérgicos"
+                  />
+                  <Select.Item
+                    label="Antibiótico (hacer frente a infecciones de bacterias)"
+                    value="Antibiótico"
+                  />
+                  <Select.Item
+                    label="Antidiarreico (aliviar diarrea)"
+                    value="Antidiarreico"
+                  />
+                  <Select.Item
+                    label="Antifúngico (hacer frente a infecciones de hongos)"
+                    value="Antifúngico"
+                  />
+                  <Select.Item
+                    label="Antiinflamatorio (reducir inflamación)"
+                    value="Antiinflamatorio"
+                  />
+                  <Select.Item
+                    label="Antiparasitario (hacer frente a infecciones de parásitos)"
+                    value="Antiparasitario"
+                  />
+                  <Select.Item
+                    label="Antipirético (reducir la fiebre)"
+                    value="Antipirético"
+                  />
+                  <Select.Item
+                    label="Antitusivo (reducir tos no productiva)"
+                    value="Antitusivo"
+                  />
+                  <Select.Item
+                    label="Antiviral (hacer frente a infecciones de virus)"
+                    value="Antiviral"
+                  />
+                  <Select.Item
+                    label="Laxante (resolver estreñimiento)"
+                    value="Laxante"
+                  />
+                  <Select.Item
+                    label="Mucolítico (eliminar secreciones bronquiales)"
+                    value="Mucolítico"
+                  />
+                  <Select.Item label="Todos" value="todos" />
+                </Select>
+              </HStack>
+              <Button
+                onPress={() => {
+                  setdataFiltrada(
+                    data.filter(
+                      (itinerario) => itinerario.categoria === category
+                    )
+                  );
+                }}
+                style={{
+                  marginTop: 15,
+                  width: '60%',
+                  marginLeft: '20%',
+                  borderRadius: 20,
+                }}
+                bg="primary.500"
+              >
+                <Text fontWeight="bold" color="white">
+                  Buscar
+                </Text>
+              </Button>
+            </View>
+            <DisplayMedicines
+              data={category === 'todos' ? data : dataFiltrada}
+              handleShowFormTwo={handleShowFormTwo}
+              handleDelete={handleDelete}
+            />
           </View>
+        )}
       </SafeAreaView>
     </ImageBackground>
   );

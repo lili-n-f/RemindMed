@@ -11,7 +11,7 @@ import {
   Radio,
 } from 'native-base';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Icon, { Icons } from './Icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AlertMessage from './AlertMessage';
@@ -21,34 +21,43 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
   const [success, setSuccess] = useState(false);
   const [dataError, setDataError] = useState([]);
   const [hourError, setHourError] = useState(false);
-  const [intervalError, setIntervalError] = useState(false);
   const [durationError, setDurationError] = useState(false);
   const [dayError, setDayError] = useState(false);
   //BOTONES DE DIAS DE LA SEMANA
-  const [lunes, setLunes] = useState(false);
-  const [martes, setMartes] = useState(false);
-  const [miercoles, setMiercoles] = useState(false);
-  const [jueves, setJueves] = useState(false);
-  const [viernes, setViernes] = useState(false);
-  const [sabado, setSabado] = useState(false);
-  const [domingo, setDomingo] = useState(false);
+  const [lunes, setLunes] = useState(itinerario?.dias?.[1]?.selected ?? false);
+  const [martes, setMartes] = useState(
+    itinerario?.dias?.[2]?.selected ?? false
+  );
+  const [miercoles, setMiercoles] = useState(
+    itinerario?.dias?.[3]?.selected ?? false
+  );
+  const [jueves, setJueves] = useState(
+    itinerario?.dias?.[4]?.selected ?? false
+  );
+  const [viernes, setViernes] = useState(
+    itinerario?.dias?.[5]?.selected ?? false
+  );
+  const [sabado, setSabado] = useState(
+    itinerario?.dias?.[6]?.selected ?? false
+  );
+  const [domingo, setDomingo] = useState(
+    itinerario?.dias?.[0]?.selected ?? false
+  );
 
   const [name, setName] = useState(itinerario?.nombre ?? '');
   const [fromDate, setFromDate] = useState(new Date()); //para registrar la fecha de inicio
 
-  const [monday, setMonday] = useState(false);
-  const [tuesday, setTuesday] = useState(false);
-  const [wednesday, setWednesday] = useState(false);
-  const [thursday, setThursday] = useState(false);
-  const [friday, setFriday] = useState(false);
-  const [saturday, setSaturday] = useState(false);
-  const [sunday, setSunday] = useState(false);
-
   const [showTime, setShowTime] = useState(false);
-  const [textTime, setTextTime] = useState(itinerario?.horario ?? '--:--');
+  const [textTime, setTextTime] = useState(
+    (itinerario?.horario?.toDate().getHours() ?? '--') +
+      ':' +
+      (itinerario?.horario?.toDate().getMinutes() ?? '--')
+  );
+  const [time, setTime] = useState(itinerario?.horario.toDate() ?? null);
 
-  const [interval, setInterval] = useState(itinerario?.intervalo ?? '1');
-  const [intervalType, setIntervalType] = useState('');
+  const [intervalType, setIntervalType] = useState(
+    itinerario?.dias ? 'Seleccionar días de la semana' : 'Todos los días'
+  );
 
   const [durationType, setDurationType] = useState(
     itinerario?.tipo_duracion ?? 1
@@ -56,22 +65,40 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
   const [finalDate, setFinalDate] = useState(
     itinerario?.fecha_final ?? '01/01/1970'
   );
-  const [repetitions, setRepetitions] = useState('1');
+  const [repetitions, setRepetitions] = useState(
+    itinerario?.repet_restantes?.toString() ?? ''
+  );
 
-  const [dose, setDose] = useState(itinerario?.dosis ?? '0');
+  const [dose, setDose] = useState(itinerario?.dosis ?? '');
   const [doseType, setDoseType] = useState(itinerario?.dosis_tipo ?? '');
   const [category, setCategory] = useState(itinerario?.categoria ?? '');
 
   const [notes, setNotes] = useState(itinerario?.notas ?? '');
 
   const [showDate, setShowDate] = useState(false);
-  const [textDate, setTextDate] = useState('DD/MM/YYYY');
+  const [textDate, setTextDate] = useState(
+    (itinerario?.fecha_final?.toDate().getUTCDate() ?? 'DD') +
+      '/' +
+      (itinerario?.fecha_final?.toDate().getUTCMonth() ?? 'MM') +
+      '/' +
+      (itinerario?.fecha_final?.toDate().getUTCFullYear() ?? 'YYYY')
+  );
 
   const onChangeTime = (event, selectedTime) => {
     const currentTime = selectedTime;
     setShowTime(false);
-    let tempTime = currentTime.getHours() + ':' + currentTime.getMinutes();
+
+    let tempTime =
+      parseInt(currentTime.getHours()) <= 9
+        ? '0' + currentTime.getHours()
+        : currentTime.getHours();
+    tempTime += ':';
+    tempTime +=
+      parseInt(currentTime.getMinutes()) <= 9
+        ? '0' + currentTime.getMinutes()
+        : currentTime.getMinutes();
     setTextTime(tempTime);
+    setTime(currentTime);
   };
 
   const showTimePicker = () => {
@@ -99,12 +126,36 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
     setDataError(false);
   };
 
+  const resetInputs = () => {
+    setLunes(false);
+    setMartes(false);
+    setMiercoles(false);
+    setJueves(false);
+    setViernes(false);
+    setSabado(false);
+    setDomingo(false);
+    setName('');
+    setShowTime(false);
+    setTextTime('--:--');
+    setTime(null);
+    setIntervalType('Todos los días');
+    setDurationType(1);
+    setFinalDate('01/01/1970');
+    setRepetitions('1');
+    setDose('');
+    setDoseType('');
+    setCategory('');
+    setNotes('');
+    setTextDate('DD/MM/YYYY');
+  };
+
   async function upload(doc) {
     try {
       const ref = collection(db, 'usuarios');
       const docRef = await addDoc(ref, doc);
       console.log('Document written with ID: ', docRef.id);
       setSuccess(true);
+      resetInputs();
     } catch (e) {
       console.error('Error adding document: ', e);
     }
@@ -125,13 +176,9 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
       setNameError(true);
       errors.push('- Nombre del medicamento');
     }
-    if (textTime === '--:--') {
+    if (time === null) {
       setHourError(true);
       errors.push('- Horario');
-    }
-    if (intervalType === '' || interval === '') {
-      setIntervalError(true);
-      errors.push('- Repetir cada');
     }
     if (
       (durationType != 1 && durationType != 2 && durationType != 3) ||
@@ -142,16 +189,8 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
       errors.push('- Duración');
     }
     if (
-      intervalType === 'Semanas' &&
-      !(
-        monday ||
-        tuesday ||
-        wednesday ||
-        thursday ||
-        friday ||
-        saturday ||
-        sunday
-      )
+      intervalType === 'Seleccionar días de la semana' &&
+      !(lunes || martes || miercoles || jueves || viernes || sabado || domingo)
     ) {
       setDayError(true);
       errors.push('- Frecuencia');
@@ -164,21 +203,23 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
       const errors = validateErrors();
       if (errors.length === 0) {
         let dias;
-        intervalType === 'Semanas'
+        intervalType === 'Seleccionar días de la semana'
           ? (dias = [
-              { key: 'Sunday', selected: sunday },
-              { key: 'Monday', selected: monday },
-              { key: 'Tuesday', selected: tuesday },
-              { key: 'Wednesday', selected: wednesday },
-              { key: 'Thursday', selected: thursday },
-              { key: 'Friday', selected: friday },
-              { key: 'Saturday', selected: saturday },
+              { key: 'Sunday', selected: domingo },
+              { key: 'Monday', selected: lunes },
+              { key: 'Tuesday', selected: martes },
+              { key: 'Wednesday', selected: miercoles },
+              { key: 'Thursday', selected: jueves },
+              { key: 'Friday', selected: viernes },
+              { key: 'Saturday', selected: sabado },
             ])
           : (dias = null);
 
         let finalDate;
+        console.log(durationType);
         if (durationType == 2) {
-          finalDate = new Date(textDate);
+          var dateParts = textDate.split('/');
+          finalDate = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
         } else {
           finalDate = null;
         }
@@ -194,12 +235,11 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
           activo: true,
           nombre: name,
           fecha_registro: new Date(), //esto para hacer los cálculos de las fechas finales
-          horario: textTime,
-          intervalo: parseInt(interval, 10),
-          dias: dias, //SI ESTE VALOR ES NULL, SE SABE QUE EL INTERVALO ES EN DÍAS, de lo contrario, semanas
+          horario: time,
+          dias: dias, //SI ESTE VALOR ES NULL, SE SABE QUE EL INTERVALO ES EN Todos los días, de lo contrario, Seleccionar días de la semana
           tipo_duracion: durationType, //1: por siempre, 2: hasta una fecha específica, 3: repeticiones
           fecha_final: finalDate,
-          repet_restantes: repet_restantes, //SE DEBE ACTUALIZAR CADA VEZ QUE SUENE LA ALARMA (OJO caso de intervalo en días es literal, caso de intervalo en semanas es por cada semana)
+          repet_restantes: repet_restantes, //SE DEBE ACTUALIZAR CADA VEZ QUE SUENE LA ALARMA (OJO caso de intervalo en Todos los días es literal, caso de intervalo en Seleccionar días de la semana es por cada semana)
           dosis: dose, //ojoooo estos campos son opcionales, por tanto si dosis es 0 o vacío no se llenó
           dosis_tipo: doseType, //ojoooo si doseType es vacío la dosis no se llenó
           categoria: category, //ojooo si category es vacío no tiene categoría
@@ -208,57 +248,59 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
         console.log(JSON.stringify(newMed));
 
         upload(newMed);
-
-        // const user = fireDB.collection('usuarios').doc('l02GN8GokJvk9YPexPpy'); //HARDCODEADO!!! HAY QUE CAMBIARLO!!!
-        // user.update({
-        //   itinerario: firebase.firestore.FieldValue.arrayUnion(newMed),
-        // });
       } else {
         setDataError(errors);
       }
     } else {
-      let dias;
-      intervalType === 'Semanas'
-        ? (dias = [
-            { key: 'Sunday', selected: sunday },
-            { key: 'Monday', selected: monday },
-            { key: 'Tuesday', selected: tuesday },
-            { key: 'Wednesday', selected: wednesday },
-            { key: 'Thursday', selected: thursday },
-            { key: 'Friday', selected: friday },
-            { key: 'Saturday', selected: saturday },
-          ])
-        : (dias = null);
+      const errors = validateErrors();
 
-      let finalDate;
-      if (durationType == 2) {
-        finalDate = new Date(textDate);
-      } else {
-        finalDate = null;
-      }
-      let repet_restantes;
+      if (errors.length === 0) {
+        let dias;
+        intervalType === 'Seleccionar días de la semana'
+          ? (dias = [
+              { key: 'Sunday', selected: domingo },
+              { key: 'Monday', selected: lunes },
+              { key: 'Tuesday', selected: martes },
+              { key: 'Wednesday', selected: miercoles },
+              { key: 'Thursday', selected: jueves },
+              { key: 'Friday', selected: viernes },
+              { key: 'Saturday', selected: sabado },
+            ])
+          : (dias = null);
 
-      if (durationType == 3) {
-        repet_restantes = parseInt(repetitions, 10);
+        let finalDate;
+        if (durationType == 2) {
+          var dateParts = textDate.split('/');
+          finalDate = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
+        } else {
+          finalDate = null;
+        }
+        let repet_restantes;
+
+        if (durationType == 3) {
+          repet_restantes = parseInt(repetitions, 10);
+        } else {
+          repet_restantes = null;
+        }
+        var changeMed = {
+          activo: true,
+          nombre: name,
+          fecha_registro: new Date(), //esto para hacer los cálculos de las fechas finales
+          horario: time,
+          dias: dias, //SI ESTE VALOR ES NULL, SE SABE QUE EL INTERVALO ES EN Todos los días, de lo contrario, Seleccionar días de la semana
+          tipo_duracion: durationType, //1: por siempre, 2: hasta una fecha específica, 3: repeticiones
+          fecha_final: finalDate,
+          repet_restantes: repet_restantes, //SE DEBE ACTUALIZAR CADA VEZ QUE SUENE LA ALARMA (OJO caso de intervalo en Todos los días es literal, caso de intervalo en Seleccionar días de la semana es por cada semana)
+          dosis: dose, //ojoooo estos campos son opcionales, por tanto si dosis es 0 o vacío no se llenó
+          dosis_tipo: doseType, //ojoooo si doseType es vacío la dosis no se llenó
+          categoria: category, //ojooo si category es vacío no tiene categoría
+          notas: notes, //ojoooo notas es opcional, puede estar vacío
+        };
+        console.log(changeMed);
+        modify(changeMed);
       } else {
-        repet_restantes = null;
+        setDataError(errors);
       }
-      var changeMed = {
-        activo: true,
-        nombre: name,
-        fecha_registro: new Date(), //esto para hacer los cálculos de las fechas finales
-        horario: textTime,
-        intervalo: parseInt(interval, 10),
-        dias: dias, //SI ESTE VALOR ES NULL, SE SABE QUE EL INTERVALO ES EN DÍAS, de lo contrario, semanas
-        tipo_duracion: durationType, //1: por siempre, 2: hasta una fecha específica, 3: repeticiones
-        fecha_final: finalDate,
-        repet_restantes: repet_restantes, //SE DEBE ACTUALIZAR CADA VEZ QUE SUENE LA ALARMA (OJO caso de intervalo en días es literal, caso de intervalo en semanas es por cada semana)
-        dosis: dose, //ojoooo estos campos son opcionales, por tanto si dosis es 0 o vacío no se llenó
-        dosis_tipo: doseType, //ojoooo si doseType es vacío la dosis no se llenó
-        categoria: category, //ojooo si category es vacío no tiene categoría
-        notas: notes, //ojoooo notas es opcional, puede estar vacío
-      };
-      modify(changeMed);
     }
   }
 
@@ -368,8 +410,6 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                     color={'#52489c'}
                     size={35}
                   />
-
-                  {/* me rindo marico esa imagen no se quiere poner porque es un bicha y la odio demasiado                     */}
                 </TouchableOpacity>
               }
             />
@@ -380,7 +420,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
           {showTime ? (
             <DateTimePicker
               mode="time"
-              value={new Date()}
+              value={itinerario?.horario?.toDate() ?? new Date()}
               onChange={onChangeTime}
             />
           ) : null}
@@ -391,69 +431,60 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
               </Text>
             </FormControl.Label>
             <HStack justifyContent="space-between">
-              <Input
-                backgroundColor="white"
-                borderRadius="20"
-                keyboardType="numeric"
-                textAlign="center"
-                variant="outline"
-                borderColor="primary.300"
-                placeholder="0"
-                placeholderTextColor="gray.500"
-                width="20%"
-                value={interval.toString()}
-                onChangeText={(value) => {
-                  if (
-                    value.includes('.') ||
-                    value.includes('-') ||
-                    value.includes(',') ||
-                    value.includes(' ') ||
-                    value === '0'
-                  ) {
-                    setInterval('1');
-                  } else {
-                    setInterval(value);
-                  }
-                }}
-              />
               <Select
                 backgroundColor="white"
                 borderRadius="20"
-                minWidth="75%"
+                minWidth="100%"
                 borderColor="primary.300"
                 placeholderTextColor="gray.500"
                 accessibilityLabel="Escoja el intervalo"
                 placeholder="Escoja el intervalo"
                 onValueChange={(itemValue) => {
                   setIntervalType(itemValue);
+                  if (itemValue === 'Todos los días') {
+                    setLunes(null);
+                    setMartes(null);
+                    setMiercoles(null);
+                    setJueves(null);
+                    setViernes(null);
+                    setSabado(null);
+                    setDomingo(null);
+                  }
                 }}
-                defaultValue={itinerario?.dias ? 'Semanas' : 'Días'}
+                defaultValue={
+                  itinerario === null
+                    ? 'Todos los días'
+                    : itinerario?.dias === null
+                    ? 'Todos los días'
+                    : 'Seleccionar días de la semana'
+                }
               >
-                <Select.Item label="Semanas" value="Semanas" />
-                <Select.Item label="Días" value="Días" />
+                <Select.Item
+                  label="Seleccionar días de la semana"
+                  value="Seleccionar días de la semana"
+                />
+                <Select.Item label="Todos los días" value="Todos los días" />
               </Select>
             </HStack>
-            {intervalError ? (
-              <Text style={styles.error}>
-                * Debe introducir un intervalo de repetición
-              </Text>
-            ) : null}
           </View>
-          {intervalType === 'Semanas' || itinerario?.dias ? (
+          {intervalType === 'Seleccionar días de la semana' ||
+          lunes ||
+          martes ||
+          miercoles ||
+          jueves ||
+          viernes ||
+          sabado ||
+          domingo ? (
             <View style={styles.containerA}>
               <FormControl.Label>
                 <Text color="platinum.500" fontWeight="bold">
-                  Frecuencia
+                  Días de la semana
                 </Text>
               </FormControl.Label>
               <Button.Group justifyContent="center" my="2">
                 <Button
                   style={styles.days}
-                  backgroundColor={
-                    domingo || itinerario?.dias[0]?.selected
-                      ? 'cyan.500'
-                      : 'white'
-                  }
+                  backgroundColor={domingo ? 'cyan.500' : 'white'}
                   onPress={() => setDomingo(!domingo)}
                   color="primary.700"
                   fontWeight="bold"
@@ -467,11 +498,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                 </Button>
                 <Button
                   fontWeight="bold"
-                  backgroundColor={
-                    lunes || itinerario?.dias[1]?.selected
-                      ? 'cyan.500'
-                      : 'white'
-                  }
+                  backgroundColor={lunes ? 'cyan.500' : 'white'}
                   onPress={() => setLunes(!lunes)}
                   color="primary.700"
                   variant="subtle"
@@ -485,11 +512,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                 <Button
                   fontWeight="bold"
                   onPress={() => setMartes(!martes)}
-                  backgroundColor={
-                    martes || itinerario?.dias[2]?.selected
-                      ? 'cyan.500'
-                      : 'white'
-                  }
+                  backgroundColor={martes ? 'cyan.500' : 'white'}
                   color="primary.700"
                   variant="subtle"
                   width="8"
@@ -501,11 +524,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                 </Button>
                 <Button
                   fontWeight="bold"
-                  backgroundColor={
-                    miercoles || itinerario?.dias[3]?.selected
-                      ? 'cyan.500'
-                      : 'white'
-                  }
+                  backgroundColor={miercoles ? 'cyan.500' : 'white'}
                   onPress={() => setMiercoles(!miercoles)}
                   color="primary.700"
                   variant="subtle"
@@ -518,11 +537,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                 </Button>
                 <Button
                   fontWeight="bold"
-                  backgroundColor={
-                    jueves || itinerario?.dias[4]?.selected
-                      ? 'cyan.500'
-                      : 'white'
-                  }
+                  backgroundColor={jueves ? 'cyan.500' : 'white'}
                   onPress={() => setJueves(!jueves)}
                   color="primary.700"
                   variant="subtle"
@@ -535,11 +550,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                 </Button>
                 <Button
                   fontWeight="bold"
-                  backgroundColor={
-                    viernes || itinerario?.dias[5]?.selected
-                      ? 'cyan.500'
-                      : 'white'
-                  }
+                  backgroundColor={viernes ? 'cyan.500' : 'white'}
                   onPress={() => setViernes(!viernes)}
                   color="primary.700"
                   variant="subtle"
@@ -552,11 +563,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                 </Button>
                 <Button
                   fontWeight="bold"
-                  backgroundColor={
-                    sabado || itinerario?.dias[6]?.selected
-                      ? 'cyan.500'
-                      : 'white'
-                  }
+                  backgroundColor={sabado ? 'cyan.500' : 'white'}
                   onPress={() => setSabado(!sabado)}
                   color="primary.700"
                   variant="subtle"
@@ -569,7 +576,9 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                 </Button>
               </Button.Group>
               {dayError ? (
-                <Text style={styles.error}>* Debe introducir los días</Text>
+                <Text style={styles.error}>
+                  * Debe introducir los Todos los días
+                </Text>
               ) : null}
             </View>
           ) : null}
@@ -583,7 +592,10 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
               name="duracionRadio"
               value={durationType}
               onChange={(value) => {
-                setDurationType(value);
+                if ((value === 1) | (value === 2) | (value === 3)) {
+                  console.log(value);
+                  setDurationType(value);
+                }
               }}
             >
               <VStack space={3}>
@@ -621,7 +633,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                           value.includes(',') ||
                           value.includes(' ')
                         ) {
-                          setRepetitions('1');
+                          setRepetitions('');
                         } else {
                           setRepetitions(value);
                         }
