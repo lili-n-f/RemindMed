@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { ScrollView, View } from 'native-base';
-import { useIsFocused } from '@react-navigation/native';
-import PillCard from './PillCard';
+import React, { useState } from "react";
+import { ScrollView, View } from "native-base";
+import { useIsFocused } from "@react-navigation/native";
+import PillCard from "./PillCard";
 
 export default function DisplayMedicines({
   data,
@@ -21,7 +21,7 @@ export default function DisplayMedicines({
           key={itinerario.id}
           name={itinerario.nombre}
           horario={itinerario.horario}
-          dosis={itinerario.dosis + ' ' + itinerario.dosis_tipo}
+          dosis={itinerario.dosis + " " + itinerario.dosis_tipo}
           repetitions={null}
           datos={itinerario}
           handleShowForm={handleShowForm}
