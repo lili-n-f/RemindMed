@@ -15,7 +15,6 @@ import { useIsFocused } from "@react-navigation/native";
 import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
 import Loading from "../components/Loading";
 import PillFormPage from "./PillFormPage";
-import { logout } from "../../firebase";
 import { UserContext } from "../../ContextProvider";
 
 const image = { uri: "https://i.ibb.co/ypq3LQ1/fondo.png" };
@@ -187,9 +186,6 @@ export default function Medicines() {
               handleShowFormTwo={handleShowFormTwo}
               handleDelete={handleDelete}
             />
-            <Button onPress={logout}>
-              <Text>Logout</Text>
-            </Button>
           </View>
         )}
       </SafeAreaView>

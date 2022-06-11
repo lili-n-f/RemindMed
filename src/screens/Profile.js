@@ -13,7 +13,7 @@ import {
   TextArea,
 } from "native-base";
 import Icon, { Icons } from "../components/Icons";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import { logout } from "../../firebase";
 
 const image = { uri: "https://i.ibb.co/ypq3LQ1/fondo.png" };
 
@@ -122,14 +122,23 @@ export default function Profile({ datos }) {
             borderRadius={"10"}
             marginTop={"5"}
             alignSelf={"flex-end"}
-            width="25%"
-            onPress={() => {}} //TO-DO CIERRE SESIÓN
+            width="50%"
+            onPress={() => {
+              logout();
+            }}
           >
-            <Icon
-              type={Icons.MaterialCommunityIcons}
-              name={"logout"}
-              color={"white"}
-            />
+            <HStack justifyContent={"space-around"}>
+              <Text color={"white"} alignSelf={"flex-start"}>
+                Cerrar sesión
+              </Text>
+              <View>
+                <Icon
+                  type={Icons.MaterialCommunityIcons}
+                  name={"logout"}
+                  color={"white"}
+                />
+              </View>
+            </HStack>
           </Button>
         </ScrollView>
       </View>

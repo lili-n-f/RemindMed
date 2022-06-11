@@ -22,7 +22,13 @@ export default function DisplayMedicines({
             ":" +
             itinerario?.horario?.toDate().getMinutes()
           }
-          dosis={itinerario.dosis + " " + itinerario.dosis_tipo}
+          dosis={
+            itinerario.dosis === "" || itinerario.dosis === "0"
+              ? "Dosis no especificada"
+              : itinerario.dosis_tipo === ""
+              ? "Dosis no especificada"
+              : itinerario.dosis + " " + itinerario.dosis_tipo
+          }
           repetitions={null}
           datos={itinerario}
           handleShowForm={handleShowForm}
