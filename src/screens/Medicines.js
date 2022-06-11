@@ -4,18 +4,14 @@ import {
   Button,
   Text,
   FormControl,
-  Input,
   Select,
-  Radio,
-  Box,
-  ScrollView,
 } from 'native-base';
 import { View, ImageBackground, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DisplayMedicines from '../components/DisplayMedicines';
 import { db } from '../../firebase';
-import React, { useEffect, useState } from 'react';
-import { CommonActions, useIsFocused } from '@react-navigation/native';
+import React, { useState } from 'react';
+import { useIsFocused } from '@react-navigation/native';
 import { collection, doc, getDocs, updateDoc } from 'firebase/firestore';
 import Loading from '../components/Loading';
 import PillFormPage from './PillFormPage';
@@ -28,7 +24,6 @@ export default function Medicines() {
   const [itinerarioModify, setItinerarioModify] = useState(null);
   const [data, setData] = useState([]);
   const [dataFiltrada, setdataFiltrada] = useState([]);
-  const [loading, setLoading] = useState(false);
 
   const [category, setCategory] = useState(itinerario?.categoria ?? '');
 
@@ -64,10 +59,6 @@ export default function Medicines() {
     setItinerarioModify(false);
     getData();
   };
-
-  React.useEffect(() => {
-    setLoading(false);
-  }, [data]);
 
   return (
     <ImageBackground
@@ -181,13 +172,11 @@ export default function Medicines() {
                 </Text>
               </Button>
             </View>
-            <Loading loading={loading}>
-              <DisplayMedicines
-                data={category === 'todos' ? data : dataFiltrada}
-                handleShowFormTwo={handleShowFormTwo}
-                handleDelete={handleDelete}
-              />
-            </Loading>
+            <DisplayMedicines
+              data={category === 'todos' ? data : dataFiltrada}
+              handleShowFormTwo={handleShowFormTwo}
+              handleDelete={handleDelete}
+            />
           </View>
         )}
       </SafeAreaView>
