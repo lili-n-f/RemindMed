@@ -17,6 +17,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 
 const image = { uri: "https://i.ibb.co/ypq3LQ1/fondo.png" };
 
+//Componente correspondiente al perfil del usuario.
 export default function Profile({ datos }) {
   return (
     <ImageBackground

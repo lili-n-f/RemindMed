@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { ScrollView, View } from "native-base";
-import { useIsFocused } from "@react-navigation/native";
+import { ScrollView } from "native-base";
 import PillCard from "./PillCard";
 
 export default function DisplayMedicines({
@@ -8,19 +7,21 @@ export default function DisplayMedicines({
   handleDelete,
   handleShowFormTwo,
 }) {
-  const isFocused = useIsFocused();
-
   const handleShowForm = (itinerario) => {
     handleShowFormTwo(itinerario);
   };
 
   return (
-    <ScrollView marginTop="5" style={{ marginBottom: 60 }}>
+    <ScrollView marginTop="5" height="70%" style={{ paddingBottom: 10 }}>
       {data?.map((itinerario, i) => (
         <PillCard
           key={itinerario.id}
           name={itinerario.nombre}
-          horario={itinerario.horario}
+          horario={
+            itinerario?.horario?.toDate().getHours() +
+            ":" +
+            itinerario?.horario?.toDate().getMinutes()
+          }
           dosis={itinerario.dosis + " " + itinerario.dosis_tipo}
           repetitions={null}
           datos={itinerario}
