@@ -8,6 +8,7 @@ export default function PillCard({
   dosis,
   repetitions,
   datos,
+  horario,
   handleShowForm,
   handleDelete,
   style,
@@ -19,7 +20,7 @@ export default function PillCard({
           <VStack space="2">
             <Box px="4" pt="4">
               <Text color="white" pb="2" style={styles.titulo_tarjeta}>
-                {name}
+                {name.charAt(0).toUpperCase() + name.slice(1)}
               </Text>
               <Text
                 color="white"
@@ -28,7 +29,7 @@ export default function PillCard({
                 top={'-2'}
                 style={styles.subtitulo_tarjetas}
               >
-                {dosis}
+                {'Tomar: ' + dosis}
               </Text>
             </Box>
             <HStack
@@ -45,7 +46,7 @@ export default function PillCard({
                 top={'-15'}
                 style={styles.subtitulo_tarjetas}
               >
-                {repetitions}
+                {'Hora: ' + horario}
               </Text>
               <HStack space={2}>
                 <Button

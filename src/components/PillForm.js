@@ -330,7 +330,6 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
               <Text style={styles.error}>* Debe introducir un nombre</Text>
             ) : null}
           </View>
-
           <View style={styles.containerB}>
             <FormControl.Label>
               <Text color="white" fontWeight="bold">
@@ -377,7 +376,6 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
               onChange={onChangeTime}
             />
           ) : null}
-
           <View style={styles.containerC}>
             <FormControl.Label>
               <Text color="platinum.500" fontWeight="bold">
@@ -573,7 +571,6 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
               ) : null}
             </View>
           ) : null}
-
           <View style={styles.containerD}>
             <FormControl.Label>
               <Text color="platinum.500" fontWeight="bold">
