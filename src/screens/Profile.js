@@ -8,6 +8,7 @@ import {
   Divider,
   Input,
   HStack,
+  VStack,
   Button,
   TextArea,
 } from "native-base";
@@ -16,22 +17,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 
 const image = { uri: "https://i.ibb.co/ypq3LQ1/fondo.png" };
 
-export default function Profile() {
-  const [showDate, setShowDate] = useState(false);
-  const [textDate, setTextDate] = useState("DD/MM/YYYY");
-
-  const onChangeDate = (event, selectedDate) => {
-    const currentDate = selectedDate;
-    setShowDate(false);
-    let tempDate =
-      currentDate.getDate() +
-      "/" +
-      (currentDate.getMonth() + 1) +
-      "/" +
-      currentDate.getFullYear();
-    setTextDate(tempDate);
-  };
-
+export default function Profile({ datos }) {
   return (
     <ImageBackground
       source={image}
@@ -51,123 +37,101 @@ export default function Profile() {
           <Divider my="2" bg="green.500" thickness="4" />
         </Box>
       </View>
-      <ScrollView top={30} marginRight={20} marginLeft={20}>
-        <View style={styles.containerQ}>
-          <HStack justifyContent="space-between" alignItems="center">
+      <View
+        style={{
+          paddingBottom: 235,
+          paddingTop: 5,
+        }} /*REVISAR si se ve bien con ese paddingBottom para distintos nombres*/
+      >
+        <ScrollView top={30} marginRight={20} marginLeft={20}>
+          <View style={styles.containerQ}>
+            <HStack justifyContent="space-between" alignItems="center">
+              <Text color="platinum.500" fontWeight="bold" margin={1}>
+                Fecha de nacimiento:
+              </Text>
+              <Text color="platinum.500" margin={1}>
+                FECHA TO-DO
+              </Text>
+            </HStack>
+          </View>
+
+          <View style={styles.containerQ}>
+            <HStack justifyContent="space-between" alignItems="center">
+              <Text color="platinum.500" fontWeight="bold" margin={1}>
+                Sexo:
+              </Text>
+              <Text color="platinum.500" margin={1}>
+                SEXO TO-DO
+              </Text>
+            </HStack>
+          </View>
+
+          <View style={styles.containerQ}>
+            <HStack justifyContent="space-between" alignItems="center">
+              <Text color="platinum.500" fontWeight="bold" margin={1}>
+                Grupo sanguíneo:
+              </Text>
+              <Text color="platinum.500" margin={1}>
+                SANGRE TO-DO
+              </Text>
+            </HStack>
+          </View>
+
+          <View style={styles.containerQ}>
             <Text color="platinum.500" fontWeight="bold" margin={1}>
-              Fecha de nacimiento:
+              Notas:
             </Text>
-            <Text color="platinum.500" margin={1}>
-              {textDate}
+            <Box alignItems="center" w="100%">
+              <TextArea
+                h={40}
+                placeholder="No se han agregado notas" //NOTAS TO-DO
+                placeholderTextColor="gray.500"
+                fontSize={13}
+                w="100%"
+                maxW="400"
+                backgroundColor="white"
+                borderRadius="20"
+                borderColor="primary.300"
+                editable={false}
+              />
+            </Box>
+          </View>
+          <View style={styles.containerQ}>
+            <Text
+              color="platinum.500"
+              fontWeight="bold"
+              margin={1}
+              textAlign="center"
+            >
+              Editar perfil
             </Text>
             <Button
-              borderRadius="full"
-              style={{ alignSelf: "flex-start" }}
-              onPress={() => {
-                setShowDate(true);
-              }}
+              borderRadius={"10"}
+              onPress={() => {}} //TO-DO EDICIÓN
             >
               <Icon
                 type={Icons.MaterialCommunityIcons}
-                name={"calendar"}
+                name={"account-edit"}
                 color={"white"}
               />
             </Button>
-          </HStack>
+          </View>
 
-          {showDate ? (
-            <DateTimePicker
-              mode="date"
-              value={new Date()}
-              maximumDate={new Date()}
-              onChange={onChangeDate}
+          <Button
+            borderRadius={"10"}
+            marginTop={"5"}
+            alignSelf={"flex-end"}
+            width="25%"
+            onPress={() => {}} //TO-DO CIERRE SESIÓN
+          >
+            <Icon
+              type={Icons.MaterialCommunityIcons}
+              name={"logout"}
+              color={"white"}
             />
-          ) : null}
-        </View>
-
-        <View style={styles.containerQ}>
-          <Text color="platinum.500" fontWeight="bold" margin={1}>
-            Sexo:
-          </Text>
-          <HStack justifyContent="space-between">
-            <Select
-              backgroundColor="white"
-              borderRadius="20"
-              minWidth="100%"
-              borderColor="primary.300"
-              placeholderTextColor="gray.500"
-              accessibilityLabel="Seleccione su sexo"
-              placeholder="Seleccione su sexo"
-              //selectedValue={category}
-              //onValueChange={(value) => {
-              //setCategory(value);
-              //}}
-            >
-              <Select.Item //selección de sexo
-                label="Mujer"
-                value="mujer"
-              />
-              <Select.Item label="Hombre" value="hombre" />
-              <Select.Item
-                label="Prefiero no responder"
-                value="na" //puse esto como un no aplica
-              />
-            </Select>
-          </HStack>
-        </View>
-
-        <View style={styles.containerQ}>
-          <Text color="platinum.500" fontWeight="bold" margin={1}>
-            Grupo sanguíneo:
-          </Text>
-          <HStack justifyContent="space-between">
-            <Select
-              backgroundColor="white"
-              borderRadius="20"
-              minWidth="100%"
-              borderColor="primary.300"
-              placeholderTextColor="gray.500"
-              accessibilityLabel="Seleccione su grupo sanguíneo"
-              placeholder="Seleccione su grupo sanguíneo"
-              //selectedValue={category}
-              //onValueChange={(value) => {
-              //setCategory(value);
-              //}}
-            >
-              <Select.Item //Tipos de sangre
-                label="A+"
-                value="a positivo"
-              />
-              <Select.Item label="A-" value="a negativo" />
-              <Select.Item label="B+" value="b positivo" />
-              <Select.Item label="B-" value="b negativo" />
-              <Select.Item label="AB+" value="ab positivo" />
-              <Select.Item label="AB-" value="ab negativo" />
-              <Select.Item label="O+" value="o positivo" />
-              <Select.Item label="O-" value="o negativo" />
-            </Select>
-          </HStack>
-        </View>
-
-        <View style={styles.containerQ}>
-          <Text color="platinum.500" fontWeight="bold" margin={1}>
-            Notas:
-          </Text>
-          <Box alignItems="center" w="100%">
-            <TextArea
-              h={40}
-              placeholder="Agrega tus notas aquí"
-              placeholderTextColor="gray.500"
-              fontSize={13}
-              w="100%"
-              maxW="400"
-              backgroundColor="white"
-              borderRadius="20"
-              borderColor="primary.300"
-            />
-          </Box>
-        </View>
-      </ScrollView>
+          </Button>
+        </ScrollView>
+      </View>
     </ImageBackground>
   );
 }

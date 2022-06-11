@@ -23,7 +23,7 @@ import PillFormPage from "./PillFormPage";
 const image = { uri: "https://i.ibb.co/ypq3LQ1/fondo.png" };
 
 export default function Medicines() {
-  //Aquí comienza la búsqueda de medicamentos por categoria
+  //Aqui comienza la búsqueda de madicamentos por categoria
   const isFocused = useIsFocused();
   const [itinerario, setItinerario] = useState(null);
   const [itinerarioModify, setItinerarioModify] = useState(null);
@@ -189,7 +189,7 @@ export default function Medicines() {
               data={category === "todos" ? data : dataFiltrada}
               handleDelete={handleDelete}
               //Cuando no se quiere filtrar por una categoría en especifico se selecciona la opción de todos en la cual se mostrara la lista original que contiene a todos los medicamentos
-              //En cambio cuando se seleccione cualquier otra opción se utilizará la lista de data filtrada según la categoría al presionar el botón
+              //En cambio cuando se seleccione cualquier ora opción se utilizará la lista de data filtrada según la categoría al presionar el botón
             />
           </Loading>
         </View>
@@ -261,7 +261,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#EBEBEB",
     padding: 10,
     borderRadius: 20,
-    marginTop: 25,
   },
   // titulo: {
   //   color: "#E5E5E5",
