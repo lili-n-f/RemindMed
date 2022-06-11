@@ -157,7 +157,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
 
   async function upload(doc) {
     try {
-      // actualizado para que sea dentro de la colección users e itinerario, falta probarlo!!!
+      // actualizado para que sea dentro de la colección users e itinerario
       const ref = collection(db, "users", user.uid, "itinerario");
       const docRef = await addDoc(ref, doc);
       console.log("Document written with ID: ", docRef.id);
@@ -333,7 +333,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
       ) : dataError.length > 0 ? (
         <AlertMessage
           mNumber={3}
-          header={"Te falta completar los siguientes campos:"}
+          header={"Le falta completar los siguientes campos:"}
           message={dataError.join("\n")}
           handleCloseAlert={handleCloseAlert}
         />

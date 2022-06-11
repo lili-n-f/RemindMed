@@ -40,11 +40,16 @@ const register = async (name, email, password) => {
   try {
     const res = await createUserWithEmailAndPassword(auth, email, password);
     const user = res.user;
-    //campos que tendrá la cuenta en sí, agregar según consideren
+    //campos que tendrá la cuenta en sí
     await setDoc(doc(db, "users", user.uid), {
       uid: user.uid,
       name: name,
       email: email,
+      perfiles_asoc: [],
+      fecha_nac: null,
+      sexo: null,
+      sangre: null,
+      notas: null,
     });
   } catch (err) {
     console.error(err);

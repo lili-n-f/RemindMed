@@ -20,7 +20,7 @@ import { UserContext } from "../../ContextProvider";
 const image = { uri: "https://i.ibb.co/ypq3LQ1/fondo.png" };
 
 export default function Medicines() {
-  //Aqui comienza la búsqueda de madicamentos por categoria
+  //Aqui comienza la búsqueda de medicamentos por categoria
   const isFocused = useIsFocused();
   const [itinerario, setItinerario] = useState(null);
   const [itinerarioModify, setItinerarioModify] = useState(null);
