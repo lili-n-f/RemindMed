@@ -5,10 +5,12 @@ import { login } from "../../firebase.js";
 import { UserContext } from "../../ContextProvider";
 import Loading from "../components/Loading.js";
 import Medicines from "./Medicines.js";
+import Register from "./Register.js";
 
 const image = { uri: "https://i.ibb.co/wSBCgBb/Android-Large-12.png" };
 
 export default function Login() {
+  const [register, setRegister] = useState(false);
   const [focus, setFocus] = useState(false);
   const [focus2, setFocus2] = useState(false);
 
@@ -23,6 +25,8 @@ export default function Login() {
     console.log(user);
     try {
       await login(email, password);
+      setSuccess(true);
+
     } catch (e) {
       console.log("Correo o contraseña inválida.");
     }
@@ -31,8 +35,8 @@ export default function Login() {
   return loading ? (
     <Loading />
   ) : user ? (
-    <Medicines />
-  ) : (
+    <NavigationBar />
+  ) : register ? ( <Register />) :(
     <ImageBackground
       source={image}
       resizeMode="cover"
@@ -63,7 +67,7 @@ export default function Login() {
               onFocus={() => setFocus(true)}
               onBlur={() => setFocus(false)}
               selectionColor="#A2D729"
-              placeholder="email"
+              placeholder="Email"
               placeholderTextColor="#CFCFCF"
               value={email}
               onChangeText={(value) => setEmail(value)}
@@ -81,6 +85,15 @@ export default function Login() {
               value={password}
               onChangeText={(value) => setPassword(value)}
             ></TextInput>
+            <Text
+              color="green.500"
+              fontWeight="bold"
+              onPress={() => setRegister(true)}
+              paddingBottom="2"
+            >
+              ¿Aún no te has registrado? Regístrate aquí
+            </Text>
+
 
             <View style={styles.buttonA}>
               <Button style={styles.buttonC} onPress={handleSubmit}>

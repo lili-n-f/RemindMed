@@ -26,7 +26,8 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
   const [durationError, setDurationError] = useState(false);
   const [dayError, setDayError] = useState(false);
   //BOTONES DE DIAS DE LA SEMANA
-  const [lunes, setLunes] = useState(itinerario?.dias?.[1]?.selected ?? false);
+  const [lunes, setLunes] = useState(
+    itinerario?.dias?.[1]?.selected ?? false);
   const [martes, setMartes] = useState(
     itinerario?.dias?.[2]?.selected ?? false
   );

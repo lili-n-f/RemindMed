@@ -6,6 +6,8 @@ import { register } from "../../firebase";
 import { UserContext } from "../../ContextProvider";
 import Loading from "../components/Loading";
 import Medicines from "./Medicines";
+import NavigationBar from '../components/NavigationBar';
+import AlertMessage from "../components/AlertMessage";
 
 const image = { uri: "https://i.ibb.co/pJ1GYQb/Android-Small-1.png" };
 
@@ -14,30 +16,104 @@ export default function Register() {
   const [focus, setFocus] = useState(false);
   const [focus2, setFocus2] = useState(false);
   const [focus3, setFocus3] = useState(false);
+  const [focus4, setFocus4] = useState(false);
 
+//const de los values
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [password2, setPassword2] = useState("");
+//cons de los errors
 
+  const [usernameError, setUsernameError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [dataError, setDataError] = useState([]);
+
+
+//const del userContext  
   const { user, loading } = useContext(UserContext);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log("Registro con email");
-    try {
-      // "falta" sería el nombre del usuario, pero hace falta ese campo en el form del registro
-      await register("falta", email, password);
-    } catch (e) {
-      console.log("Correo o contraseña inválida.");
+//close de los alerts
+
+const handleCloseAlert = () => {
+  setSuccess(false);
+  setDataError(false);
+};
+
+  function validateErrors() {
+    let errors = [];
+    if (!username || username === "" || /^\s*$/.test(username)) {
+      setUsernameError(true);
+      errors.push("- Username incorrecto");
     }
+    if (password != password2 || password === "" || password.length < 8) {
+      setPasswordError(true);
+      errors.push("- Contraseña");
+      console.log('f mi ser contemporaneo')
+    }
+    if (email === "") {
+      setEmailError(true);
+      errors.push("- Email");
+    }
+    return errors;
+  }
+
+
+  const handleSubmit = async (e) => {
+    const errors = validateErrors();
+
+     if (errors.length === 0) {
+      e.preventDefault();
+      // console.log("Registro con email");
+      try {
+        // "falta" sería el nombre del usuario, pero hace falta ese campo en el form del registro, listo jiji
+        await register(username, email, password);
+        setSuccess(true);
+        console.log('xd')
+
+      } catch (e) {
+        console.log("Correo o contraseña inválida.");
+      }
+     } else {
+       setDataError(errors);
+       console.log('f mi bro');
+     }
   };
 
-  return loading ? (
-    <Loading />
-  ) : user ? (
-    <Medicines />
-  ) : login ? (
-    <Login />
-  ) : (
+  
+
+
+
+  return (
+    <> 
+    
+    {success? (
+         loading ? (
+        <Loading />
+      ) : user ? (
+        <NavigationBar />
+
+      ): null)
+      : dataError.length > 0 ? (
+        <AlertMessage
+          mNumber={3}
+          header={"Te falta completar los siguientes campos:"}
+          message={dataError.join("\n")}
+          handleCloseAlert={handleCloseAlert}
+        /> ) : null}
+         
+    {login ? (
+        <Login />
+       ) : null}
+
+
+
+
+
+
+    
     <ImageBackground
       source={image}
       resizeMode="cover"
@@ -63,6 +139,20 @@ export default function Register() {
           }}
         >
           <View style={styles.containerInput}>
+           <TextInput
+              style={focus4 ? styles.inputOnFocus : styles.inputOnBlur}
+              onFocus={() => setFocus4(true)}
+              onBlur={() => setFocus4(false)}
+              selectionColor="#A2D729"
+              placeholder="Nombre de usuario"
+              placeholderTextColor="#CFCFCF"
+              value={username}
+              onChangeText={(value) => setUsername(value)}
+            ></TextInput>
+            {usernameError ? (
+              <Text style={styles.error}>* Debe introducir un nombre</Text>
+            ) : null}
+
             <TextInput
               style={focus ? styles.inputOnFocus : styles.inputOnBlur}
               onFocus={() => setFocus(true)}
@@ -71,9 +161,13 @@ export default function Register() {
               placeholder="Email"
               placeholderTextColor="#CFCFCF"
               value={email}
+              keyboardType="email-address"
               onChangeText={(value) => setEmail(value)}
-            ></TextInput>
 
+            ></TextInput>
+            {emailError ? (
+              <Text style={styles.error}>* Debe introducir un Correo</Text>
+            ) : null}
             <TextInput
               style={focus2 ? styles.inputOnFocus : styles.inputOnBlur}
               onFocus={() => setFocus2(true)}
@@ -96,8 +190,13 @@ export default function Register() {
               placeholderTextColor="#CFCFCF"
               textContentType="password"
               secureTextEntry={true}
-            ></TextInput>
+              value = {password2}
+              onChangeText={(value) => setPassword2(value)}
 
+            ></TextInput>
+            {passwordError ? (
+              <Text style={styles.error}>* Debe introducir una contraseña que coincida</Text>
+            ) : null}
             <Text
               color="green.500"
               fontWeight="bold"
@@ -107,7 +206,8 @@ export default function Register() {
             </Text>
 
             <View style={styles.buttonA}>
-              <Button style={styles.buttonC} onPress={handleSubmit}>
+              <Button style={styles.buttonC} onPress={                
+                handleSubmit}>
                 <Text color="platinum.500" fontWeight="bold" fontSize="15">
                   Continuar
                 </Text>
@@ -117,6 +217,7 @@ export default function Register() {
         </FormControl>
       </View>
     </ImageBackground>
+    </>
   );
 }
 
@@ -175,5 +276,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     color: "#CFCFCF",
     borderBottomColor: "#CFCFCF",
+  },
+  error: {
+    color: "red",
+    fontSize: 11,
   },
 });
