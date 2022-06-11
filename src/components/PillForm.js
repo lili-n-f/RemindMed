@@ -11,7 +11,7 @@ import {
   Radio,
 } from 'native-base';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Icon, { Icons } from './Icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AlertMessage from './AlertMessage';
@@ -69,7 +69,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
   );
   const [repetitions, setRepetitions] = useState('1');
 
-  const [dose, setDose] = useState(itinerario?.dosis ?? '0');
+  const [dose, setDose] = useState(itinerario?.dosis ?? '');
   const [doseType, setDoseType] = useState(itinerario?.dosis_tipo ?? '');
   const [category, setCategory] = useState(itinerario?.categoria ?? '');
 
@@ -126,12 +126,37 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
     setDataError(false);
   };
 
+  const resetInputs = () => {
+    setLunes(false);
+    setMartes(false);
+    setMiercoles(false);
+    setJueves(false);
+    setViernes(false);
+    setSabado(false);
+    setDomingo(false);
+    setName('');
+    setShowTime(false);
+    setTextTime('--:--');
+    setTime(null);
+    setInterval('1');
+    setIntervalType('Días');
+    setDurationType(1);
+    setFinalDate('01/01/1970');
+    setRepetitions('1');
+    setDose('');
+    setDoseType('');
+    setCategory('');
+    setNotes('');
+    setTextDate('DD/MM/YYYY');
+  };
+
   async function upload(doc) {
     try {
       const ref = collection(db, 'usuarios');
       const docRef = await addDoc(ref, doc);
       console.log('Document written with ID: ', docRef.id);
       setSuccess(true);
+      resetInputs();
     } catch (e) {
       console.error('Error adding document: ', e);
     }
@@ -196,8 +221,10 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
           : (dias = null);
 
         let finalDate;
+        console.log(durationType);
         if (durationType == 2) {
-          finalDate = new Date(textDate);
+          var dateParts = textDate.split('/');
+          finalDate = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
         } else {
           finalDate = null;
         }
@@ -231,49 +258,56 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
         setDataError(errors);
       }
     } else {
-      let dias;
-      intervalType === 'Semanas'
-        ? (dias = [
-            { key: 'Sunday', selected: domingo },
-            { key: 'Monday', selected: lunes },
-            { key: 'Tuesday', selected: martes },
-            { key: 'Wednesday', selected: miercoles },
-            { key: 'Thursday', selected: jueves },
-            { key: 'Friday', selected: viernes },
-            { key: 'Saturday', selected: sabado },
-          ])
-        : (dias = null);
+      const errors = validateErrors();
 
-      let finalDate;
-      if (durationType == 2) {
-        finalDate = new Date(textDate);
-      } else {
-        finalDate = null;
-      }
-      let repet_restantes;
+      if (errors.length === 0) {
+        let dias;
+        intervalType === 'Semanas'
+          ? (dias = [
+              { key: 'Sunday', selected: domingo },
+              { key: 'Monday', selected: lunes },
+              { key: 'Tuesday', selected: martes },
+              { key: 'Wednesday', selected: miercoles },
+              { key: 'Thursday', selected: jueves },
+              { key: 'Friday', selected: viernes },
+              { key: 'Saturday', selected: sabado },
+            ])
+          : (dias = null);
 
-      if (durationType == 3) {
-        repet_restantes = parseInt(repetitions, 10);
+        let finalDate;
+        if (durationType == 2) {
+          var dateParts = textDate.split('/');
+          finalDate = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
+        } else {
+          finalDate = null;
+        }
+        let repet_restantes;
+
+        if (durationType == 3) {
+          repet_restantes = parseInt(repetitions, 10);
+        } else {
+          repet_restantes = null;
+        }
+        var changeMed = {
+          activo: true,
+          nombre: name,
+          fecha_registro: new Date(), //esto para hacer los cálculos de las fechas finales
+          horario: time,
+          intervalo: parseInt(interval, 10),
+          dias: dias, //SI ESTE VALOR ES NULL, SE SABE QUE EL INTERVALO ES EN DÍAS, de lo contrario, semanas
+          tipo_duracion: durationType, //1: por siempre, 2: hasta una fecha específica, 3: repeticiones
+          fecha_final: finalDate,
+          repet_restantes: repet_restantes, //SE DEBE ACTUALIZAR CADA VEZ QUE SUENE LA ALARMA (OJO caso de intervalo en días es literal, caso de intervalo en semanas es por cada semana)
+          dosis: dose, //ojoooo estos campos son opcionales, por tanto si dosis es 0 o vacío no se llenó
+          dosis_tipo: doseType, //ojoooo si doseType es vacío la dosis no se llenó
+          categoria: category, //ojooo si category es vacío no tiene categoría
+          notas: notes, //ojoooo notas es opcional, puede estar vacío
+        };
+        console.log(changeMed);
+        modify(changeMed);
       } else {
-        repet_restantes = null;
+        setDataError(errors);
       }
-      var changeMed = {
-        activo: true,
-        nombre: name,
-        fecha_registro: new Date(), //esto para hacer los cálculos de las fechas finales
-        horario: time,
-        intervalo: parseInt(interval, 10),
-        dias: dias, //SI ESTE VALOR ES NULL, SE SABE QUE EL INTERVALO ES EN DÍAS, de lo contrario, semanas
-        tipo_duracion: durationType, //1: por siempre, 2: hasta una fecha específica, 3: repeticiones
-        fecha_final: finalDate,
-        repet_restantes: repet_restantes, //SE DEBE ACTUALIZAR CADA VEZ QUE SUENE LA ALARMA (OJO caso de intervalo en días es literal, caso de intervalo en semanas es por cada semana)
-        dosis: dose, //ojoooo estos campos son opcionales, por tanto si dosis es 0 o vacío no se llenó
-        dosis_tipo: doseType, //ojoooo si doseType es vacío la dosis no se llenó
-        categoria: category, //ojooo si category es vacío no tiene categoría
-        notas: notes, //ojoooo notas es opcional, puede estar vacío
-      };
-      console.log(changeMed);
-      modify(changeMed);
     }
   }
 
