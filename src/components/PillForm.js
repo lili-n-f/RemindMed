@@ -67,7 +67,9 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
   const [finalDate, setFinalDate] = useState(
     itinerario?.fecha_final ?? '01/01/1970'
   );
-  const [repetitions, setRepetitions] = useState('1');
+  const [repetitions, setRepetitions] = useState(
+    itinerario?.repet_restantes?.toString() ?? ''
+  );
 
   const [dose, setDose] = useState(itinerario?.dosis ?? '');
   const [doseType, setDoseType] = useState(itinerario?.dosis_tipo ?? '');
@@ -624,7 +626,10 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
               name="duracionRadio"
               value={durationType}
               onChange={(value) => {
-                setDurationType(value);
+                if ((value === 1) | (value === 2) | (value === 3)) {
+                  console.log(value);
+                  setDurationType(value);
+                }
               }}
             >
               <VStack space={3}>
@@ -662,7 +667,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                           value.includes(',') ||
                           value.includes(' ')
                         ) {
-                          setRepetitions('1');
+                          setRepetitions('');
                         } else {
                           setRepetitions(value);
                         }
