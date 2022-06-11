@@ -14,6 +14,7 @@ export default function DisplayMedicines({
   const [today, setToday] = React.useState(new Date());
 
   function sortDataByHour(array) {
+    //ordena los itinerarios por hora, de mas temprano a mas tarde
     const arrSort = array?.sort((a, b) => {
       if (
         a?.horario?.toDate().getHours() - b?.horario?.toDate().getHours() ===
@@ -32,6 +33,7 @@ export default function DisplayMedicines({
     return arrSort;
   }
   function filterDataIsToday(array) {
+    //filtra los itinerarios cuyos recordatorios deben ser hoy
     const arrSort = array.filter((itinerario) => {
       let entra = false;
       if (itinerario?.dias) {
@@ -49,6 +51,7 @@ export default function DisplayMedicines({
     return arrSort;
   }
   function filterDataIsNotToday(array) {
+    //filtra los itinerarios cuyos recordatorios NO son de hoy
     const arrSort = array.filter((itinerario) => {
       let entra = true;
       if (itinerario?.dias) {
