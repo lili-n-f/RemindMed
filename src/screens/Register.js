@@ -35,6 +35,8 @@ export default function Register() {
 
   const handleCloseAlert = () => {
     setDataError([]);
+    setEmailError(false);
+    setPasswordError(false);
   };
 
   function validateErrors() {
@@ -51,7 +53,6 @@ export default function Register() {
       setPasswordError(true);
     }
     if (email === '') {
-      setEmailError(true);
       errors.push('- Email');
     }
     if (password === '') {
@@ -74,9 +75,11 @@ export default function Register() {
         // "falta" sería el nombre del usuario, pero hace falta ese campo en el form del registro, listo jiji
         const success = await register(username, correo, password);
         if (!success) {
-          console.log(ajjsjsj);
+          setEmailError(true);
         }
-      } catch (e) {}
+      } catch (e) {
+        console.log('');
+      }
     } else {
       setDataError(errors);
     }
@@ -93,6 +96,25 @@ export default function Register() {
           mNumber={3}
           header={'Te falta completar los siguientes campos:'}
           message={dataError.join('\n')}
+          handleCloseAlert={handleCloseAlert}
+        />
+      ) : null}
+      {passwordError && emailError ? (
+        <AlertMessage
+          mNumber={3}
+          header={'El correo y la contraseña ingresados no son validos'}
+          message={''}
+          handleCloseAlert={handleCloseAlert}
+        />
+      ) : passwordError || emailError ? (
+        <AlertMessage
+          mNumber={3}
+          header={
+            passwordError
+              ? 'La contraseña ingresada no es valida'
+              : 'El correo ingresado no es valido'
+          }
+          message={''}
           handleCloseAlert={handleCloseAlert}
         />
       ) : null}
