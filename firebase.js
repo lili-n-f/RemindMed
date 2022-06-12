@@ -46,7 +46,6 @@ const register = async (name, email, password) => {
       name: name,
       email: email,
       perfiles_asoc: [],
-      fecha_nac: null,
       sexo: null,
       sangre: null,
       notas: null,

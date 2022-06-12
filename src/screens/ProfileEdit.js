@@ -15,7 +15,6 @@ import {
   TextArea,
 } from "native-base";
 import Icon, { Icons } from "../components/Icons";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import Profile from "./Profile";
 import { validatePathConfig } from "@react-navigation/native";
 
@@ -23,7 +22,6 @@ const image = { uri: "https://i.ibb.co/ypq3LQ1/fondo.png" };
 
 export default function ProfileEdit({
   nombre,
-  fecha_nac,
   sangre,
   sexo,
   notas,
@@ -33,17 +31,6 @@ export default function ProfileEdit({
 }) {
   //se pasa como parámetro la info del usuario de la cuenta
 
-  const [showDate, setShowDate] = useState(false); //para mostrar el date picker (cuando es true)
-  let tempDate = fecha_nac //si hay una fecha de nacimiento, se transforma al formato de texto
-    ? fecha_nac.getDate() +
-      "/" +
-      (fecha_nac.getMonth() + 1) + //se suma uno porque los meses se cuentan desde 0
-      "/" +
-      fecha_nac.getFullYear()
-    : "DD/MM/YYYY";
-  console.log(tempDate);
-  const [textDate, setTextDate] = useState(tempDate); //la fecha de nacimiento como texto
-  const [dob, setDob] = useState(fecha_nac); //dob = date of birth
   const [name, setName] = useState(nombre);
   const [sex, setSex] = useState(sexo);
   const [blood, setBlood] = useState(sangre);
@@ -51,30 +38,12 @@ export default function ProfileEdit({
 
   const [done, setDone] = useState(false);
 
-  const onChangeDate = (event, selectedDate) => {
-    console.log(selectedDate);
-    setDob(selectedDate);
-    setShowDate(false); //se deja de mostrar el date picker
-    let tempDate =
-      dob.getDate() + "/" + (dob.getMonth() + 1) + "/" + dob.getFullYear(); //se suma 1 al mes porque se cuentan desde 0
-    setTextDate(tempDate);
-  };
-
   async function modify() {
     try {
       console.log("modify");
 
-      var date = null;
-      if (dob) {
-        var dateParts = textDate.split("/"); //día, mes (contando desde 0), año
-        console.log("date parts: " + dateParts);
-        date = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
-        //de este modo se crea una nueva fecha con año, mes (se debe restar uno porque empieza desde 0 el número de los meses), y día
-      }
-
       var updatedUser = {
         email: email,
-        fecha_nac: date,
         name: name,
         notas: notes,
         perfiles_asoc: perfiles_asoc,
@@ -127,38 +96,6 @@ export default function ProfileEdit({
                 setName(text);
               }}
             />
-          </View>
-          <View style={styles.containerQ}>
-            <HStack justifyContent="space-between" alignItems="center">
-              <Text color="platinum.500" fontWeight="bold" margin={1}>
-                Fecha de nacimiento:
-              </Text>
-              <Text color="platinum.500" margin={1}>
-                {textDate}
-              </Text>
-              <Button
-                borderRadius="full"
-                style={{ alignSelf: "flex-start" }}
-                onPress={() => {
-                  setShowDate(true);
-                }}
-              >
-                <Icon
-                  type={Icons.MaterialCommunityIcons}
-                  name={"calendar"}
-                  color={"white"}
-                />
-              </Button>
-            </HStack>
-
-            {showDate ? (
-              <DateTimePicker
-                mode="date"
-                value={dob ? dob : new Date()}
-                maximumDate={new Date()}
-                onChange={onChangeDate}
-              />
-            ) : null}
           </View>
 
           <View style={styles.containerQ}>

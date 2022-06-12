@@ -87,17 +87,7 @@ export default function Profile() {
           }}
         >
           <View top={30} marginRight={20} marginLeft={20}>
-            <View style={styles.containerQ}>
-              <HStack justifyContent="space-between" alignItems="center">
-                <Text color="platinum.500" fontWeight="bold" margin={1}>
-                  Fecha de nacimiento:
-                </Text>
-                <Text color="platinum.500" margin={1}>
-                  {usuario.fecha_nac ? usuario.fecha_nac : "DD/MM/YYYY"}
-                </Text>
-              </HStack>
-            </View>
-
+            
             <View style={styles.containerQ}>
               <HStack justifyContent="space-between" alignItems="center">
                 <Text color="platinum.500" fontWeight="bold" margin={1}>
@@ -187,7 +177,6 @@ export default function Profile() {
   ) : (
     <ProfileEdit
       nombre={usuario.name}
-      fecha_nac={usuario.fecha_nac ? usuario.fecha_nac.toDate() : null}
       sangre={usuario.sangre}
       sexo={usuario.sexo}
       notas={usuario.notas}
