@@ -32,6 +32,8 @@ const image = { uri: "https://i.ibb.co/ypq3LQ1/fondo.png" };
 
 //Componente correspondiente al perfil del usuario.
 export default function Profile() {
+  const [disable, setDisable] = useState(false);
+
   const isFocused = useIsFocused();
   const { user } = useContext(UserContext);
   const [usuario, setUsuario] = useState(null);
@@ -87,7 +89,6 @@ export default function Profile() {
           }}
         >
           <View top={30} marginRight={20} marginLeft={20}>
-            
             <View style={styles.containerQ}>
               <HStack justifyContent="space-between" alignItems="center">
                 <Text color="platinum.500" fontWeight="bold" margin={1}>
@@ -155,8 +156,11 @@ export default function Profile() {
               alignSelf={"flex-end"}
               width="50%"
               onPress={() => {
+                setDisable(true);
                 logout();
+                setDisable(false);
               }}
+              isDisabled={disable}
             >
               <HStack justifyContent={"space-evenly"}>
                 <Text color={"white"} alignSelf={"flex-start"}>

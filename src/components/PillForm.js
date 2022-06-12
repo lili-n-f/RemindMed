@@ -18,6 +18,8 @@ import AlertMessage from "./AlertMessage";
 import { UserContext } from "../../ContextProvider";
 
 const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
+  const [disable, setDisable] = useState(false);
+
   //use states para los errores de input
   const [nameError, setNameError] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -28,8 +30,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
   const [dayError, setDayError] = useState(false);
 
   //BOTONES DE DIAS DE LA SEMANA
-  const [lunes, setLunes] = useState(
-    itinerario?.dias?.[1]?.selected ?? false);
+  const [lunes, setLunes] = useState(itinerario?.dias?.[1]?.selected ?? false);
   const [martes, setMartes] = useState(
     itinerario?.dias?.[2]?.selected ?? false
   );
@@ -215,6 +216,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
   }
 
   function onSubmit() {
+    setDisable(true);
     if (newPill) {
       const errors = validateErrors();
       if (errors.length === 0) {
@@ -321,6 +323,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
         setDataError(errors);
       }
     }
+    setDisable(false);
   }
 
   return (
@@ -514,15 +517,14 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
               </Text>
             ) : null}
           </View>
-          {intervalType === "Semanas" || itinerario?.dias ? (
-            /*{intervalType === "Semanas" ||
+          {intervalType === "Semanas" ||
           lunes ||
           martes ||
           miercoles ||
           jueves ||
           viernes ||
           sabado ||
-          domingo ? (*/
+          domingo /*{intervalType === "Semanas" || itinerario?.dias ? (*/ ? (
             <View style={styles.containerA}>
               <FormControl.Label>
                 <Text color="platinum.500" fontWeight="bold">
@@ -532,12 +534,12 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
               <Button.Group justifyContent="center" my="2">
                 <Button
                   style={styles.days}
-                  backgroundColor={
+                  /*backgroundColor={
                     domingo || itinerario?.dias[0]?.selected
                       ? "cyan.500"
                       : "white"
-                  }
-                  //backgroundColor={domingo ? "cyan.500" : "white"}
+                  }*/
+                  backgroundColor={domingo ? "cyan.500" : "white"}
                   onPress={() => setDomingo(!domingo)}
                   color="primary.700"
                   fontWeight="bold"
@@ -551,12 +553,12 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                 </Button>
                 <Button
                   fontWeight="bold"
-                  backgroundColor={
+                  /*backgroundColor={
                     lunes || itinerario?.dias[1]?.selected
                       ? "cyan.500"
                       : "white"
-                  }
-                  //backgroundColor={lunes ? "cyan.500" : "white"}
+                  }*/
+                  backgroundColor={lunes ? "cyan.500" : "white"}
                   onPress={() => setLunes(!lunes)}
                   color="primary.700"
                   variant="subtle"
@@ -570,12 +572,12 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                 <Button
                   fontWeight="bold"
                   onPress={() => setMartes(!martes)}
-                  backgroundColor={
+                  /*backgroundColor={
                     martes || itinerario?.dias[2]?.selected
                       ? "cyan.500"
                       : "white"
-                  }
-                  //backgroundColor={martes ? "cyan.500" : "white"}
+                  }*/
+                  backgroundColor={martes ? "cyan.500" : "white"}
                   color="primary.700"
                   variant="subtle"
                   width="8"
@@ -587,12 +589,12 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                 </Button>
                 <Button
                   fontWeight="bold"
-                  backgroundColor={
+                  /*backgroundColor={
                     miercoles || itinerario?.dias[3]?.selected
                       ? "cyan.500"
                       : "white"
-                  }
-                  //backgroundColor={miercoles ? "cyan.500" : "white"}
+                  }*/
+                  backgroundColor={miercoles ? "cyan.500" : "white"}
                   onPress={() => setMiercoles(!miercoles)}
                   color="primary.700"
                   variant="subtle"
@@ -605,12 +607,12 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                 </Button>
                 <Button
                   fontWeight="bold"
-                  backgroundColor={
+                  /*backgroundColor={
                     jueves || itinerario?.dias[4]?.selected
                       ? "cyan.500"
                       : "white"
-                  }
-                  //backgroundColor={jueves ? "cyan.500" : "white"}
+                  }*/
+                  backgroundColor={jueves ? "cyan.500" : "white"}
                   onPress={() => setJueves(!jueves)}
                   color="primary.700"
                   variant="subtle"
@@ -623,12 +625,12 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                 </Button>
                 <Button
                   fontWeight="bold"
-                  backgroundColor={
+                  /*backgroundColor={
                     viernes || itinerario?.dias[5]?.selected
                       ? "cyan.500"
                       : "white"
-                  }
-                  //backgroundColor={viernes ? "cyan.500" : "white"}
+                  }*/
+                  backgroundColor={viernes ? "cyan.500" : "white"}
                   onPress={() => setViernes(!viernes)}
                   color="primary.700"
                   variant="subtle"
@@ -641,12 +643,12 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                 </Button>
                 <Button
                   fontWeight="bold"
-                  backgroundColor={
+                  /*backgroundColor={
                     sabado || itinerario?.dias[6]?.selected
                       ? "cyan.500"
                       : "white"
-                  }
-                  //backgroundColor={sabado ? "cyan.500" : "white"}
+                  }*/
+                  backgroundColor={sabado ? "cyan.500" : "white"}
                   onPress={() => setSabado(!sabado)}
                   color="primary.700"
                   variant="subtle"
@@ -891,6 +893,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
             onPress={() => {
               onSubmit();
             }}
+            isDisabled={disable}
             style={{
               marginTop: 15,
               marginBottom: itinerario ? 50 : 20,
@@ -898,7 +901,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
               marginLeft: "20%",
               borderRadius: 20,
             }}
-            bg="cyan.500"
+            bg={"cyan.500"}
           >
             <Text fontWeight="bold" color="white">
               ¡Listo!

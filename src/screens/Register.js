@@ -10,6 +10,8 @@ import AlertMessage from "../components/AlertMessage";
 const image = { uri: "https://i.ibb.co/pJ1GYQb/Android-Small-1.png" };
 
 export default function Register() {
+  const [disable, setDisable] = useState(false);
+
   const [login, setLogin] = useState(false);
   const [focus, setFocus] = useState(false);
   const [focus2, setFocus2] = useState(false);
@@ -65,6 +67,7 @@ export default function Register() {
   }
 
   const handleSubmit = async (e) => {
+    setDisable(true);
     const errors = validateErrors();
     const correo = email.replace(" ", "").toLocaleLowerCase();
 
@@ -83,6 +86,7 @@ export default function Register() {
     } else {
       setDataError(errors);
     }
+    setDisable(false);
   };
 
   return login ? (
@@ -216,7 +220,11 @@ export default function Register() {
               </Text>
 
               <View style={styles.buttonA}>
-                <Button style={styles.buttonC} onPress={handleSubmit}>
+                <Button
+                  style={styles.buttonC}
+                  onPress={handleSubmit}
+                  isDisabled={disable}
+                >
                   <Text color="platinum.500" fontWeight="bold" fontSize="15">
                     Continuar
                   </Text>

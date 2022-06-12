@@ -20,7 +20,8 @@ import { UserContext } from "../../ContextProvider";
 const image = { uri: "https://i.ibb.co/ypq3LQ1/fondo.png" };
 
 export default function Medicines() {
-  //Aqui comienza la búsqueda de medicamentos por categoria
+  const [disable, setDisable] = useState(false);
+
   const isFocused = useIsFocused();
   const [itinerario, setItinerario] = useState(null);
   const [itinerarioModify, setItinerarioModify] = useState(null);
@@ -162,12 +163,15 @@ export default function Medicines() {
               </HStack>
               <Button
                 onPress={() => {
+                  setDisable(true);
                   setdataFiltrada(
                     data.filter(
                       (itinerario) => itinerario.categoria === category
                     )
                   );
+                  setDisable(false);
                 }}
+                isDisabled={category === "" || disable}
                 style={{
                   marginTop: 15,
                   width: "60%",

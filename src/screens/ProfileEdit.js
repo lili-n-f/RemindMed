@@ -31,6 +31,8 @@ export default function ProfileEdit({
 }) {
   //se pasa como parámetro la info del usuario de la cuenta
 
+  const [disable, setDisable] = useState(false);
+
   const [name, setName] = useState(nombre);
   const [sex, setSex] = useState(sexo);
   const [blood, setBlood] = useState(sangre);
@@ -39,6 +41,7 @@ export default function ProfileEdit({
   const [done, setDone] = useState(false);
 
   async function modify() {
+    setDisable(true);
     try {
       console.log("modify");
 
@@ -58,6 +61,7 @@ export default function ProfileEdit({
     } catch (e) {
       console.error("Error adding document: ", e);
     }
+    setDisable(false);
   }
   return done ? (
     <Profile />
@@ -198,6 +202,7 @@ export default function ProfileEdit({
               alignSelf={"flex-end"}
               width="25%"
               onPress={() => modify()}
+              isDisabled={disable}
             >
               Guardar
             </Button>

@@ -11,6 +11,8 @@ import AlertMessage from "../components/AlertMessage.js";
 const image = { uri: "https://i.ibb.co/wSBCgBb/Android-Large-12.png" };
 
 export default function Login() {
+  const [disable, setDisable] = useState(false);
+
   const [register, setRegister] = useState(false);
   const [focus, setFocus] = useState(false);
   const [focus2, setFocus2] = useState(false);
@@ -47,6 +49,7 @@ export default function Login() {
   }
 
   const handleSubmit = async (e) => {
+    setDisable(true);
     const errors = validateErrors();
 
     if (errors.length === 0) {
@@ -64,6 +67,7 @@ export default function Login() {
     } else {
       setDataError(errors);
     }
+    setDisable(false);
   };
 
   return register ? (
@@ -154,7 +158,11 @@ export default function Login() {
               </Text>
 
               <View style={styles.buttonA}>
-                <Button style={styles.buttonC} onPress={handleSubmit}>
+                <Button
+                  style={styles.buttonC}
+                  onPress={handleSubmit}
+                  isDisabled={disable}
+                >
                   <Text color="platinum.500" fontWeight="bold" fontSize="15">
                     Iniciar
                   </Text>
