@@ -49,7 +49,6 @@ export default function Medicines() {
     setdataFiltrada(dataList);
   }
 
-  //Para que se traiga automaticamente al entrar al componente
   React.useEffect(() => {
     if (isFocused) {
       getData();
