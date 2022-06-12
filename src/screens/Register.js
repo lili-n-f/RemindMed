@@ -1,13 +1,13 @@
-import { Box, Text, FormControl, Button } from 'native-base';
-import React, { useState, useContext } from 'react';
-import { ImageBackground, StyleSheet, View, TextInput } from 'react-native';
-import Login from './Login';
-import { register } from '../../firebase';
-import { UserContext } from '../../ContextProvider';
-import NavigationBar from '../components/NavigationBar';
-import AlertMessage from '../components/AlertMessage';
+import { Box, Text, FormControl, Button } from "native-base";
+import React, { useState, useContext } from "react";
+import { ImageBackground, StyleSheet, View, TextInput } from "react-native";
+import Login from "./Login";
+import { register } from "../../firebase";
+import { UserContext } from "../../ContextProvider";
+import NavigationBar from "../components/NavigationBar";
+import AlertMessage from "../components/AlertMessage";
 
-const image = { uri: 'https://i.ibb.co/pJ1GYQb/Android-Small-1.png' };
+const image = { uri: "https://i.ibb.co/pJ1GYQb/Android-Small-1.png" };
 
 export default function Register() {
   const [login, setLogin] = useState(false);
@@ -17,10 +17,10 @@ export default function Register() {
   const [focus4, setFocus4] = useState(false);
 
   //const de los values
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [password2, setPassword2] = useState('');
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [password2, setPassword2] = useState("");
   //cons de los errors
 
   const [usernameError, setUsernameError] = useState(false);
@@ -41,9 +41,9 @@ export default function Register() {
 
   function validateErrors() {
     let errors = [];
-    if (!username || username === '' || /^\s*$/.test(username)) {
+    if (!username || username === "" || /^\s*$/.test(username)) {
       setUsernameError(true);
-      errors.push('- Username');
+      errors.push("- Username");
     }
     if (
       password.length > 0 &&
@@ -52,21 +52,21 @@ export default function Register() {
     ) {
       setPasswordError(true);
     }
-    if (email === '') {
-      errors.push('- Email');
+    if (email === "") {
+      errors.push("- Email");
     }
-    if (password === '') {
-      errors.push('- Contraseña');
+    if (password === "") {
+      errors.push("- Contraseña");
     }
-    if (password2 === '') {
-      errors.push('- Confirmar contraseña');
+    if (password2 === "") {
+      errors.push("- Confirmar contraseña");
     }
     return errors;
   }
 
   const handleSubmit = async (e) => {
     const errors = validateErrors();
-    const correo = email.replace(' ', '').toLocaleLowerCase();
+    const correo = email.replace(" ", "").toLocaleLowerCase();
 
     if (errors.length === 0) {
       e.preventDefault();
@@ -78,7 +78,7 @@ export default function Register() {
           setEmailError(true);
         }
       } catch (e) {
-        console.log('');
+        console.log("");
       }
     } else {
       setDataError(errors);
@@ -94,16 +94,16 @@ export default function Register() {
       {dataError.length > 0 ? (
         <AlertMessage
           mNumber={3}
-          header={'Te falta completar los siguientes campos:'}
-          message={dataError.join('\n')}
+          header={"Te falta completar los siguientes campos:"}
+          message={dataError.join("\n")}
           handleCloseAlert={handleCloseAlert}
         />
       ) : null}
       {passwordError && emailError ? (
         <AlertMessage
           mNumber={3}
-          header={'El correo y la contraseña ingresados no son validos'}
-          message={''}
+          header={"El correo y la contraseña ingresados no son válidos"}
+          message={""}
           handleCloseAlert={handleCloseAlert}
         />
       ) : passwordError || emailError ? (
@@ -111,10 +111,10 @@ export default function Register() {
           mNumber={3}
           header={
             passwordError
-              ? 'La contraseña ingresada no es valida'
-              : 'El correo ingresado no es valido'
+              ? "La contraseña ingresada no es válida"
+              : "El correo ingresado no es válido"
           }
-          message={''}
+          message={""}
           handleCloseAlert={handleCloseAlert}
         />
       ) : null}
@@ -122,7 +122,7 @@ export default function Register() {
       <ImageBackground
         source={image}
         resizeMode="cover"
-        style={{ width: '100%', height: '100%' }}
+        style={{ width: "100%", height: "100%" }}
       >
         <View style={styles.containerTitle}>
           <Box>
@@ -133,14 +133,14 @@ export default function Register() {
         </View>
         <View>
           <FormControl
-            width={'90%'}
-            alignSelf={'center'}
+            width={"90%"}
+            alignSelf={"center"}
             isRequired
             style={{
-              display: 'flex',
-              justifyContent: 'center',
-              flexDirection: 'column',
-              alignItems: 'flex-start',
+              display: "flex",
+              justifyContent: "center",
+              flexDirection: "column",
+              alignItems: "flex-start",
             }}
           >
             <View style={styles.containerInput}>
@@ -245,15 +245,15 @@ const styles = StyleSheet.create({
     width: 146,
     height: 41,
     marginTop: 15,
-    backgroundColor: '#59C3C3',
+    backgroundColor: "#59C3C3",
     borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   buttonA: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   inputsStyle: {
     width: 295,
@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingBottom: 2,
     marginBottom: 10,
-    color: '#CFCFCF',
+    color: "#CFCFCF",
   },
   inputOnFocus: {
     width: 295,
@@ -273,8 +273,8 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingBottom: 2,
     marginBottom: 10,
-    color: '#CFCFCF',
-    borderBottomColor: '#A2D729',
+    color: "#CFCFCF",
+    borderBottomColor: "#A2D729",
   },
   inputOnBlur: {
     width: 295,
@@ -284,11 +284,11 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingBottom: 2,
     marginBottom: 10,
-    color: '#CFCFCF',
-    borderBottomColor: '#CFCFCF',
+    color: "#CFCFCF",
+    borderBottomColor: "#CFCFCF",
   },
   error: {
-    color: '#59C3C3',
+    color: "#59C3C3",
     fontSize: 11,
   },
 });
