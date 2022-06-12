@@ -233,8 +233,9 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
         let finalDate;
         console.log(durationType);
         if (durationType == 2) {
-          var dateParts = textDate.split("/");
+          var dateParts = textDate.split("/"); //se obtiene día, mes, año
           finalDate = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
+          //de este modo se crea una nueva fecha con año, mes (se debe restar uno porque empieza desde 0 el número de los meses), y día
         } else {
           finalDate = null;
         }

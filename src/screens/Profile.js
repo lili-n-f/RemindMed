@@ -185,7 +185,16 @@ export default function Profile() {
       </ScrollView>
     </ImageBackground>
   ) : (
-    <ProfileEdit usuario={usuario} />
+    <ProfileEdit
+      nombre={usuario.name}
+      fecha_nac={usuario.fecha_nac ? usuario.fecha_nac.toDate() : null}
+      sangre={usuario.sangre}
+      sexo={usuario.sexo}
+      notas={usuario.notas}
+      uid={usuario.uid}
+      email={usuario.email}
+      perfiles_asoc={usuario.perfiles_asoc}
+    />
   );
 }
 
