@@ -34,7 +34,7 @@ export default function Profile() {
   const [usuario, setUsuario] = useState(null);
   const isFocused = useIsFocused();
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (isFocused) {
       getData();
     }
@@ -42,8 +42,8 @@ export default function Profile() {
 
   async function getData() {
     const usr = await getDoc(doc(db, "users", user.uid));
-    setUsuario(usr);
-    console.log(usuario);
+    setUsuario(usr.data());
+    console.log(usuario.name);
   }
 
   return (
@@ -57,7 +57,9 @@ export default function Profile() {
           <Box w="60">
             <Divider my="2" bg="green.500" thickness="4" />
           </Box>
-          <Text style={styles.titulo}>placeholder</Text>
+          <Text style={styles.titulo}>
+            {usuario.name ? usuario.name : "Perfil"}
+          </Text>
           <Box w="300">
             <Divider my="2" bg="green.500" thickness="4" />
           </Box>
@@ -75,7 +77,7 @@ export default function Profile() {
                   Fecha de nacimiento:
                 </Text>
                 <Text color="platinum.500" margin={1}>
-                  FECHA TO-DO
+                  {usuario.fecha_nac ? usuario.fecha_nac : "DD/MM/YYYY"}
                 </Text>
               </HStack>
             </View>
