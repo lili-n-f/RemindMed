@@ -24,29 +24,45 @@ import {
   getDoc,
 } from "firebase/firestore";
 
-import { useIsFocused } from "@react-navigation/native";
+import { useIsFocused, useFocusEffect } from "@react-navigation/native";
+import Loading from "../components/Loading";
+import ProfileEdit from "./ProfileEdit";
 
 const image = { uri: "https://i.ibb.co/ypq3LQ1/fondo.png" };
 
 //Componente correspondiente al perfil del usuario.
 export default function Profile() {
+  const isFocused = useIsFocused();
   const { user } = useContext(UserContext);
   const [usuario, setUsuario] = useState(null);
-  const isFocused = useIsFocused();
+  const [loading, setLoading] = useState(true);
+  const [edit, setEdit] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
+    // Este useEffect es para traerse la info del user que está loggeado, depende del isFocused
     if (isFocused) {
       getData();
     }
   }, [isFocused]);
 
-  async function getData() {
-    const usr = await getDoc(doc(db, "users", user.uid));
-    setUsuario(usr.data());
-    console.log(usuario.name);
-  }
+  useEffect(() => {
+    // Aquí se verifica si se está cargando el perfil y si el usuario NO ES falsy (es decir, no null), en cuyo caso ya se cargó correctamente el usuario y se settea el loading como false para que se renderice la página que es
+    // Depende de usuario porque cuando este cambie, se revisará la condición
+    if (loading && usuario) {
+      console.log("usuario: " + usuario);
+      setLoading(false);
+    }
+  }, [usuario]);
 
-  return (
+  const getData = async () => {
+    // Se trae la data del usuario
+    const usr = await getDoc(doc(db, "users", user.uid));
+    setUsuario(usr.data()); // IMPORTANTE el .data() para que se guarde correctamente
+  };
+
+  return loading ? (
+    <Loading />
+  ) : !edit ? (
     <ImageBackground
       source={image}
       resizeMode="cover"
@@ -88,7 +104,7 @@ export default function Profile() {
                   Sexo:
                 </Text>
                 <Text color="platinum.500" margin={1}>
-                  SEXO TO-DO
+                  {usuario.sexo ? usuario.sexo : "N/A"}
                 </Text>
               </HStack>
             </View>
@@ -99,7 +115,7 @@ export default function Profile() {
                   Grupo sanguíneo:
                 </Text>
                 <Text color="platinum.500" margin={1}>
-                  SANGRE TO-DO
+                  {usuario.sangre ? usuario.sangre : "N/A"}
                 </Text>
               </HStack>
             </View>
@@ -111,7 +127,9 @@ export default function Profile() {
               <Box alignItems="center" w="100%">
                 <TextArea
                   h={40}
-                  placeholder="No se han agregado notas" //NOTAS TO-DO
+                  placeholder={
+                    usuario.notas ? usuario.notas : "No se han agregado notas"
+                  } //NOTAS TO-DO
                   placeholderTextColor="gray.500"
                   fontSize={13}
                   w="100%"
@@ -132,10 +150,7 @@ export default function Profile() {
               >
                 Editar perfil
               </Text>
-              <Button
-                borderRadius={"10"}
-                onPress={() => {}} //TO-DO EDICIÓN
-              >
+              <Button borderRadius={"10"} onPress={() => setEdit(true)}>
                 <Icon
                   type={Icons.MaterialCommunityIcons}
                   name={"account-edit"}
@@ -169,6 +184,8 @@ export default function Profile() {
         </View>
       </ScrollView>
     </ImageBackground>
+  ) : (
+    <ProfileEdit />
   );
 }
 
