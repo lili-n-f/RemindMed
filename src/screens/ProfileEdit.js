@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { View, ImageBackground, StyleSheet, ScrollView } from "react-native";
+import { updateDoc, doc, getDoc } from "firebase/firestore";
+import { UserContext } from "../../ContextProvider";
+import { db } from "../../firebase";
 import {
   Box,
   StatusBar,
@@ -13,12 +16,16 @@ import {
 } from "native-base";
 import Icon, { Icons } from "../components/Icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import Profile from "./Profile";
 
 const image = { uri: "https://i.ibb.co/ypq3LQ1/fondo.png" };
 
-export default function Profile({ data }) {
+export default function ProfileEdit({ data }) {
+  const { user } = useContext(UserContext);
   const [showDate, setShowDate] = useState(false);
   const [textDate, setTextDate] = useState("DD/MM/YYYY");
+
+  const [done, setDone] = useState(false);
 
   const onChangeDate = (event, selectedDate) => {
     const currentDate = selectedDate;
@@ -32,7 +39,22 @@ export default function Profile({ data }) {
     setTextDate(tempDate);
   };
 
-  return (
+  var information = {
+    fecha_nac: aa, //aqui debe ir la info que se va a guardar
+  };
+
+  async function modify(info) {
+    try {
+      const usr = doc(db, "users", user.uid);
+      await updateDoc(ref, info);
+      setDone(true);
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
+  }
+  return done ? (
+    <Profile />
+  ) : (
     <ImageBackground
       source={image}
       resizeMode="cover"
@@ -173,7 +195,7 @@ export default function Profile({ data }) {
             marginTop={"5"}
             alignSelf={"flex-end"}
             width="25%"
-            onPress={() => {}} //TO-DO GUARDADO
+            onPress={() => setDone(true)} //TO-DO GUARDADO
           >
             Guardar
           </Button>

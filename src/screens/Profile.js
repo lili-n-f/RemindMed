@@ -23,33 +23,46 @@ import {
   updateDoc,
   getDoc,
 } from "firebase/firestore";
-import { useIsFocused } from "@react-navigation/native";
+
+import { useIsFocused, useFocusEffect } from "@react-navigation/native";
+import Loading from "../components/Loading";
+import ProfileEdit from "./ProfileEdit";
 
 const image = { uri: "https://i.ibb.co/ypq3LQ1/fondo.png" };
 
 //Componente correspondiente al perfil del usuario.
 export default function Profile() {
+  const isFocused = useIsFocused();
   const { user } = useContext(UserContext);
   const [usuario, setUsuario] = useState(null);
-
+  const [loading, setLoading] = useState(true);
   const [edit, setEdit] = useState(false);
 
-  const isFocused = useIsFocused();
-
   useEffect(() => {
+    // Este useEffect es para traerse la info del user que está loggeado, depende del isFocused
     if (isFocused) {
-      getData(); //useEffect para refrescar la data del usuario
+      getData();
     }
   }, [isFocused]);
 
-  async function getData() {
-    // esta función te trae la data del usuario y la settea en un useState para más fácil manejo de la información
-    const usr = await getDoc(doc(db, "users", user.uid)); // referencia al documento del usuario
-    setUsuario(usr.data()); // IMPORTANTE se hace .data() para guardar el objeto en si, de lo contrario, hace kaput
-    console.log("usuario: " + usuario); // usuario.[atributo] te va a traer el valor deseado
-  }
+  useEffect(() => {
+    // Aquí se verifica si se está cargando el perfil y si el usuario NO ES falsy (es decir, no null), en cuyo caso ya se cargó correctamente el usuario y se settea el loading como false para que se renderice la página que es
+    // Depende de usuario porque cuando este cambie, se revisará la condición
+    if (loading && usuario) {
+      console.log("usuario: " + usuario);
+      setLoading(false);
+    }
+  }, [usuario]);
 
-  return (
+  const getData = async () => {
+    // Se trae la data del usuario
+    const usr = await getDoc(doc(db, "users", user.uid));
+    setUsuario(usr.data()); // IMPORTANTE el .data() para que se guarde correctamente
+  };
+
+  return loading ? (
+    <Loading />
+  ) : !edit ? (
     <ImageBackground
       source={image}
       resizeMode="cover"
@@ -135,10 +148,7 @@ export default function Profile() {
               >
                 Editar perfil
               </Text>
-              <Button
-                borderRadius={"10"}
-                onPress={() => setEdit(true)} //TO-DO EDICIÓN, Ana: Ignora esto, quería ver si con un ternario salía pero ni lo pude probar
-              >
+              <Button borderRadius={"10"} onPress={() => setEdit(true)}>
                 <Icon
                   type={Icons.MaterialCommunityIcons}
                   name={"account-edit"}
@@ -172,6 +182,8 @@ export default function Profile() {
         </View>
       </ScrollView>
     </ImageBackground>
+  ) : (
+    <ProfileEdit />
   );
 }
 
