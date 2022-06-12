@@ -16,27 +16,75 @@ export default function Login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+
+  const [success, setSuccess] = useState(false);
+  const [dataError, setDataError] = useState([]);
 
   const { user, loading } = useContext(UserContext);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log("Login con email");
-    console.log(user);
-    try {
-      await login(email, password);
-      setSuccess(true);
 
-    } catch (e) {
-      console.log("Correo o contraseña inválida.");
+
+  const handleCloseAlert = () => {
+    setSuccess(false);
+    setDataError(false);
+  };
+  
+    function validateErrors() {
+      let errors = [];
+      if (password === "") {
+        setPasswordError(true);
+        errors.push("- Contraseña");
+        console.log('f mi ser contemporaneo')
+      }
+      if (email === "") {
+        setEmailError(true);
+        errors.push("- Email");
+      }
+      return errors;
     }
+
+
+  const handleSubmit = async (e) => {
+    const errors = validateErrors();
+      
+    if (errors.length === 0) {
+    e.preventDefault();
+      console.log("Login con email");
+      console.log(user);
+      try {
+        await login(email, password);
+        setSuccess(true);
+
+      } catch (e) {
+        console.log("Correo o contraseña inválida.");
+        errors.push("Correo o contraseña inválida.")
+        setDataError(errors);
+      }} else {
+        setDataError(errors);
+        // setSuccessnt(true);
+      }
   };
 
   return loading ? (
     <Loading />
   ) : user ? (
     <NavigationBar />
-  ) : register ? ( <Register />) :(
+  ) : register ? ( <Register />) :
+  
+  dataError.length > 0 ?
+        
+  (
+          <AlertMessage
+            mNumber={3}
+            header={"Te falta completarrr los siguientes campos:"}
+            message={dataError.join("\n")}
+            handleCloseAlert={handleCloseAlert}
+          />
+
+
+  ) :(
     <ImageBackground
       source={image}
       resizeMode="cover"
@@ -72,7 +120,9 @@ export default function Login() {
               value={email}
               onChangeText={(value) => setEmail(value)}
             ></TextInput>
-
+            {emailError ? (
+              <Text style={styles.error}>* Debe introducir un Correo</Text>
+            ) : null}
             <TextInput
               style={focus2 ? styles.inputOnFocus : styles.inputOnBlur}
               onFocus={() => setFocus2(true)}
@@ -85,6 +135,10 @@ export default function Login() {
               value={password}
               onChangeText={(value) => setPassword(value)}
             ></TextInput>
+            {passwordError ? (
+              <Text style={styles.error}>* Debe introducir una contraseña</Text>
+            ) : null}
+
             <Text
               color="green.500"
               fontWeight="bold"
@@ -154,5 +208,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     color: "#CFCFCF",
     borderBottomColor: "#CFCFCF",
+  },  error: {
+    color: "red",
+    fontSize: 11,
   },
 });

@@ -8,6 +8,7 @@ import Loading from "../components/Loading";
 import Medicines from "./Medicines";
 import NavigationBar from '../components/NavigationBar';
 import AlertMessage from "../components/AlertMessage";
+ 
 
 const image = { uri: "https://i.ibb.co/pJ1GYQb/Android-Small-1.png" };
 
@@ -29,6 +30,7 @@ export default function Register() {
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [successnt, setSuccessnt] = useState(false);
   const [dataError, setDataError] = useState([]);
 
 
@@ -71,6 +73,8 @@ const handleCloseAlert = () => {
         // "falta" sería el nombre del usuario, pero hace falta ese campo en el form del registro, listo jiji
         await register(username, email, password);
         setSuccess(true);
+        setSuccessnt(false);
+
         console.log('xd')
 
       } catch (e) {
@@ -78,6 +82,8 @@ const handleCloseAlert = () => {
       }
      } else {
        setDataError(errors);
+       setSuccessnt(true);
+
        console.log('f mi bro');
      }
   };
@@ -86,27 +92,36 @@ const handleCloseAlert = () => {
 
 
 
-  return (
-    <> 
+  return ( 
     
-    {success? (
-         loading ? (
-        <Loading />
-      ) : user ? (
-        <NavigationBar />
+    <>
 
-      ): null)
-      : dataError.length > 0 ? (
-        <AlertMessage
-          mNumber={3}
-          header={"Te falta completar los siguientes campos:"}
-          message={dataError.join("\n")}
-          handleCloseAlert={handleCloseAlert}
-        /> ) : null}
+
+        {login ? (
+          <Login/>
+        ) : success ? (
+          loading ? (
+            <Loading />
+          ) : user ? (
+            <NavigationBar />
+
+          ): null  ) : dataError.length > 0 ?
+        
+        (
+                <AlertMessage
+                  mNumber={3}
+                  header={"Te falta completarrr los siguientes campos:"}
+                  message={dataError.join("\n")}
+                  handleCloseAlert={handleCloseAlert}
+                />
+
+
+        ) : null}
+        
+        
+        
          
-    {login ? (
-        <Login />
-       ) : null}
+
 
 
 
@@ -217,7 +232,8 @@ const handleCloseAlert = () => {
         </FormControl>
       </View>
     </ImageBackground>
-    </>
+        
+  </>      
   );
 }
 
