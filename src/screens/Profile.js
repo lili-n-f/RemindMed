@@ -23,7 +23,6 @@ import {
   updateDoc,
   getDoc,
 } from "firebase/firestore";
-
 import { useIsFocused } from "@react-navigation/native";
 
 const image = { uri: "https://i.ibb.co/ypq3LQ1/fondo.png" };
@@ -32,18 +31,22 @@ const image = { uri: "https://i.ibb.co/ypq3LQ1/fondo.png" };
 export default function Profile() {
   const { user } = useContext(UserContext);
   const [usuario, setUsuario] = useState(null);
+
+  const [edit, setEdit] = useState(false);
+
   const isFocused = useIsFocused();
 
   useEffect(() => {
     if (isFocused) {
-      getData();
+      getData(); //useEffect para refrescar la data del usuario
     }
   }, [isFocused]);
 
   async function getData() {
-    const usr = await getDoc(doc(db, "users", user.uid));
-    setUsuario(usr);
-    console.log(usuario);
+    // esta función te trae la data del usuario y la settea en un useState para más fácil manejo de la información
+    const usr = await getDoc(doc(db, "users", user.uid)); // referencia al documento del usuario
+    setUsuario(usr.data()); // IMPORTANTE se hace .data() para guardar el objeto en si, de lo contrario, hace kaput
+    console.log("usuario: " + usuario); // usuario.[atributo] te va a traer el valor deseado
   }
 
   return (
@@ -57,7 +60,7 @@ export default function Profile() {
           <Box w="60">
             <Divider my="2" bg="green.500" thickness="4" />
           </Box>
-          <Text style={styles.titulo}>placeholder</Text>
+          <Text style={styles.titulo}>{usuario.name}</Text>
           <Box w="300">
             <Divider my="2" bg="green.500" thickness="4" />
           </Box>
@@ -75,7 +78,7 @@ export default function Profile() {
                   Fecha de nacimiento:
                 </Text>
                 <Text color="platinum.500" margin={1}>
-                  FECHA TO-DO
+                  {usuario.fecha_nac ? usuario.fecha_nac : "DD/MM/YY"}
                 </Text>
               </HStack>
             </View>
@@ -86,7 +89,7 @@ export default function Profile() {
                   Sexo:
                 </Text>
                 <Text color="platinum.500" margin={1}>
-                  SEXO TO-DO
+                  {usuario.sexo ? usuario.sexo : "N/A"}
                 </Text>
               </HStack>
             </View>
@@ -97,7 +100,7 @@ export default function Profile() {
                   Grupo sanguíneo:
                 </Text>
                 <Text color="platinum.500" margin={1}>
-                  SANGRE TO-DO
+                  {usuario.sangre ? usuario.sangre : "N/A"}
                 </Text>
               </HStack>
             </View>
@@ -109,7 +112,9 @@ export default function Profile() {
               <Box alignItems="center" w="100%">
                 <TextArea
                   h={40}
-                  placeholder="No se han agregado notas" //NOTAS TO-DO
+                  placeholder={
+                    usuario.notas ? usuario.notas : "No se han agregado notas"
+                  } //NOTAS TO-DO
                   placeholderTextColor="gray.500"
                   fontSize={13}
                   w="100%"
@@ -132,7 +137,7 @@ export default function Profile() {
               </Text>
               <Button
                 borderRadius={"10"}
-                onPress={() => {}} //TO-DO EDICIÓN
+                onPress={() => setEdit(true)} //TO-DO EDICIÓN, Ana: Ignora esto, quería ver si con un ternario salía pero ni lo pude probar
               >
                 <Icon
                   type={Icons.MaterialCommunityIcons}
