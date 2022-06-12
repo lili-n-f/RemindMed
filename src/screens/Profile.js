@@ -185,7 +185,7 @@ export default function Profile() {
       </ScrollView>
     </ImageBackground>
   ) : (
-    <ProfileEdit />
+    <ProfileEdit usuario={usuario} />
   );
 }
 

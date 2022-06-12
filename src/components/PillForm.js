@@ -18,6 +18,7 @@ import AlertMessage from "./AlertMessage";
 import { UserContext } from "../../ContextProvider";
 
 const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
+  //use states para los errores de input
   const [nameError, setNameError] = useState(false);
   const [success, setSuccess] = useState(false);
   const [dataError, setDataError] = useState([]);
@@ -25,6 +26,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
   const [intervalError, setIntervalError] = useState(false);
   const [durationError, setDurationError] = useState(false);
   const [dayError, setDayError] = useState(false);
+
   //BOTONES DE DIAS DE LA SEMANA
   const [lunes, setLunes] = useState(itinerario?.dias?.[1]?.selected ?? false);
   const [martes, setMartes] = useState(
@@ -47,10 +49,10 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
   );
 
   const [name, setName] = useState(itinerario?.nombre ?? "");
-  const [fromDate, setFromDate] = useState(new Date()); //para registrar la fecha de inicio
 
-  const [showTime, setShowTime] = useState(false);
+  const [showTime, setShowTime] = useState(false); //para mostrar el time picker cuando es true
   const [textTime, setTextTime] = useState(
+    //la hora mostrada como texto (si no hay, el default es --:--)
     (itinerario?.horario?.toDate().getHours() ?? "--") +
       ":" +
       (itinerario?.horario?.toDate().getMinutes() ?? "--")
@@ -78,8 +80,9 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
 
   const [notes, setNotes] = useState(itinerario?.notas ?? "");
 
-  const [showDate, setShowDate] = useState(false);
+  const [showDate, setShowDate] = useState(false); //para mostrar el date picker cuando es true
   const [textDate, setTextDate] = useState(
+    //la fecha mostrada como texto (si no hay, el default es DD/MM/YYYY)
     (itinerario?.fecha_final?.toDate().getUTCDate() ?? "DD") +
       "/" +
       (itinerario?.fecha_final?.toDate().getUTCMonth() ?? "MM") +
@@ -95,7 +98,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
 
     let tempTime =
       parseInt(currentTime.getHours()) <= 9
-        ? "0" + currentTime.getHours()
+        ? "0" + currentTime.getHours() //para que las horas aparezcan como 02:05 en lugar de 2:5
         : currentTime.getHours();
     tempTime += ":";
     tempTime +=
@@ -481,6 +484,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                 onValueChange={(itemValue) => {
                   setIntervalType(itemValue);
                   if (itemValue === "Días") {
+                    //si se escoge "días" los días de la semana (de cuando se escoge Semanas) no deberían tener valor
                     setLunes(null);
                     setMartes(null);
                     setMiercoles(null);

@@ -17,36 +17,55 @@ import {
 import Icon, { Icons } from "../components/Icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Profile from "./Profile";
+import { validatePathConfig } from "@react-navigation/native";
+import { stringify } from "@firebase/util";
 
 const image = { uri: "https://i.ibb.co/ypq3LQ1/fondo.png" };
 
-export default function ProfileEdit({ data }) {
-  const { user } = useContext(UserContext);
-  const [showDate, setShowDate] = useState(false);
-  const [textDate, setTextDate] = useState("DD/MM/YYYY");
+export default function ProfileEdit({ usuario }) {
+  //se pasa como parámetro el usuario de la cuenta
+
+  const [showDate, setShowDate] = useState(false); //para mostrar el date picker (cuando es true)
+  let tempDate = usuario.fecha_nac
+    ? usuario.fecha_nac.getDate() +
+      "/" +
+      (usuario.fecha_nac.getMonth() + 1) +
+      "/" +
+      usuario.fecha_nac.getFullYear()
+    : "DD/MM/YYYY";
+  const [textDate, setTextDate] = useState(tempDate); //la fecha de nacimiento como texto
+  const [dob, setDob] = useState(usuario.fecha_nac); //dob = date of birth
+  const [name, setName] = useState(usuario.name);
+  const [sex, setSex] = useState(usuario.sexo);
+  const [blood, setBlood] = useState(usuario.sangre);
+  const [notes, setNotes] = useState(usuario.notas);
 
   const [done, setDone] = useState(false);
 
   const onChangeDate = (event, selectedDate) => {
-    const currentDate = selectedDate;
-    setShowDate(false);
+    setDob(selectedDate);
+    setShowDate(false); //se deja de mostrar el date picker
     let tempDate =
-      currentDate.getDate() +
-      "/" +
-      (currentDate.getMonth() + 1) +
-      "/" +
-      currentDate.getFullYear();
+      dob.getDate() + "/" + (dob.getMonth() + 1) + "/" + dob.getFullYear();
     setTextDate(tempDate);
   };
 
-  var information = {
-    fecha_nac: aa, //aqui debe ir la info que se va a guardar
-  };
-
-  async function modify(info) {
+  async function modify() {
     try {
-      const usr = doc(db, "users", user.uid);
-      await updateDoc(ref, info);
+      //se actualizan los campos de interés para el perfil
+      //(el resto de campos, como la colección itinerario, se mantienen intactos)
+      console.log("modify");
+
+      var newUsuario = usuario;
+      newUsuario.name = name;
+      newUsuario.fecha_nac = dob;
+      newUsuario.sexo = sex;
+      newUsuario.sangre = blood;
+      newUsuario.notas = notes;
+      console.log(stringify(newUsuario));
+
+      const usr = doc(db, "users", usuario.uid);
+      await updateDoc(usr, newUsuario);
       setDone(true);
     } catch (e) {
       console.error("Error adding document: ", e);
@@ -82,7 +101,12 @@ export default function ProfileEdit({ data }) {
               borderColor="primary.300"
               placeholderTextColor="gray.500"
               accessibilityLabel="Edite su nombre"
-              placeholder="Escriba su nombre" //NOMBRE TO-DO
+              defaultValue={usuario.name}
+              placeholder={usuario.name}
+              value={name}
+              onChange={(text) => {
+                setName(text);
+              }}
             />
           </View>
           <View style={styles.containerQ}>
@@ -111,7 +135,7 @@ export default function ProfileEdit({ data }) {
             {showDate ? (
               <DateTimePicker
                 mode="date"
-                value={new Date()}
+                value={dob ? dob : new Date()}
                 maximumDate={new Date()}
                 onChange={onChangeDate}
               />
@@ -130,6 +154,10 @@ export default function ProfileEdit({ data }) {
               placeholderTextColor="gray.500"
               accessibilityLabel="Seleccione su sexo"
               placeholder="Seleccione su sexo"
+              selectedValue={sex}
+              onValueChange={(selectedValue) => {
+                setSex(selectedValue);
+              }}
             >
               <Select.Item //selección de sexo
                 label="Mujer"
@@ -156,6 +184,10 @@ export default function ProfileEdit({ data }) {
                 placeholderTextColor="gray.500"
                 accessibilityLabel="Seleccione su grupo sanguíneo"
                 placeholder="Seleccione su grupo sanguíneo"
+                selectedValue={blood}
+                onValueChange={(selectedValue) => {
+                  setBlood(selectedValue);
+                }}
               >
                 <Select.Item //Tipos de sangre
                   label="A+"
@@ -179,7 +211,7 @@ export default function ProfileEdit({ data }) {
             <Box alignItems="center" w="100%">
               <TextArea
                 h={40}
-                placeholder="Agregue sus notas (alergias, condiciones médicas, otros)"
+                placeholder={usuario.notas}
                 placeholderTextColor="gray.500"
                 fontSize={13}
                 w="100%"
@@ -187,18 +219,33 @@ export default function ProfileEdit({ data }) {
                 backgroundColor="white"
                 borderRadius="20"
                 borderColor="primary.300"
+                defaultValue={usuario.notas}
+                value={notes}
+                onChangeText={(text) => {
+                  setNotes(text);
+                }}
               />
             </Box>
           </View>
-          <Button
-            borderRadius={"10"}
-            marginTop={"5"}
-            alignSelf={"flex-end"}
-            width="25%"
-            onPress={() => setDone(true)} //TO-DO GUARDADO
-          >
-            Guardar
-          </Button>
+          <HStack justifyContent="space-between">
+            <Button
+              borderRadius="full"
+              onPress={() => setDone(true)}
+              mt="5"
+              style={{ alignSelf: "flex-start" }}
+            >
+              <Icon type={Icons.AntDesign} name={"back"} color={"white"} />
+            </Button>
+            <Button
+              borderRadius={"10"}
+              marginTop={"5"}
+              alignSelf={"flex-end"}
+              width="25%"
+              onPress={() => modify()}
+            >
+              Guardar
+            </Button>
+          </HStack>
         </ScrollView>
       </View>
     </ImageBackground>
