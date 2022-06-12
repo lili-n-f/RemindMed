@@ -92,43 +92,15 @@ const handleCloseAlert = () => {
 
 
 
-  return ( 
-    
-    <>
+  return login ? (
+    <Login/> ) : success ? (
+      loading ? (
+        <Loading />
+      ) : user ? (
+        <NavigationBar />
 
+      ): null  ) : (
 
-        {login ? (
-          <Login/>
-        ) : success ? (
-          loading ? (
-            <Loading />
-          ) : user ? (
-            <NavigationBar />
-
-          ): null  ) : dataError.length > 0 ?
-        
-        (
-                <AlertMessage
-                  mNumber={3}
-                  header={"Te falta completarrr los siguientes campos:"}
-                  message={dataError.join("\n")}
-                  handleCloseAlert={handleCloseAlert}
-                />
-
-
-        ) : null}
-        
-        
-        
-         
-
-
-
-
-
-
-
-    
     <ImageBackground
       source={image}
       resizeMode="cover"
@@ -165,7 +137,7 @@ const handleCloseAlert = () => {
               onChangeText={(value) => setUsername(value)}
             ></TextInput>
             {usernameError ? (
-              <Text style={styles.error}>* Debe introducir un nombre</Text>
+              <Text style={styles.error}>* Debe introducir un nombre válido</Text>
             ) : null}
 
             <TextInput
@@ -181,7 +153,7 @@ const handleCloseAlert = () => {
 
             ></TextInput>
             {emailError ? (
-              <Text style={styles.error}>* Debe introducir un Correo</Text>
+              <Text style={styles.error}>* Debe introducir un correo válido</Text>
             ) : null}
             <TextInput
               style={focus2 ? styles.inputOnFocus : styles.inputOnBlur}
@@ -210,7 +182,7 @@ const handleCloseAlert = () => {
 
             ></TextInput>
             {passwordError ? (
-              <Text style={styles.error}>* Debe introducir una contraseña que coincida</Text>
+              <Text style={styles.error}>* Debe introducir una contraseña que coincida y que sea mayor a 8 caracteres</Text>
             ) : null}
             <Text
               color="green.500"
@@ -232,8 +204,8 @@ const handleCloseAlert = () => {
         </FormControl>
       </View>
     </ImageBackground>
-        
-  </>      
+      
+   
   );
 }
 
@@ -294,7 +266,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "#CFCFCF",
   },
   error: {
-    color: "red",
+    color: "#59C3C3",
     fontSize: 11,
   },
 });

@@ -18,6 +18,8 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
+  const [userNotfound, setUserNotFound] = useState(false);
+
 
   const [success, setSuccess] = useState(false);
   const [dataError, setDataError] = useState([]);
@@ -58,33 +60,26 @@ export default function Login() {
         setSuccess(true);
 
       } catch (e) {
-        console.log("Correo o contraseña inválida.");
-        errors.push("Correo o contraseña inválida.")
-        setDataError(errors);
+         console.log("Correo o contraseña inválida.");
+         errors.push("Correo o contraseña inválida.")
+         setDataError(errors);
+         setUserNotFound(true);
       }} else {
         setDataError(errors);
         // setSuccessnt(true);
       }
   };
 
-  return loading ? (
-    <Loading />
-  ) : user ? (
-    <NavigationBar />
-  ) : register ? ( <Register />) :
-  
-  dataError.length > 0 ?
-        
-  (
-          <AlertMessage
-            mNumber={3}
-            header={"Te falta completarrr los siguientes campos:"}
-            message={dataError.join("\n")}
-            handleCloseAlert={handleCloseAlert}
-          />
+  return register ? (
+    <Register/> ) : 
+      loading ? (
+        <Loading />
+      ) : user ? (
+        <NavigationBar />
+
+      ) : (
 
 
-  ) :(
     <ImageBackground
       source={image}
       resizeMode="cover"
@@ -109,7 +104,12 @@ export default function Login() {
             alignItems: "flex-start",
           }}
         >
+
+          {userNotfound ? (
+              <Text style={styles.error}>El usuario ingresado no fue encontrado</Text>
+            ) : null} 
           <View style={styles.containerInput}>
+
             <TextInput
               style={focus ? styles.inputOnFocus : styles.inputOnBlur}
               onFocus={() => setFocus(true)}
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     color: "#CFCFCF",
     borderBottomColor: "#CFCFCF",
   },  error: {
-    color: "red",
+    color: "#59C3C3",
     fontSize: 11,
   },
 });
