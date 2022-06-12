@@ -44,7 +44,7 @@ export default function ProfileEdit({
 
       var updatedUser = {
         email: email,
-        name: name,
+        name: !name || name === "" || /^\s*$/.test(name) ? nombre : name, //si el usuario nombre es vacío, se coloca el nombre original
         notas: notes,
         perfiles_asoc: perfiles_asoc,
         sangre: blood,
