@@ -12,7 +12,13 @@ import DisplayMedicines from "../components/DisplayMedicines";
 import { db } from "../../firebase";
 import React, { useState, useContext } from "react";
 import { useIsFocused } from "@react-navigation/native";
-import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  getDoc,
+  updateDoc,
+} from "firebase/firestore";
 import Loading from "../components/Loading";
 import PillFormPage from "./PillFormPage";
 import { UserContext } from "../../ContextProvider";
@@ -20,7 +26,7 @@ import { UserContext } from "../../ContextProvider";
 const image = { uri: "https://i.ibb.co/ypq3LQ1/fondo.png" };
 
 export default function Medicines() {
-  const [disable, setDisable] = useState(false);
+  const [disable, setDisable] = useState(false); //para el botón de buscar
 
   const isFocused = useIsFocused();
   const [itinerario, setItinerario] = useState(null);
@@ -33,7 +39,6 @@ export default function Medicines() {
   const { user } = useContext(UserContext);
   async function getData() {
     const dataList = [];
-    //test
     console.log(user.uid);
     const querySnapshot = await getDocs(
       collection(db, "users", user.uid, "itinerario")
@@ -57,7 +62,7 @@ export default function Medicines() {
 
   //Para eliminar un medicamento
   const handleDelete = async (datos) => {
-    const ref = doc(db, "usuarios", datos.id);
+    const ref = await doc(db, "users", user.uid, "itinerario", datos.id);
     await updateDoc(ref, { activo: false });
     getData();
   };
