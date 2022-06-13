@@ -38,7 +38,7 @@ export default function AlertMessage({
             <HStack
               flexShrink={1}
               space={2}
-              alignItems="center"
+              alignItems='center'
               justifyContent="space-between"
             >
               <HStack flexShrink={1} space={2} alignItems="center">

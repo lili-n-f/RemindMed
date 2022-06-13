@@ -15,61 +15,34 @@ import {
   TextArea,
 } from "native-base";
 import Icon, { Icons } from "../components/Icons";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import Profile from "./Profile";
 import { validatePathConfig } from "@react-navigation/native";
-import { stringify } from "@firebase/util";
 
 const image = { uri: "https://i.ibb.co/ypq3LQ1/fondo.png" };
 
-export default function ProfileEdit({ usuario }) {
-  //se pasa como parámetro el usuario de la cuenta
+export default function ProfileEdit({
+  nombre,
+  sangre,
+  sexo,
+  notas,
+  uid,
+  email,
+  perfiles_asoc,
+}) {
+  //se pasa como parámetro la info del usuario de la cuenta
 
-  const [showDate, setShowDate] = useState(false); //para mostrar el date picker (cuando es true)
-  let tempDate = usuario.fecha_nac
-    ? new Date(usuario.fecha_nac.toDate()).toLocaleDateString()
-    : "DD/MM/YYYY";
-  const [textDate, setTextDate] = useState(tempDate); //la fecha de nacimiento como texto
-  const [dob, setDob] = useState(
-    usuario.fecha_nac ? usuario.fecha_nac.toDate() : null
-  ); //dob = date of birth
-  const [name, setName] = useState(usuario.name);
-  const [sex, setSex] = useState(usuario.sexo);
-  const [blood, setBlood] = useState(usuario.sangre);
-  const [notes, setNotes] = useState(usuario.notas);
+  const [disable, setDisable] = useState(false);
+
+  const [name, setName] = useState(nombre);
+  const [sex, setSex] = useState(sexo);
+  const [blood, setBlood] = useState(sangre);
+  const [notes, setNotes] = useState(notas);
 
   const [done, setDone] = useState(false);
 
-  const { user } = useContext(UserContext);
-
-  const onChangeDate = (event, selectedDate) => {
-    setDob(selectedDate);
-    setShowDate(false); //se deja de mostrar el date picker
-    let tempDate = new Date(dob).toLocaleDateString();
-    setTextDate(tempDate);
-    console.log("lo que se guarda: " + dob);
-  };
-
   async function modify() {
-    try {
-      //se actualizan los campos de interés para el perfil
-      //(el resto de campos, como la colección itinerario, se mantienen intactos)
-      console.log("modify");
-
-      var newUsuario = usuario;
-      newUsuario.name = name;
-      newUsuario.fecha_nac = dob;
-      newUsuario.sexo = sex;
-      newUsuario.sangre = blood;
-      newUsuario.notas = notes;
-      console.log(stringify(newUsuario));
-
-      const usr = doc(db, "users", user.uid);
-      await updateDoc(usr, newUsuario);
-      setDone(true);
-    } catch (e) {
-      console.error("Error adding document: ", e);
-    }
+    console.error("Error adding document: ", e);
+    setDisable(false);
   }
   return done ? (
     <Profile />
@@ -101,45 +74,13 @@ export default function ProfileEdit({ usuario }) {
               borderColor="primary.300"
               placeholderTextColor="gray.500"
               accessibilityLabel="Edite su nombre"
-              defaultValue={usuario.name}
-              placeholder={usuario.name}
+              defaultValue={nombre}
+              placeholder={nombre}
               value={name}
-              onChangeText={(value) => {
-                setName(value);
+              onChangeText={(text) => {
+                setName(text);
               }}
             />
-          </View>
-          <View style={styles.containerQ}>
-            <HStack justifyContent="space-between" alignItems="center">
-              <Text color="platinum.500" fontWeight="bold" margin={1}>
-                Fecha de nacimiento:
-              </Text>
-              <Text color="platinum.500" margin={1}>
-                {textDate}
-              </Text>
-              <Button
-                borderRadius="full"
-                style={{ alignSelf: "flex-start" }}
-                onPress={() => {
-                  setShowDate(true);
-                }}
-              >
-                <Icon
-                  type={Icons.MaterialCommunityIcons}
-                  name={"calendar"}
-                  color={"white"}
-                />
-              </Button>
-            </HStack>
-
-            {showDate ? (
-              <DateTimePicker
-                mode="date"
-                value={dob ? dob : new Date()}
-                maximumDate={new Date()}
-                onChange={onChangeDate}
-              />
-            ) : null}
           </View>
 
           <View style={styles.containerQ}>
@@ -161,12 +102,12 @@ export default function ProfileEdit({ usuario }) {
             >
               <Select.Item //selección de sexo
                 label="Mujer"
-                value="mujer"
+                value="Mujer"
               />
-              <Select.Item label="Hombre" value="hombre" />
+              <Select.Item label="Hombre" value="Hombre" />
               <Select.Item
                 label="Prefiero no responder"
-                value="na" //puse esto como un no aplica
+                value="N/A" //puse esto como un no aplica
               />
             </Select>
           </View>
@@ -191,15 +132,15 @@ export default function ProfileEdit({ usuario }) {
               >
                 <Select.Item //Tipos de sangre
                   label="A+"
-                  value="a positivo"
+                  value="A+"
                 />
-                <Select.Item label="A-" value="a negativo" />
-                <Select.Item label="B+" value="b positivo" />
-                <Select.Item label="B-" value="b negativo" />
-                <Select.Item label="AB+" value="ab positivo" />
-                <Select.Item label="AB-" value="ab negativo" />
-                <Select.Item label="O+" value="o positivo" />
-                <Select.Item label="O-" value="o negativo" />
+                <Select.Item label="A-" value="A-" />
+                <Select.Item label="B+" value="B+" />
+                <Select.Item label="B-" value="B-" />
+                <Select.Item label="AB+" value="AB+" />
+                <Select.Item label="AB-" value="AB-" />
+                <Select.Item label="O+" value="O+" />
+                <Select.Item label="O-" value="O-" />
               </Select>
             </HStack>
           </View>
@@ -211,7 +152,7 @@ export default function ProfileEdit({ usuario }) {
             <Box alignItems="center" w="100%">
               <TextArea
                 h={40}
-                placeholder={usuario.notas}
+                placeholder="Agregue sus notas (alergias, condiciones médicas...)"
                 placeholderTextColor="gray.500"
                 fontSize={13}
                 w="100%"
@@ -219,7 +160,7 @@ export default function ProfileEdit({ usuario }) {
                 backgroundColor="white"
                 borderRadius="20"
                 borderColor="primary.300"
-                defaultValue={usuario.notas}
+                defaultValue={notas}
                 value={notes}
                 onChangeText={(value) => {
                   setNotes(value);
@@ -242,6 +183,7 @@ export default function ProfileEdit({ usuario }) {
               alignSelf={"flex-end"}
               width="25%"
               onPress={() => modify()}
+              isDisabled={disable}
             >
               Guardar
             </Button>

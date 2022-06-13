@@ -32,6 +32,8 @@ const image = { uri: "https://i.ibb.co/ypq3LQ1/fondo.png" };
 
 //Componente correspondiente al perfil del usuario.
 export default function Profile() {
+  const [disable, setDisable] = useState(false);
+
   const isFocused = useIsFocused();
   const { user } = useContext(UserContext);
   const [usuario, setUsuario] = useState(null);
@@ -87,17 +89,6 @@ export default function Profile() {
           }}
         >
           <View top={30} marginRight={20} marginLeft={20}>
-            <View style={styles.containerQ}>
-              <HStack justifyContent="space-between" alignItems="center">
-                <Text color="platinum.500" fontWeight="bold" margin={1}>
-                  Fecha de nacimiento:
-                </Text>
-                <Text color="platinum.500" margin={1}>
-                  {usuario.fecha_nac ? usuario.fecha_nac : "DD/MM/YYYY"}
-                </Text>
-              </HStack>
-            </View>
-
             <View style={styles.containerQ}>
               <HStack justifyContent="space-between" alignItems="center">
                 <Text color="platinum.500" fontWeight="bold" margin={1}>
@@ -165,8 +156,11 @@ export default function Profile() {
               alignSelf={"flex-end"}
               width="50%"
               onPress={() => {
+                setDisable(true);
                 logout();
+                setDisable(false);
               }}
+              isDisabled={disable}
             >
               <HStack justifyContent={"space-evenly"}>
                 <Text color={"white"} alignSelf={"flex-start"}>
@@ -185,7 +179,15 @@ export default function Profile() {
       </ScrollView>
     </ImageBackground>
   ) : (
-    <ProfileEdit />
+    <ProfileEdit
+      nombre={usuario.name}
+      sangre={usuario.sangre}
+      sexo={usuario.sexo}
+      notas={usuario.notas}
+      uid={usuario.uid}
+      email={usuario.email}
+      perfiles_asoc={usuario.perfiles_asoc}
+    />
   );
 }
 

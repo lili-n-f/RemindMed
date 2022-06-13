@@ -2,22 +2,46 @@ import { Box, VStack, HStack, Button, Text } from 'native-base';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StyleSheet } from 'react-native';
 import React from 'react';
+import ModalView from './ModalView';
 
 export default function PillCard({
   name,
   dosis,
-  repetitions,
+  days,
   datos,
   horario,
   handleShowForm,
   handleDelete,
   style,
 }) {
+  const [showModal, setShowModal] = React.useState(false);
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
   return (
     <SafeAreaView>
+      <ModalView
+        name={name}
+        dosis={dosis}
+        days={days}
+        horario={horario}
+        showModal={showModal}
+        handleCloseModal={handleCloseModal}
+        notes={datos.notas}
+        category={datos.categoria}
+      ></ModalView>
       <Box alignItems="center" marginBottom={style ? '8' : '0'}>
-        <Box width="90%" bg="primary.500" borderRadius="20" mt="5">
-          <VStack space="2">
+        <Button
+          variant="unstyled"
+          width="90%"
+          bg="primary.500"
+          borderRadius="20"
+          mt="5"
+          justifyContent="flex-start"
+          padding="0"
+          onPress={() => setShowModal(true)}
+        >
+          <VStack space="2" w="100%">
             <Box px="4" pt="4">
               <Text color="white" pb="2" style={styles.titulo_tarjeta}>
                 {name.charAt(0).toUpperCase() + name.slice(1)}
@@ -32,13 +56,7 @@ export default function PillCard({
                 {'Tomar: ' + dosis}
               </Text>
             </Box>
-            <HStack
-              space={3}
-              justifyContent="space-between"
-              alignItems="center"
-              px="4"
-              pb="4"
-            >
+            <HStack space={3} flexDirection="column" w="100%" px="4" pb="4">
               <Text
                 color="white"
                 fontWeight={'medium'}
@@ -46,13 +64,41 @@ export default function PillCard({
                 top={'-15'}
                 style={styles.subtitulo_tarjetas}
               >
-                {'Hora: ' + horario}
+                {(days
+                  ? 'Cada semana (' +
+                    days
+                      .map((day, i) =>
+                        day.selected
+                          ? i === 0
+                            ? 'D'
+                            : i === 1
+                            ? 'L'
+                            : i === 2
+                            ? 'M'
+                            : i === 3
+                            ? 'Mi'
+                            : i === 4
+                            ? 'J'
+                            : i === 5
+                            ? 'V'
+                            : i === 6
+                            ? 'S'
+                            : null
+                          : null
+                      )
+                      .filter((a) => a)
+                      .join(' / ') +
+                    ')'
+                  : 'Todos los días') +
+                  ' - ' +
+                  horario}
               </Text>
-              <HStack space={2}>
+              <HStack space={2} w="100%">
                 <Button
                   variant="subtle"
                   borderRadius={'10'}
                   onPress={() => handleShowForm(datos)}
+                  marginLeft="auto"
                 >
                   Editar
                 </Button>
@@ -67,7 +113,7 @@ export default function PillCard({
               </HStack>
             </HStack>
           </VStack>
-        </Box>
+        </Button>
       </Box>
     </SafeAreaView>
   );
@@ -81,7 +127,7 @@ const styles = StyleSheet.create({
   },
   container1: {
     color: '#FFFF',
-    alignItems: 'left',
+    alignItems: 'flex-start',
     top: 35,
     margin: 20,
   },

@@ -16,10 +16,9 @@ import {
   collection,
   doc,
   getDocs,
-  updateDoc,
   getDoc,
+  updateDoc,
 } from "firebase/firestore";
-import Loading from "../components/Loading";
 import PillFormPage from "./PillFormPage";
 import { UserContext } from "../../ContextProvider";
 import { logout } from "../../firebase";
@@ -27,7 +26,8 @@ import { logout } from "../../firebase";
 const image = { uri: "https://i.ibb.co/ypq3LQ1/fondo.png" };
 
 export default function Medicines() {
-  //Aqui comienza la búsqueda de medicamentos por categoria
+  const [disable, setDisable] = useState(false); //para el botón de buscar
+
   const isFocused = useIsFocused();
   const [itinerario, setItinerario] = useState(null);
   const [itinerarioModify, setItinerarioModify] = useState(null);
@@ -39,7 +39,6 @@ export default function Medicines() {
   const { user } = useContext(UserContext);
   async function getData() {
     const dataList = [];
-    //test
     console.log(user.uid);
     const querySnapshot = await getDocs(
       collection(db, "users", user.uid, "itinerario")
@@ -55,34 +54,15 @@ export default function Medicines() {
     setdataFiltrada(dataList);
   }
 
-  //Para que se traiga automaticamente al entrar al componente
-  const [loading, setLoading] = useState(true);
-  const [usuario, setUsuario] = useState(null);
   React.useEffect(() => {
     if (isFocused) {
       getDataUser();
     }
   }, [isFocused]);
 
-  React.useEffect(() => {
-    // Aquí se verifica si se está cargando el perfil y si el usuario NO ES falsy (es decir, no null), en cuyo caso ya se cargó correctamente el usuario y se settea el loading como false para que se renderice la página que es
-    // Depende de usuario porque cuando este cambie, se revisará la condición
-    if (loading && usuario) {
-      console.log("usuario: " + usuario);
-      console.log("usuario fecha: " + usuario.fecha_nac);
-      setLoading(false);
-    }
-  }, [usuario]);
-
-  const getDataUser = async () => {
-    // Se trae la data del usuario
-    const usr = await getDoc(doc(db, "users", user.uid));
-    setUsuario(usr.data()); // IMPORTANTE el .data() para que se guarde correctamente
-  };
-
   //Para eliminar un medicamento
   const handleDelete = async (datos) => {
-    const ref = doc(db, "usuarios", datos.id);
+    const ref = await doc(db, "users", user.uid, "itinerario", datos.id);
     await updateDoc(ref, { activo: false });
     getData();
   };
@@ -94,9 +74,7 @@ export default function Medicines() {
     getData();
   };
 
-  return loading ? (
-    <Loading />
-  ) : (
+  return (
     <ImageBackground
       source={image}
       resizeMode="cover"
@@ -189,12 +167,15 @@ export default function Medicines() {
               </HStack>
               <Button
                 onPress={() => {
+                  setDisable(true);
                   setdataFiltrada(
                     data.filter(
                       (itinerario) => itinerario.categoria === category
                     )
                   );
+                  setDisable(false);
                 }}
+                isDisabled={category === "" || disable}
                 style={{
                   marginTop: 15,
                   width: "60%",
