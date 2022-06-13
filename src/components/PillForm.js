@@ -167,6 +167,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
       console.log('Document written with ID: ', docRef.id);
       setSuccess(true);
       resetInputs();
+      setDisable(false);
     } catch (e) {
       console.error('Error adding document: ', e);
     }
@@ -177,6 +178,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
       const ref = doc(db, 'users', user.uid, 'itinerario', itinerario?.id);
       await updateDoc(ref, docu);
       setSuccess(true);
+      setDisable(false);
     } catch (e) {
       console.error('Error adding document: ', e);
     }
@@ -211,7 +213,6 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
   }
 
   function onSubmit() {
-    setDisable(true);
     if (newPill) {
       const errors = validateErrors();
       if (errors.length === 0) {
@@ -316,7 +317,6 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
         setDataError(errors);
       }
     }
-    setDisable(false);
   }
 
   return (
@@ -860,23 +860,37 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                 }}
               />
             </View>
-            <Button
-              onPress={() => {
-                onSubmit();
-              }}
-              isDisabled={disable}
-              style={{
-                marginTop: 15,
-                width: '60%',
-                marginLeft: '20%',
-                borderRadius: 20,
-              }}
-              bg={'cyan.500'}
-            >
-              <Text fontWeight="bold" color="white">
-                ¡Listo!
-              </Text>
-            </Button>
+            {disable ? (
+              <Button
+                isLoading
+                isLoadingText="Subiendo..."
+                style={{
+                  marginTop: 15,
+                  width: '60%',
+                  marginLeft: '20%',
+                  borderRadius: 20,
+                }}
+                bg={'cyan.500'}
+              ></Button>
+            ) : (
+              <Button
+                onPress={() => {
+                  setDisable(true);
+                  onSubmit();
+                }}
+                style={{
+                  marginTop: 15,
+                  width: '60%',
+                  marginLeft: '20%',
+                  borderRadius: 20,
+                }}
+                bg={'cyan.500'}
+              >
+                <Text fontWeight="bold" color="white">
+                  ¡Listo!
+                </Text>
+              </Button>
+            )}
           </FormControl>
         </ScrollView>
       </View>

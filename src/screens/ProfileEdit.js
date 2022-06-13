@@ -206,16 +206,26 @@ export default function ProfileEdit({
               </Box>
             </View>
             <HStack justifyContent="center" marginBottom={5}>
-              <Button
-                borderRadius={20}
-                marginTop={'5'}
-                width="60%"
-                bg={'cyan.500'}
-                onPress={() => modify()}
-                isDisabled={disable}
-              >
-                Guardar
-              </Button>
+              {disable ? (
+                <Button
+                  borderRadius={20}
+                  marginTop={'5'}
+                  width="60%"
+                  bg={'cyan.500'}
+                  isLoading
+                  isLoadingText="Guardando..."
+                ></Button>
+              ) : (
+                <Button
+                  borderRadius={20}
+                  marginTop={'5'}
+                  width="60%"
+                  bg={'cyan.500'}
+                  onPress={() => modify()}
+                >
+                  Guardar
+                </Button>
+              )}
             </HStack>
           </ScrollView>
         </View>
