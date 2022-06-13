@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { Box, ScrollView, View, Text } from "native-base";
-import { StyleSheet } from "react-native";
-import PillCard from "./PillCard";
+import React, { useState } from 'react';
+import { Box, ScrollView, View, Text } from 'native-base';
+import { StyleSheet } from 'react-native';
+import PillCard from './PillCard';
 
 export default function DisplayMedicines({
   data,
@@ -70,66 +70,68 @@ export default function DisplayMedicines({
   }
 
   return (
-    <ScrollView marginTop="5" height="70%">
-      <Box px="4">
-        <Text color="white" pb="2" style={styles.titulo_tarjeta}>
-          Hoy
-        </Text>
-      </Box>
-      {filterDataIsToday(sortDataByHour(data))?.map((itinerario, i) => (
-        <PillCard
-          key={itinerario.id}
-          name={itinerario.nombre}
-          days={itinerario.dias}
-          horario={
-            itinerario?.horario?.toDate().getHours() +
-            ":" +
-            itinerario?.horario?.toDate().getMinutes()
-          }
-          dosis={
-            itinerario.dosis === "" || itinerario.dosis === "0"
-              ? "Dosis no especificada"
-              : itinerario.dosis_tipo === ""
-              ? "Dosis no especificada"
-              : itinerario.dosis + " " + itinerario.dosis_tipo
-          }
-          repetitions={null}
-          datos={itinerario}
-          handleShowForm={handleShowForm}
-          style={i === data?.length - 1}
-          handleDelete={handleDelete}
-        ></PillCard>
-      ))}
-      <Box px="4" pt="6">
-        <Text color="white" pb="2" style={styles.titulo_tarjeta}>
-          Otros días
-        </Text>
-      </Box>
-      {filterDataIsNotToday(sortDataByHour(data))?.map((itinerario, i) => (
-        <PillCard
-          key={itinerario.id}
-          name={itinerario.nombre}
-          days={itinerario.dias}
-          horario={
-            itinerario?.horario?.toDate().getHours() +
-            ":" +
-            itinerario?.horario?.toDate().getMinutes()
-          }
-          dosis={itinerario.dosis + " " + itinerario.dosis_tipo}
-          datos={itinerario}
-          handleShowForm={handleShowForm}
-          style={i === data?.length - 1}
-          handleDelete={handleDelete}
-        ></PillCard>
-      ))}
-      <Box h="10"></Box>
-    </ScrollView>
+    <View style={{ height: '60%', paddingTop: 20 }}>
+      <ScrollView>
+        <Box px="4">
+          <Text color="white" pb="2" style={styles.titulo_tarjeta}>
+            Hoy
+          </Text>
+        </Box>
+        {filterDataIsToday(sortDataByHour(data))?.map((itinerario, i) => (
+          <PillCard
+            key={itinerario.id}
+            name={itinerario.nombre}
+            days={itinerario.dias}
+            horario={
+              itinerario?.horario?.toDate().getHours() +
+              ':' +
+              itinerario?.horario?.toDate().getMinutes()
+            }
+            dosis={
+              itinerario.dosis === '' || itinerario.dosis === '0'
+                ? 'Dosis no especificada'
+                : itinerario.dosis_tipo === ''
+                ? 'Dosis no especificada'
+                : itinerario.dosis + ' ' + itinerario.dosis_tipo
+            }
+            repetitions={null}
+            datos={itinerario}
+            handleShowForm={handleShowForm}
+            style={i === data?.length - 1}
+            handleDelete={handleDelete}
+          ></PillCard>
+        ))}
+        <Box px="4" pt="6">
+          <Text color="white" pb="2" style={styles.titulo_tarjeta}>
+            Otros días
+          </Text>
+        </Box>
+        {filterDataIsNotToday(sortDataByHour(data))?.map((itinerario, i) => (
+          <PillCard
+            key={itinerario.id}
+            name={itinerario.nombre}
+            days={itinerario.dias}
+            horario={
+              itinerario?.horario?.toDate().getHours() +
+              ':' +
+              itinerario?.horario?.toDate().getMinutes()
+            }
+            dosis={itinerario.dosis + ' ' + itinerario.dosis_tipo}
+            datos={itinerario}
+            handleShowForm={handleShowForm}
+            style={i === data?.length - 1}
+            handleDelete={handleDelete}
+          ></PillCard>
+        ))}
+        <Box h="10"></Box>
+      </ScrollView>
+    </View>
   );
 }
 const styles = StyleSheet.create({
   titulo_tarjeta: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     fontSize: 20,
-    color: "#F6F6F6",
+    color: '#F6F6F6',
   },
 });
