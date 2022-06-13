@@ -27,14 +27,12 @@ export default function ProfileEdit({ usuario }) {
 
   const [showDate, setShowDate] = useState(false); //para mostrar el date picker (cuando es true)
   let tempDate = usuario.fecha_nac
-    ? usuario.fecha_nac.getDate() +
-      "/" +
-      (usuario.fecha_nac.getMonth() + 1) +
-      "/" +
-      usuario.fecha_nac.getFullYear()
+    ? new Date(usuario.fecha_nac.toDate()).toLocaleDateString()
     : "DD/MM/YYYY";
   const [textDate, setTextDate] = useState(tempDate); //la fecha de nacimiento como texto
-  const [dob, setDob] = useState(usuario.fecha_nac); //dob = date of birth
+  const [dob, setDob] = useState(
+    usuario.fecha_nac ? usuario.fecha_nac.toDate() : null
+  ); //dob = date of birth
   const [name, setName] = useState(usuario.name);
   const [sex, setSex] = useState(usuario.sexo);
   const [blood, setBlood] = useState(usuario.sangre);
@@ -42,12 +40,14 @@ export default function ProfileEdit({ usuario }) {
 
   const [done, setDone] = useState(false);
 
+  const { user } = useContext(UserContext);
+
   const onChangeDate = (event, selectedDate) => {
     setDob(selectedDate);
     setShowDate(false); //se deja de mostrar el date picker
-    let tempDate =
-      dob.getDate() + "/" + (dob.getMonth() + 1) + "/" + dob.getFullYear();
+    let tempDate = new Date(dob).toLocaleDateString();
     setTextDate(tempDate);
+    console.log("lo que se guarda: " + dob);
   };
 
   async function modify() {
@@ -64,7 +64,7 @@ export default function ProfileEdit({ usuario }) {
       newUsuario.notas = notes;
       console.log(stringify(newUsuario));
 
-      const usr = doc(db, "users", usuario.uid);
+      const usr = doc(db, "users", user.uid);
       await updateDoc(usr, newUsuario);
       setDone(true);
     } catch (e) {
@@ -104,8 +104,8 @@ export default function ProfileEdit({ usuario }) {
               defaultValue={usuario.name}
               placeholder={usuario.name}
               value={name}
-              onChange={(text) => {
-                setName(text);
+              onChangeText={(value) => {
+                setName(value);
               }}
             />
           </View>
@@ -221,8 +221,8 @@ export default function ProfileEdit({ usuario }) {
                 borderColor="primary.300"
                 defaultValue={usuario.notas}
                 value={notes}
-                onChangeText={(text) => {
-                  setNotes(text);
+                onChangeText={(value) => {
+                  setNotes(value);
                 }}
               />
             </Box>

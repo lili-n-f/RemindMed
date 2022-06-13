@@ -12,10 +12,17 @@ import DisplayMedicines from "../components/DisplayMedicines";
 import { db } from "../../firebase";
 import React, { useState, useContext } from "react";
 import { useIsFocused } from "@react-navigation/native";
-import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  updateDoc,
+  getDoc,
+} from "firebase/firestore";
 import Loading from "../components/Loading";
 import PillFormPage from "./PillFormPage";
 import { UserContext } from "../../ContextProvider";
+import { logout } from "../../firebase";
 
 const image = { uri: "https://i.ibb.co/ypq3LQ1/fondo.png" };
 
@@ -49,11 +56,29 @@ export default function Medicines() {
   }
 
   //Para que se traiga automaticamente al entrar al componente
+  const [loading, setLoading] = useState(true);
+  const [usuario, setUsuario] = useState(null);
   React.useEffect(() => {
     if (isFocused) {
-      getData();
+      getDataUser();
     }
   }, [isFocused]);
+
+  React.useEffect(() => {
+    // Aquí se verifica si se está cargando el perfil y si el usuario NO ES falsy (es decir, no null), en cuyo caso ya se cargó correctamente el usuario y se settea el loading como false para que se renderice la página que es
+    // Depende de usuario porque cuando este cambie, se revisará la condición
+    if (loading && usuario) {
+      console.log("usuario: " + usuario);
+      console.log("usuario fecha: " + usuario.fecha_nac);
+      setLoading(false);
+    }
+  }, [usuario]);
+
+  const getDataUser = async () => {
+    // Se trae la data del usuario
+    const usr = await getDoc(doc(db, "users", user.uid));
+    setUsuario(usr.data()); // IMPORTANTE el .data() para que se guarde correctamente
+  };
 
   //Para eliminar un medicamento
   const handleDelete = async (datos) => {
@@ -69,7 +94,9 @@ export default function Medicines() {
     getData();
   };
 
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <ImageBackground
       source={image}
       resizeMode="cover"
@@ -186,6 +213,22 @@ export default function Medicines() {
               handleShowFormTwo={handleShowFormTwo}
               handleDelete={handleDelete}
             />
+            <Button
+              borderRadius={"10"}
+              marginTop={"5"}
+              alignSelf={"flex-end"}
+              width="50%"
+              onPress={() => {
+                logout();
+              }}
+            >
+              <HStack justifyContent={"space-evenly"}>
+                <Text color={"white"} alignSelf={"flex-start"}>
+                  Cerrar sesión
+                </Text>
+                <View style={{ minWidth: "10%" }}></View>
+              </HStack>
+            </Button>
           </View>
         )}
       </SafeAreaView>
