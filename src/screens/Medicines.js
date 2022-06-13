@@ -56,7 +56,7 @@ export default function Medicines() {
 
   React.useEffect(() => {
     if (isFocused) {
-      getDataUser();
+      getData();
     }
   }, [isFocused]);
 
@@ -194,22 +194,6 @@ export default function Medicines() {
               handleShowFormTwo={handleShowFormTwo}
               handleDelete={handleDelete}
             />
-            <Button
-              borderRadius={"10"}
-              marginTop={"5"}
-              alignSelf={"flex-end"}
-              width="50%"
-              onPress={() => {
-                logout();
-              }}
-            >
-              <HStack justifyContent={"space-evenly"}>
-                <Text color={"white"} alignSelf={"flex-start"}>
-                  Cerrar sesión
-                </Text>
-                <View style={{ minWidth: "10%" }}></View>
-              </HStack>
-            </Button>
           </View>
         )}
       </SafeAreaView>

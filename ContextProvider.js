@@ -8,7 +8,7 @@ const ContextProvider = (props) => {
   //user te devuelve el usuario, null si no hay
   //loading te devuelve si te está cargando o no
   //error es si ocurre un error
-  const [user, loading, error] = useAuthState(auth);
+  const [user, loading, error] = useAuthState(auth); //useAuthState te permite observar el estado del usuario
 
   return (
     <UserContext.Provider

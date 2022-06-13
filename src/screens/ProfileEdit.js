@@ -41,7 +41,26 @@ export default function ProfileEdit({
   const [done, setDone] = useState(false);
 
   async function modify() {
-    console.error("Error adding document: ", e);
+    setDisable(true);
+    try {
+      console.log("modify");
+
+      var updatedUser = {
+        email: email,
+        name: !name || name === "" || /^\s*$/.test(name) ? nombre : name, //si el usuario nombre es vacío, se coloca el nombre original
+        notas: notes,
+        perfiles_asoc: perfiles_asoc,
+        sangre: blood,
+        sexo: sex,
+        uid: uid,
+      };
+
+      const usr = doc(db, "users", uid);
+      await updateDoc(usr, updatedUser);
+      setDone(true);
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
     setDisable(false);
   }
   return done ? (
