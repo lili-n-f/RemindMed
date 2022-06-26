@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { Box, ScrollView, View, Text } from 'native-base';
-import { StyleSheet } from 'react-native';
-import PillCard from './PillCard';
+import React, { useState } from "react";
+import { Box, ScrollView, View, Text } from "native-base";
+import { StyleSheet } from "react-native";
+import PillCard from "./PillCard";
 
 export default function DisplayMedicines({
   data,
@@ -12,6 +12,18 @@ export default function DisplayMedicines({
     handleShowFormTwo(itinerario);
   };
   const [today, setToday] = React.useState(new Date());
+
+  //para que las horas aparezcan como 02:05 en lugar de 2:5
+  function getTime(time) {
+    let tempTime =
+      parseInt(time.getHours()) <= 9 ? "0" + time.getHours() : time.getHours();
+    tempTime += ":";
+    tempTime +=
+      parseInt(time.getMinutes()) <= 9
+        ? "0" + time.getMinutes()
+        : time.getMinutes();
+    return tempTime;
+  }
 
   function sortDataByHour(array) {
     //ordena los itinerarios por hora, de mas temprano a mas tarde
@@ -70,7 +82,7 @@ export default function DisplayMedicines({
   }
 
   return (
-    <View style={{ height: '60%', paddingTop: 20 }}>
+    <View style={{ height: "60%", paddingTop: 20 }}>
       <ScrollView>
         <Box px="4">
           <Text color="white" pb="2" style={styles.titulo_tarjeta}>
@@ -82,17 +94,13 @@ export default function DisplayMedicines({
             key={itinerario.id}
             name={itinerario.nombre}
             days={itinerario.dias}
-            horario={
-              itinerario?.horario?.toDate().getHours() +
-              ':' +
-              itinerario?.horario?.toDate().getMinutes()
-            }
+            horario={getTime(itinerario?.horario?.toDate())}
             dosis={
-              itinerario.dosis === '' || itinerario.dosis === '0'
-                ? 'Dosis no especificada'
-                : itinerario.dosis_tipo === ''
-                ? 'Dosis no especificada'
-                : itinerario.dosis + ' ' + itinerario.dosis_tipo
+              itinerario.dosis === "" || itinerario.dosis === "0"
+                ? "Dosis no especificada"
+                : itinerario.dosis_tipo === ""
+                ? "Dosis no especificada"
+                : itinerario.dosis + " " + itinerario.dosis_tipo
             }
             repetitions={null}
             datos={itinerario}
@@ -113,10 +121,16 @@ export default function DisplayMedicines({
             days={itinerario.dias}
             horario={
               itinerario?.horario?.toDate().getHours() +
-              ':' +
+              ":" +
               itinerario?.horario?.toDate().getMinutes()
             }
-            dosis={itinerario.dosis + ' ' + itinerario.dosis_tipo}
+            dosis={
+              itinerario.dosis === "" || itinerario.dosis === "0"
+                ? "Dosis no especificada"
+                : itinerario.dosis_tipo === ""
+                ? "Dosis no especificada"
+                : itinerario.dosis + " " + itinerario.dosis_tipo
+            }
             datos={itinerario}
             handleShowForm={handleShowForm}
             style={i === data?.length - 1}
@@ -130,8 +144,8 @@ export default function DisplayMedicines({
 }
 const styles = StyleSheet.create({
   titulo_tarjeta: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 20,
-    color: '#F6F6F6',
+    color: "#F6F6F6",
   },
 });

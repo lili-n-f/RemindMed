@@ -30,6 +30,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
   const [hourError, setHourError] = useState(false);
   const [durationError, setDurationError] = useState(false);
   const [dayError, setDayError] = useState(false);
+  const [medUserError, setMedUserError] = useState(false);
 
   //BOTONES DE DIAS DE LA SEMANA
   const [lunes, setLunes] = useState(itinerario?.dias?.[1]?.selected ?? false);
@@ -99,6 +100,10 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
 
   const [addUser, setAddUser] = useState(false); //para mostrar el input para agregar un nuevo usuario
   const [userOptions, setUserOptions] = useState([]); //las opciones de usuario que tiene para quién se toma el medicamento
+  const [medUser, setMedUser] = useState(
+    itinerario?.usuario ?? "Usuario actual"
+  ); //el usuario que toma el medicamento
+  const [medUserName, setMedUserName] = useState("");
 
   const getData = async () => {
     // Se trae la data de perfiles/usuarios asociados del usuario
@@ -185,6 +190,9 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
     setAddUser(false);
     setNotes("");
     setTextDate("DD/MM/YYYY");
+    setMedUser("Usuario actual");
+    setMedUserName("");
+    getData();
   };
 
   async function upload(doc) {
@@ -237,7 +245,43 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
       setDayError(true);
       errors.push("- Frecuencia");
     }
+    if (
+      medUser === "Otro" &&
+      (!medUserName || medUserName === "" || /^\s*$/.test(medUserName))
+    ) {
+      setMedUserError(true);
+      errors.push("- Nombre de quién toma el medicamento");
+    }
     return errors;
+  }
+
+  async function modifyUser() {
+    var found = false;
+    for (option of userOptions) {
+      //se valida que no exista ya el usuario agregado (para evitar usuarios duplicados)
+      if (medUserName === option) {
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      try {
+        var updatedUser = {
+          email: usuario.email,
+          name: usuario.name,
+          notas: usuario.notas,
+          perfiles_asoc: [...userOptions, medUserName], //se agrega el nuevo usuario a los perfiles asociados
+          sangre: usuario.sangre,
+          sexo: usuario.sexo,
+          uid: usuario.uid,
+        };
+
+        const usr = doc(db, "users", usuario.uid);
+        await updateDoc(usr, updatedUser);
+      } catch (e) {
+        console.error("Error adding document: ", e);
+      }
+    }
   }
 
   function onSubmit() {
@@ -285,15 +329,20 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
           repet_restantes: repet_restantes, //SE DEBE ACTUALIZAR CADA VEZ QUE SUENE LA ALARMA (OJO caso de intervalo en Todos los días es literal, caso de intervalo en Seleccionar días de la semana es por cada semana)
           dosis: dose, //ojoooo estos campos son opcionales, por tanto si dosis es 0 o vacío no se llenó
           dosis_tipo: doseType, //ojoooo si doseType es vacío la dosis no se llenó
-          //categoria: category, //ojooo si category es vacío no tiene categoría
-          //TO-DO USUARIOS
+          usuario: medUser === "Otro" ? medUserName : medUser, //si escogió agregar un nuevo usuario (opción "Otro") se coloca su nombre, si no se coloca lo escogido en el select (medUser)
           notas: notes, //ojoooo notas es opcional, puede estar vacío
         };
         console.log(JSON.stringify(newMed));
 
         upload(newMed);
+
+        if (medUser === "Otro") {
+          //si se agregó un nuevo usuario a los perfiles asociados, se guarda en la BD
+          modifyUser();
+        }
       } else {
         setDataError(errors);
+        setDisable(false);
       }
     } else {
       const errors = validateErrors();
@@ -337,20 +386,20 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
           repet_restantes: repet_restantes, //SE DEBE ACTUALIZAR CADA VEZ QUE SUENE LA ALARMA (OJO caso de intervalo en Todos los días es literal, caso de intervalo en Seleccionar días de la semana es por cada semana)
           dosis: dose, //ojoooo estos campos son opcionales, por tanto si dosis es 0 o vacío no se llenó
           dosis_tipo: doseType, //ojoooo si doseType es vacío la dosis no se llenó
-          //TO-DO USUARIOS
-          //categoria: category, //ojooo si category es vacío no tiene categoría
+          usuario: medUser === "Otro" ? medUserName : medUser, //si escogió agregar un nuevo usuario (opción "Otro") se coloca su nombre, si no se coloca lo escogido en el select (medUser)
           notas: notes, //ojoooo notas es opcional, puede estar vacío
         };
         console.log(changeMed);
         modify(changeMed);
       } else {
         setDataError(errors);
+        setDisable(false);
       }
     }
   }
 
   function makeItem(option) {
-    return <Select.Item label={option} value={option} />;
+    return <Select.Item label={option} value={option} key={option} />;
   }
 
   return (
@@ -527,7 +576,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
             jueves ||
             viernes ||
             sabado ||
-            domingo /*{intervalType === "Semanas" || itinerario?.dias ? (*/ ? (
+            domingo ? (
               <View style={styles.containerA}>
                 <FormControl.Label>
                   <Text color="platinum.500" fontWeight="bold">
@@ -537,11 +586,6 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                 <Button.Group justifyContent="center" my="2">
                   <Button
                     style={styles.days}
-                    /*backgroundColor={
-                    domingo || itinerario?.dias[0]?.selected
-                      ? "cyan.500"
-                      : "white"
-                  }*/
                     backgroundColor={domingo ? "cyan.500" : "white"}
                     onPress={() => setDomingo(!domingo)}
                     color="primary.700"
@@ -556,11 +600,6 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                   </Button>
                   <Button
                     fontWeight="bold"
-                    /*backgroundColor={
-                    lunes || itinerario?.dias[1]?.selected
-                      ? "cyan.500"
-                      : "white"
-                  }*/
                     backgroundColor={lunes ? "cyan.500" : "white"}
                     onPress={() => setLunes(!lunes)}
                     color="primary.700"
@@ -575,11 +614,6 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                   <Button
                     fontWeight="bold"
                     onPress={() => setMartes(!martes)}
-                    /*backgroundColor={
-                    martes || itinerario?.dias[2]?.selected
-                      ? "cyan.500"
-                      : "white"
-                  }*/
                     backgroundColor={martes ? "cyan.500" : "white"}
                     color="primary.700"
                     variant="subtle"
@@ -592,11 +626,6 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                   </Button>
                   <Button
                     fontWeight="bold"
-                    /*backgroundColor={
-                    miercoles || itinerario?.dias[3]?.selected
-                      ? "cyan.500"
-                      : "white"
-                  }*/
                     backgroundColor={miercoles ? "cyan.500" : "white"}
                     onPress={() => setMiercoles(!miercoles)}
                     color="primary.700"
@@ -610,11 +639,6 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                   </Button>
                   <Button
                     fontWeight="bold"
-                    /*backgroundColor={
-                    jueves || itinerario?.dias[4]?.selected
-                      ? "cyan.500"
-                      : "white"
-                  }*/
                     backgroundColor={jueves ? "cyan.500" : "white"}
                     onPress={() => setJueves(!jueves)}
                     color="primary.700"
@@ -628,11 +652,6 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                   </Button>
                   <Button
                     fontWeight="bold"
-                    /*backgroundColor={
-                    viernes || itinerario?.dias[5]?.selected
-                      ? "cyan.500"
-                      : "white"
-                  }*/
                     backgroundColor={viernes ? "cyan.500" : "white"}
                     onPress={() => setViernes(!viernes)}
                     color="primary.700"
@@ -646,11 +665,6 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                   </Button>
                   <Button
                     fontWeight="bold"
-                    /*backgroundColor={
-                    sabado || itinerario?.dias[6]?.selected
-                      ? "cyan.500"
-                      : "white"
-                  }*/
                     backgroundColor={sabado ? "cyan.500" : "white"}
                     onPress={() => setSabado(!sabado)}
                     color="primary.700"
@@ -805,25 +819,66 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                   ¿Quién lo toma?
                 </Text>
               </FormControl.Label>
-              <HStack justifyContent="space-between">
+              <VStack justifyContent="space-between">
                 <Select
                   backgroundColor="white"
                   borderRadius="20"
                   minWidth="100%"
                   borderColor="primary.300"
                   placeholderTextColor="gray.500"
-                  accessibilityLabel="Escoja la categoría"
-                  placeholder="Escoja la categoría"
-                  //selectedValue={}
+                  accessibilityLabel="Escoja la persona que toma el medicamento"
+                  placeholder="Escoja la persona que toma el medicamento"
+                  selectedValue={medUser}
                   onValueChange={(value) => {
-                    //setCategory(value);
+                    setMedUser(value);
+                    if (value == "Otro") {
+                      setAddUser(true); //con esto, se muestra input de nuevo usuario de medicina
+                    } else {
+                      setAddUser(false);
+                    }
                   }}
                 >
                   <Select.Item label="Yo" value="Usuario actual" />
-                  {userOptions.map(makeItem)}
-                  <Select.Item label="Otro" value="Usuario actual" />
+                  {
+                    userOptions
+                      .sort((a, b) =>
+                        a.localeCompare(b)
+                      ) /*Mostraremos las opciones en orden alfabético */
+                      .map(
+                        makeItem
+                      ) /*Con esto mostramos los perfiles asociados al usuario loggeado: usuarios de medicinas antes agregados*/
+                  }
+                  <Select.Item label="Otro" value="Otro" />
                 </Select>
-              </HStack>
+                {addUser ? (
+                  <View>
+                    <FormControl isRequired>
+                      <FormControl.Label>
+                        <Text color="platinum.500" fontWeight="bold">
+                          Nombre de quién toma el medicamento
+                        </Text>
+                      </FormControl.Label>
+                      <Input
+                        backgroundColor="white"
+                        borderRadius="20"
+                        variant="filled"
+                        borderColor="primary.300"
+                        placeholderTextColor="gray.500"
+                        placeholder="Nombre"
+                        value={medUserName}
+                        onChangeText={(value) => {
+                          setMedUserName(value);
+                        }}
+                      />
+                    </FormControl>
+                    {medUserError ? (
+                      <Text style={styles.error}>
+                        * Debe introducir un nombre
+                      </Text>
+                    ) : null}
+                  </View>
+                ) : null}
+              </VStack>
             </View>
 
             <View style={styles.containerE}>
@@ -903,8 +958,6 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    // borderWidth: 1,
-    // borderLeftColor: '#3e3675',
   },
   containerQ: {
     backgroundColor: "#3e3675",
