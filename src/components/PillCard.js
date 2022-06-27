@@ -28,7 +28,6 @@ export default function PillCard({
         showModal={showModal}
         handleCloseModal={handleCloseModal}
         notes={datos.notas}
-        category={datos.categoria}
       ></ModalView>
       <Box alignItems="center" marginBottom={style ? "8" : "0"}>
         <Button

@@ -82,7 +82,7 @@ export default function DisplayMedicines({
   }
 
   return (
-    <View style={{ height: "60%", paddingTop: 20 }}>
+    <View style={{ height: "84%", paddingTop: 20 }}>
       <ScrollView>
         <Box px="4">
           <Text color="white" pb="2" style={styles.titulo_tarjeta}>
@@ -119,11 +119,7 @@ export default function DisplayMedicines({
             key={itinerario.id}
             name={itinerario.nombre}
             days={itinerario.dias}
-            horario={
-              itinerario?.horario?.toDate().getHours() +
-              ":" +
-              itinerario?.horario?.toDate().getMinutes()
-            }
+            horario={getTime(itinerario?.horario?.toDate())}
             dosis={
               itinerario.dosis === "" || itinerario.dosis === "0"
                 ? "Dosis no especificada"

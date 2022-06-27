@@ -1,5 +1,5 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { View, ImageBackground, StyleSheet, ScrollView } from 'react-native';
+import React, { useState, useContext, useEffect } from "react";
+import { View, ImageBackground, StyleSheet, ScrollView } from "react-native";
 import {
   Box,
   StatusBar,
@@ -11,24 +11,18 @@ import {
   VStack,
   Button,
   TextArea,
-} from 'native-base';
-import Icon, { Icons } from '../components/Icons';
-import { logout } from '../../firebase';
-import { UserContext } from '../../ContextProvider';
-import { db } from '../../firebase';
-import {
-  collection,
-  doc,
-  getDocs,
-  updateDoc,
-  getDoc,
-} from 'firebase/firestore';
+} from "native-base";
+import Icon, { Icons } from "../components/Icons";
+import { logout } from "../../firebase";
+import { UserContext } from "../../ContextProvider";
+import { db } from "../../firebase";
+import { doc, getDoc } from "firebase/firestore";
 
-import { useIsFocused, useFocusEffect } from '@react-navigation/native';
-import Loading from '../components/Loading';
-import ProfileEdit from './ProfileEdit';
+import { useIsFocused, useFocusEffect } from "@react-navigation/native";
+import Loading from "../components/Loading";
+import ProfileEdit from "./ProfileEdit";
 
-const image = { uri: 'https://i.ibb.co/ypq3LQ1/fondo.png' };
+const image = { uri: "https://i.ibb.co/ypq3LQ1/fondo.png" };
 
 //Componente correspondiente al perfil del usuario.
 export default function Profile() {
@@ -51,14 +45,14 @@ export default function Profile() {
     // Aquí se verifica si se está cargando el perfil y si el usuario NO ES falsy (es decir, no null), en cuyo caso ya se cargó correctamente el usuario y se settea el loading como false para que se renderice la página que es
     // Depende de usuario porque cuando este cambie, se revisará la condición
     if (loading && usuario) {
-      console.log('usuario: ' + usuario);
+      console.log("usuario: " + usuario);
       setLoading(false);
     }
   }, [usuario]);
 
   const getData = async () => {
     // Se trae la data del usuario
-    const usr = await getDoc(doc(db, 'users', user.uid));
+    const usr = await getDoc(doc(db, "users", user.uid));
     setUsuario(usr.data()); // IMPORTANTE el .data() para que se guarde correctamente
   };
 
@@ -70,14 +64,14 @@ export default function Profile() {
     <ImageBackground
       source={image}
       resizeMode="cover"
-      style={{ width: '100%', height: '100%' }}
+      style={{ width: "100%", height: "100%" }}
     >
       <View style={styles.container1}>
         <Box w="60">
           <Divider my="2" bg="green.500" thickness="4" />
         </Box>
         <Text style={styles.titulo}>
-          {usuario?.name ? usuario?.name : 'Perfil'}
+          {usuario?.name ? usuario?.name : "Perfil"}
         </Text>
         <Box w="300">
           <Divider my="2" bg="green.500" thickness="4" />
@@ -97,7 +91,7 @@ export default function Profile() {
                   Sexo:
                 </Text>
                 <Text color="platinum.500" margin={1}>
-                  {usuario?.sexo ? usuario?.sexo : 'N/A'}
+                  {usuario?.sexo ? usuario?.sexo : "N/A"}
                 </Text>
               </HStack>
             </View>
@@ -108,7 +102,7 @@ export default function Profile() {
                   Grupo sanguíneo:
                 </Text>
                 <Text color="platinum.500" margin={1}>
-                  {usuario?.sangre ? usuario?.sangre : 'N/A'}
+                  {usuario?.sangre ? usuario?.sangre : "N/A"}
                 </Text>
               </HStack>
             </View>
@@ -121,7 +115,7 @@ export default function Profile() {
                 <TextArea
                   h={40}
                   placeholder={
-                    usuario?.notas ? usuario?.notas : 'No se han agregado notas'
+                    usuario?.notas ? usuario?.notas : "No se han agregado notas"
                   } //NOTAS TO-DO
                   placeholderTextColor="gray.500"
                   fontSize={13}
@@ -143,21 +137,21 @@ export default function Profile() {
               >
                 Editar perfil
               </Text>
-              <Button borderRadius={'10'} onPress={() => setEdit(true)}>
+              <Button borderRadius={"10"} onPress={() => setEdit(true)}>
                 <Icon
                   type={Icons.MaterialCommunityIcons}
-                  name={'account-edit'}
-                  color={'white'}
+                  name={"account-edit"}
+                  color={"white"}
                 />
               </Button>
             </View>
 
             <Button
               borderRadius={20}
-              bg={'cyan.500'}
-              marginTop={'5'}
+              bg={"cyan.500"}
+              marginTop={"5"}
               marginBottom={5}
-              alignSelf={'center'}
+              alignSelf={"center"}
               width="50%"
               onPress={() => {
                 setDisable(true);
@@ -166,15 +160,15 @@ export default function Profile() {
               }}
               isDisabled={disable}
             >
-              <HStack justifyContent={'space-evenly'}>
-                <Text color={'white'} alignSelf={'flex-start'}>
+              <HStack justifyContent={"space-evenly"}>
+                <Text color={"white"} alignSelf={"flex-start"}>
                   Cerrar sesión
                 </Text>
-                <View style={{ minWidth: '10%' }}></View>
+                <View style={{ minWidth: "10%" }}></View>
                 <Icon
                   type={Icons.MaterialCommunityIcons}
-                  name={'logout'}
-                  color={'white'}
+                  name={"logout"}
+                  color={"white"}
                 />
               </HStack>
             </Button>
@@ -184,12 +178,12 @@ export default function Profile() {
     </ImageBackground>
   ) : usuario ? (
     <ProfileEdit
-      nombre={usuario?.name ?? ''}
-      sangre={usuario?.sangre ?? ''}
-      sexo={usuario?.sexo ?? ''}
-      notas={usuario?.notas ?? ''}
+      nombre={usuario?.name ?? ""}
+      sangre={usuario?.sangre ?? ""}
+      sexo={usuario?.sexo ?? ""}
+      notas={usuario?.notas ?? ""}
       uid={usuario?.uid}
-      email={usuario?.email ?? ''}
+      email={usuario?.email ?? ""}
       perfiles_asoc={usuario?.perfiles_asoc ?? []}
       handleGoBack={handleHideEdit}
     />
@@ -198,34 +192,34 @@ export default function Profile() {
 
 const styles = StyleSheet.create({
   titulo: {
-    color: '#E5E5E5',
-    fontWeight: 'bold',
+    color: "#E5E5E5",
+    fontWeight: "bold",
     fontSize: 40,
     lineHeight: 40,
   },
 
   container1: {
-    color: '#FFFF',
+    color: "#FFFF",
     marginTop: 20,
-    alignItems: 'center',
-    width: '100%',
+    alignItems: "center",
+    width: "100%",
   },
 
   subtitulo: {
-    fontWeight: '600',
+    fontWeight: "600",
     fontSize: 20,
-    color: '#E5E5E5',
+    color: "#E5E5E5",
   },
   containerQ: {
-    backgroundColor: '#3e3675',
-    width: '100%',
+    backgroundColor: "#3e3675",
+    width: "100%",
     padding: 10,
     borderRadius: 20,
     marginTop: 20,
   },
   containerK: {
-    backgroundColor: '#3e3675',
-    width: '100%',
+    backgroundColor: "#3e3675",
+    width: "100%",
     padding: 10,
     borderRadius: 20,
     marginTop: 10,

@@ -1,8 +1,8 @@
-import React, { useState, useContext } from 'react';
-import { View, ImageBackground, StyleSheet, ScrollView } from 'react-native';
-import { updateDoc, doc, getDoc } from 'firebase/firestore';
-import { UserContext } from '../../ContextProvider';
-import { db } from '../../firebase';
+import React, { useState, useContext } from "react";
+import { View, ImageBackground, StyleSheet, ScrollView } from "react-native";
+import { updateDoc, doc, getDoc } from "firebase/firestore";
+import { UserContext } from "../../ContextProvider";
+import { db } from "../../firebase";
 import {
   Box,
   StatusBar,
@@ -13,11 +13,11 @@ import {
   HStack,
   Button,
   TextArea,
-} from 'native-base';
-import Icon, { Icons } from '../components/Icons';
-import AlertMessage from '../components/AlertMessage';
+} from "native-base";
+import Icon, { Icons } from "../components/Icons";
+import AlertMessage from "../components/AlertMessage";
 
-const image = { uri: 'https://i.ibb.co/ypq3LQ1/fondo.png' };
+const image = { uri: "https://i.ibb.co/ypq3LQ1/fondo.png" };
 
 export default function ProfileEdit({
   nombre,
@@ -46,11 +46,11 @@ export default function ProfileEdit({
   async function modify() {
     setDisable(true);
     try {
-      console.log('modify');
+      console.log("modify");
 
       var updatedUser = {
         email: email,
-        name: !name || name === '' || /^\s*$/.test(name) ? nombre : name, //si el usuario nombre es vacío, se coloca el nombre original
+        name: !name || name === "" || /^\s*$/.test(name) ? nombre : name, //si el usuario nombre es vacío, se coloca el nombre original
         notas: notes,
         perfiles_asoc: perfiles_asoc,
         sangre: blood,
@@ -58,11 +58,11 @@ export default function ProfileEdit({
         uid: uid,
       };
 
-      const usr = doc(db, 'users', uid);
+      const usr = doc(db, "users", uid);
       await updateDoc(usr, updatedUser);
       setDone(true);
     } catch (e) {
-      console.error('Error adding document: ', e);
+      console.error("Error adding document: ", e);
     }
     setDisable(false);
   }
@@ -71,23 +71,23 @@ export default function ProfileEdit({
       {done ? (
         <AlertMessage
           mNumber={0}
-          header={'Se ha modificado con éxito'}
+          header={"Se ha modificado con éxito"}
           handleCloseAlert={handleCloseAlert}
         />
       ) : null}
       <ImageBackground
         source={image}
         resizeMode="cover"
-        style={{ width: '100%', height: '100%' }}
+        style={{ width: "100%", height: "100%" }}
       >
         <Button
           borderRadius="full"
           onPress={() => handleGoBack()}
           mt="5"
           ml="5"
-          style={{ position: 'absolute', zIndex: 10 }}
+          style={{ position: "absolute", zIndex: 10 }}
         >
-          <Icon type={Icons.AntDesign} name={'back'} color={'white'} />
+          <Icon type={Icons.AntDesign} name={"back"} color={"white"} />
         </Button>
         <View style={styles.container1}>
           <Box w="60">
@@ -209,18 +209,18 @@ export default function ProfileEdit({
               {disable ? (
                 <Button
                   borderRadius={20}
-                  marginTop={'5'}
+                  marginTop={"5"}
                   width="60%"
-                  bg={'cyan.500'}
+                  bg={"cyan.500"}
                   isLoading
                   isLoadingText="Guardando..."
                 ></Button>
               ) : (
                 <Button
                   borderRadius={20}
-                  marginTop={'5'}
+                  marginTop={"5"}
                   width="60%"
-                  bg={'cyan.500'}
+                  bg={"cyan.500"}
                   onPress={() => modify()}
                 >
                   Guardar
@@ -236,25 +236,25 @@ export default function ProfileEdit({
 
 const styles = StyleSheet.create({
   titulo: {
-    color: '#E5E5E5',
-    fontWeight: 'bold',
+    color: "#E5E5E5",
+    fontWeight: "bold",
     fontSize: 40,
     lineHeight: 40,
   },
   container1: {
-    color: '#FFFF',
+    color: "#FFFF",
     marginTop: 20,
-    alignItems: 'center',
-    width: '100%',
+    alignItems: "center",
+    width: "100%",
   },
   subtitulo: {
-    fontWeight: '600',
+    fontWeight: "600",
     fontSize: 20,
-    color: '#E5E5E5',
+    color: "#E5E5E5",
   },
   containerQ: {
-    backgroundColor: '#3e3675',
-    width: '100%',
+    backgroundColor: "#3e3675",
+    width: "100%",
     padding: 10,
     borderRadius: 20,
     marginTop: 20,

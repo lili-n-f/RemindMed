@@ -53,16 +53,31 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
     itinerario?.dias?.[0]?.selected ?? false
   );
 
-  const [name, setName] = useState(itinerario?.nombre ?? "");
+  const [addMed, setAddMed] = useState(false);
+  const [medOptions, setMedOptions] = useState([]);
+  const [commonMeds, setCommonMeds] = useState([]); //TO-DO
+  const [med, setMed] = useState(itinerario?.nombre ?? "");
+  const [name, setName] = useState("");
 
   const [showTime, setShowTime] = useState(false); //para mostrar el time picker cuando es true
   const [textTime, setTextTime] = useState(
     //la hora mostrada como texto (si no hay, el default es --:--)
-    (itinerario?.horario?.toDate().getHours() ?? "--") +
-      ":" +
-      (itinerario?.horario?.toDate().getMinutes() ?? "--")
+    itinerario && itinerario.horario
+      ? getTime(itinerario.horario.toDate())
+      : "--:--"
   );
   const [time, setTime] = useState(itinerario?.horario.toDate() ?? null);
+
+  function getTime(time) {
+    let tempTime =
+      parseInt(time.getHours()) <= 9 ? "0" + time.getHours() : time.getHours();
+    tempTime += ":";
+    tempTime +=
+      parseInt(time.getMinutes()) <= 9
+        ? "0" + time.getMinutes()
+        : time.getMinutes();
+    return tempTime;
+  }
 
   const [intervalType, setIntervalType] = useState(
     itinerario?.dias ? "Seleccionar días de la semana" : "Todos los días"
@@ -105,17 +120,24 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
   ); //el usuario que toma el medicamento
   const [medUserName, setMedUserName] = useState("");
 
-  const getData = async () => {
-    // Se trae la data de perfiles/usuarios asociados del usuario
+  const getUserData = async () => {
+    // Se trae la data del usuario loggeado
     const usr = await getDoc(doc(db, "users", user.uid));
     setUsuario(usr.data()); // IMPORTANTE el .data() para que se guarde correctamente
     setUserOptions(usr.data().perfiles_asoc);
+    setMedOptions(usr.data().medicinas_asoc);
+  };
+
+  const getMedData = async () => {
+    // Se trae los medicamentos cargados en la BD
+    //TO-DO
   };
 
   useEffect(() => {
     // Este useEffect es para traerse la info del user que está loggeado, depende del isFocused
     if (isFocused) {
-      getData();
+      getUserData();
+      getMedData();
     }
   }, [isFocused]);
 
@@ -178,6 +200,8 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
     setSabado(false);
     setDomingo(false);
     setName("");
+    setMed(""); //IDK TO-DO
+    setAddMed(false);
     setShowTime(false);
     setTextTime("--:--");
     setTime(null);
@@ -192,7 +216,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
     setTextDate("DD/MM/YYYY");
     setMedUser("Usuario actual");
     setMedUserName("");
-    getData();
+    getUserData();
   };
 
   async function upload(doc) {
@@ -222,7 +246,10 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
 
   function validateErrors() {
     let errors = [];
-    if (!name || name === "" || /^\s*$/.test(name)) {
+    if (
+      med === "" ||
+      (med === "Otro" && (!name || name === "" || /^\s*$/.test(name)))
+    ) {
       setNameError(true);
       errors.push("- Nombre del medicamento");
     }
@@ -256,21 +283,52 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
   }
 
   async function modifyUser() {
-    var found = false;
+    var foundUser = false;
     for (option of userOptions) {
       //se valida que no exista ya el usuario agregado (para evitar usuarios duplicados)
       if (medUserName === option) {
-        found = true;
+        foundUser = true;
         break;
       }
     }
-    if (!found) {
-      try {
+    var foundMed = false;
+    for (option of medOptions) {
+      //se valida que no haya medicamentos duplicados
+      if (name === option) {
+        foundMed = true;
+        break;
+      }
+    }
+
+    try {
+      if (!foundUser && medUserName) {
+        //se agrega el nuevo usuario a los perfiles asociados
+        var newPerfilesAsoc = [...userOptions, medUserName].sort((a, b) =>
+          a.localeCompare(b)
+        ); /*Mostraremos las opciones en orden alfabético */
+      } else {
+        //nada que agregar, ya existía la opción nueva
+        var newPerfilesAsoc = userOptions;
+      }
+
+      if (!foundMed && name) {
+        //se agrega el nuevo medicamento a los medicamentos del usuario
+        var newMedicinasAsoc = [...medOptions, name].sort((a, b) =>
+          a.localeCompare(b)
+        );
+      } else {
+        //nada que agregar
+        var newMedicinasAsoc = medOptions;
+      }
+
+      if (!foundMed || !foundUser) {
+        //sólo si hay algo nuevo que agregar se ejecuta el guardado
         var updatedUser = {
           email: usuario.email,
           name: usuario.name,
           notas: usuario.notas,
-          perfiles_asoc: [...userOptions, medUserName], //se agrega el nuevo usuario a los perfiles asociados
+          perfiles_asoc: newPerfilesAsoc,
+          medicinas_asoc: newMedicinasAsoc,
           sangre: usuario.sangre,
           sexo: usuario.sexo,
           uid: usuario.uid,
@@ -278,15 +336,21 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
 
         const usr = doc(db, "users", usuario.uid);
         await updateDoc(usr, updatedUser);
-      } catch (e) {
-        console.error("Error adding document: ", e);
       }
+    } catch (e) {
+      console.error("Error adding document: ", e);
     }
   }
 
   function onSubmit() {
+    setNameError(false);
+    setHourError(false);
+    setDurationError(false);
+    setDayError(false);
+    setMedUserError(false);
     if (newPill) {
       const errors = validateErrors();
+
       if (errors.length === 0) {
         let dias;
         intervalType === "Seleccionar días de la semana"
@@ -320,7 +384,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
 
         var newMed = {
           activo: true,
-          nombre: name,
+          nombre: med === "Otro" ? name : med, //si escogió agregar un nuevo medicamento (opción "Otro") se coloca su nombre, si no se coloca lo escogido en el select (med)
           fecha_registro: new Date(), //esto para hacer los cálculos de las fechas finales
           horario: time,
           dias: dias, //SI ESTE VALOR ES NULL, SE SABE QUE EL INTERVALO ES EN Todos los días, de lo contrario, Seleccionar días de la semana
@@ -336,8 +400,8 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
 
         upload(newMed);
 
-        if (medUser === "Otro") {
-          //si se agregó un nuevo usuario a los perfiles asociados, se guarda en la BD
+        if (medUser === "Otro" || med === "Otro") {
+          //si se agregó un nuevo usuario a los perfiles asociados o un med, se guarda en la BD
           modifyUser();
         }
       } else {
@@ -377,7 +441,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
         }
         var changeMed = {
           activo: true,
-          nombre: name,
+          nombre: med === "Otro" ? name : med, //si escogió agregar un nuevo medicamento (opción "Otro") se coloca su nombre, si no se coloca lo escogido en el select (med)
           fecha_registro: new Date(), //esto para hacer los cálculos de las fechas finales
           horario: time,
           dias: dias, //SI ESTE VALOR ES NULL, SE SABE QUE EL INTERVALO ES EN Todos los días, de lo contrario, Seleccionar días de la semana
@@ -391,6 +455,11 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
         };
         console.log(changeMed);
         modify(changeMed);
+
+        if (medUser === "Otro" || med === "Otro") {
+          //si se agregó un nuevo usuario a los perfiles asociados o un med, se guarda en la BD
+          modifyUser();
+        }
       } else {
         setDataError(errors);
         setDisable(false);
@@ -438,9 +507,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
           <Divider my="2" bg="green.500" thickness="4" />
         </Box>
         <Text style={styles.titulo}>
-          {itinerario
-            ? "Modifica el medicamento"
-            : "Agrega un nuevo medicamento"}
+          {itinerario ? "Modifica el recordatorio" : "Agrega un recordatorio"}
         </Text>
         <Box w="300">
           <Divider my="2" bg="green.500" thickness="4" />
@@ -462,25 +529,68 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
             <View style={styles.containerQ}>
               <FormControl.Label>
                 <Text color="platinum.500" fontWeight="bold">
-                  Nombre del medicamento
+                  Medicamento
                 </Text>
               </FormControl.Label>
-
-              <Input
-                backgroundColor="white"
-                borderRadius="20"
-                variant="outline"
-                borderColor="primary.300"
-                placeholder="Ingrese nombre del medicamento"
-                placeholderTextColor="gray.500"
-                onChangeText={(text) => {
-                  setName(text);
-                }}
-                value={name}
-              />
-              {nameError ? (
-                <Text style={styles.error}>* Debe introducir un nombre</Text>
-              ) : null}
+              <VStack justifyContent="space-between">
+                <Select
+                  backgroundColor="white"
+                  borderRadius="20"
+                  minWidth="100%"
+                  borderColor="primary.300"
+                  placeholderTextColor="gray.500"
+                  accessibilityLabel="Escoja el medicamento"
+                  placeholder="Escoja el medicamento"
+                  selectedValue={med}
+                  onValueChange={(value) => {
+                    setMed(value);
+                    if (value == "Otro") {
+                      setAddMed(true); //con esto, se muestra input de nueva medicina
+                    } else {
+                      setAddMed(false);
+                    }
+                  }}
+                >
+                  <Select.Item
+                    label={
+                      "Medicamento mientras tanto" /*TO-DO: IMPLEMENTACIÓN DE MEDICAMENTOS DESDE LA BD */
+                    }
+                    value="Prueba"
+                  />
+                  {
+                    medOptions.map(
+                      makeItem
+                    ) /*Con esto mostramos los medicinas custom del usuario loggeado */
+                  }
+                  <Select.Item label="Otro" value="Otro" />
+                </Select>
+                {addMed ? (
+                  <View>
+                    <FormControl.Label>
+                      <Text color="platinum.500" fontWeight="bold">
+                        Nombre del medicamento
+                      </Text>
+                    </FormControl.Label>
+                    <Input
+                      backgroundColor="white"
+                      borderRadius="20"
+                      variant="outline"
+                      borderColor="primary.300"
+                      placeholder="Ingrese nombre del medicamento"
+                      placeholderTextColor="gray.500"
+                      onChangeText={(text) => {
+                        setName(text);
+                      }}
+                      value={name}
+                    />
+                    {nameError ? (
+                      <Text style={styles.error}>
+                        * Debe introducir un nombre
+                      </Text>
+                    ) : null}
+                  </View>
+                ) : null}
+              </VStack>
             </View>
             <View style={styles.containerB}>
               <FormControl.Label>
@@ -840,13 +950,9 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                 >
                   <Select.Item label="Yo" value="Usuario actual" />
                   {
-                    userOptions
-                      .sort((a, b) =>
-                        a.localeCompare(b)
-                      ) /*Mostraremos las opciones en orden alfabético */
-                      .map(
-                        makeItem
-                      ) /*Con esto mostramos los perfiles asociados al usuario loggeado: usuarios de medicinas antes agregados*/
+                    userOptions.map(
+                      makeItem
+                    ) /*Con esto mostramos los perfiles asociados al usuario loggeado: usuarios de medicinas antes agregados*/
                   }
                   <Select.Item label="Otro" value="Otro" />
                 </Select>

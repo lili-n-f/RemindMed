@@ -3,12 +3,13 @@ import { TouchableOpacity, StyleSheet, Text } from "react-native";
 import Medicines from "../screens/Medicines";
 import PillFormPage from "../screens/PillFormPage";
 import Profile from "../screens/Profile";
+import Tracking from "../screens/Tracking";
 import Icon, { Icons } from "./Icons";
 
 const TabArr = [
   {
-    route: "Medicinas",
-    label: "Medicinas",
+    route: "Itinerario",
+    label: "Itinerario",
     type: Icons.MaterialCommunityIcons,
     activeIcon: "pill",
     inActiveIcon: "pill",
@@ -21,6 +22,14 @@ const TabArr = [
     activeIcon: "add-circle",
     inActiveIcon: "add-circle-outline",
     component: PillFormPage,
+  },
+  {
+    route: "Seguimiento",
+    label: "Seguimiento",
+    type: Icons.Ionicons,
+    activeIcon: "calendar",
+    inActiveIcon: "calendar-outline",
+    component: Tracking,
   },
   {
     route: "Perfil",
