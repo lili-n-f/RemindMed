@@ -89,50 +89,66 @@ export default function DisplayMedicines({
             Hoy
           </Text>
         </Box>
-        {filterDataIsToday(sortDataByHour(data))?.map((itinerario, i) => (
-          <PillCard
-            key={itinerario.id}
-            name={itinerario.nombre}
-            days={itinerario.dias}
-            horario={getTime(itinerario?.horario?.toDate())}
-            dosis={
-              itinerario.dosis === "" || itinerario.dosis === "0"
-                ? "Dosis no especificada"
-                : itinerario.dosis_tipo === ""
-                ? "Dosis no especificada"
-                : itinerario.dosis + " " + itinerario.dosis_tipo
-            }
-            repetitions={null}
-            datos={itinerario}
-            handleShowForm={handleShowForm}
-            style={i === data?.length - 1}
-            handleDelete={handleDelete}
-          ></PillCard>
-        ))}
+        {filterDataIsToday(data).length !== 0 ? (
+          filterDataIsToday(sortDataByHour(data))?.map((itinerario, i) => (
+            <PillCard
+              key={itinerario.id}
+              name={itinerario.nombre}
+              days={itinerario.dias}
+              horario={getTime(itinerario?.horario?.toDate())}
+              dosis={
+                itinerario.dosis === "" || itinerario.dosis === "0"
+                  ? "Dosis no especificada"
+                  : itinerario.dosis_tipo === ""
+                  ? "Dosis no especificada"
+                  : itinerario.dosis + " " + itinerario.dosis_tipo
+              }
+              repetitions={null}
+              datos={itinerario}
+              handleShowForm={handleShowForm}
+              style={i === data?.length - 1}
+              handleDelete={handleDelete}
+            ></PillCard>
+          ))
+        ) : (
+          <Box px="4" padding={5} paddingLeft={30}>
+            <Text color="white" pb="2" style={styles.mensaje}>
+              No se tienen recordatorios para hoy
+            </Text>
+          </Box>
+        )}
         <Box px="4" pt="6">
           <Text color="white" pb="2" style={styles.titulo_tarjeta}>
             Otros días
           </Text>
         </Box>
-        {filterDataIsNotToday(sortDataByHour(data))?.map((itinerario, i) => (
-          <PillCard
-            key={itinerario.id}
-            name={itinerario.nombre}
-            days={itinerario.dias}
-            horario={getTime(itinerario?.horario?.toDate())}
-            dosis={
-              itinerario.dosis === "" || itinerario.dosis === "0"
-                ? "Dosis no especificada"
-                : itinerario.dosis_tipo === ""
-                ? "Dosis no especificada"
-                : itinerario.dosis + " " + itinerario.dosis_tipo
-            }
-            datos={itinerario}
-            handleShowForm={handleShowForm}
-            style={i === data?.length - 1}
-            handleDelete={handleDelete}
-          ></PillCard>
-        ))}
+        {filterDataIsNotToday(data).length !== 0 ? (
+          filterDataIsNotToday(sortDataByHour(data))?.map((itinerario, i) => (
+            <PillCard
+              key={itinerario.id}
+              name={itinerario.nombre}
+              days={itinerario.dias}
+              horario={getTime(itinerario?.horario?.toDate())}
+              dosis={
+                itinerario.dosis === "" || itinerario.dosis === "0"
+                  ? "Dosis no especificada"
+                  : itinerario.dosis_tipo === ""
+                  ? "Dosis no especificada"
+                  : itinerario.dosis + " " + itinerario.dosis_tipo
+              }
+              datos={itinerario}
+              handleShowForm={handleShowForm}
+              style={i === data?.length - 1}
+              handleDelete={handleDelete}
+            ></PillCard>
+          ))
+        ) : (
+          <Box px="4" padding={5} paddingLeft={30}>
+            <Text color="white" pb="2" style={styles.mensaje}>
+              No se tienen recordatorios otros días
+            </Text>
+          </Box>
+        )}
         <Box h="10"></Box>
       </ScrollView>
     </View>
@@ -142,6 +158,10 @@ const styles = StyleSheet.create({
   titulo_tarjeta: {
     fontWeight: "bold",
     fontSize: 20,
+    color: "#F6F6F6",
+  },
+  mensaje: {
+    fontSize: 17,
     color: "#F6F6F6",
   },
 });
