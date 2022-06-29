@@ -68,6 +68,7 @@ export default function Medicines() {
     setItinerarioModify(itinerarioM);
   };
   const handleClose = async (delete_) => {
+    //elimina recordatorio en base a lo que el user puso en el alert
     if (delete_ && dataToDelete) {
       const ref = await doc(
         db,

@@ -3,11 +3,11 @@ import { AlertDialog } from 'native-base';
 import React from 'react';
 
 export default function UserAlertDialog({
-  isOpen,
-  handleClose,
-  title,
-  description,
-  buttonName,
+  isOpen, //para que aparezca la alerta (true/false)
+  handleClose, //se le manda true cuando se acepta lo que se quiere hacer y false cuando se cancela la accion
+  title, //titulo de alerta
+  description, //descripcion
+  buttonName, //nombre del boton de la accion a realizar
 }) {
   //Pregunta al usuario si esta seguro de hacer algo
 

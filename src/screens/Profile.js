@@ -28,7 +28,7 @@ const image = { uri: 'https://i.ibb.co/ypq3LQ1/fondo.png' };
 //Componente correspondiente al perfil del usuario.
 export default function Profile() {
   const [disable, setDisable] = useState(false);
-  const [alertDialog, setAlertDialog] = useState(false);
+  const [alertDialog, setAlertDialog] = useState(false); //mostrar o no alerta
 
   const isFocused = useIsFocused();
   const { user } = useContext(UserContext);
@@ -52,6 +52,7 @@ export default function Profile() {
     }
   }, [usuario]);
 
+  //cierra sesion si el usuario lo acciona en el alert
   const handleLogOut = (logout_) => {
     if (logout_) {
       setDisable(true);
