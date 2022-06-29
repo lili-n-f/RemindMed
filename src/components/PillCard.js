@@ -162,15 +162,24 @@ export default function PillCard({
                   justifyContent="center"
                   paddingY="5"
                 >
-                  <Text
-                    color="white"
-                    fontWeight={'medium'}
-                    fontSize="18"
-                    style={styles.subtitulo_tarjetas}
-                    textAlign={'center'}
-                  >
-                    Omitir
-                  </Text>
+                  <HStack space={2} w="100%">
+                    <Icon
+                      type={Icons.AntDesign}
+                      name={'close'}
+                      color={'#F6F6F6'}
+                      // style={{ backgroundColor: 'blue' }}
+                      size={29}
+                    />
+                    <Text
+                      color="white"
+                      fontWeight={'medium'}
+                      fontSize="18"
+                      textAlign={'center'}
+                      style={styles.subtitulo_tarjetas}
+                    >
+                      Omitir
+                    </Text>
+                  </HStack>
                 </Button>
                 <Button
                   // borderRightWidth="0.5"
@@ -186,15 +195,24 @@ export default function PillCard({
                   borderBottomLeftRadius={'none'}
                   borderRadius="20"
                 >
-                  <Text
-                    color="white"
-                    fontWeight={'medium'}
-                    fontSize="18"
-                    textAlign={'center'}
-                    style={styles.subtitulo_tarjetas}
-                  >
-                    Tomar
-                  </Text>
+                  <HStack space={2} w="100%">
+                    <Icon
+                      type={Icons.AntDesign}
+                      name={'check'}
+                      color={'#F6F6F6'}
+                      // style={{ backgroundColor: 'blue' }}
+                      size={29}
+                    />
+                    <Text
+                      color="white"
+                      fontWeight={'medium'}
+                      fontSize="18"
+                      textAlign={'center'}
+                      style={styles.subtitulo_tarjetas}
+                    >
+                      Tomado
+                    </Text>
+                  </HStack>
                 </Button>
                 {/* <Button
                 variant="unstyled"
