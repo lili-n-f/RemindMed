@@ -1,13 +1,18 @@
 import { ImageBackground, StyleSheet, View, Text } from "react-native";
 import { Divider, Box, Button } from "native-base";
-import React, { useState, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { UserContext } from "../../ContextProvider";
 import Register from "./Register";
 import NavigationBar from "../components/NavigationBar";
 
+import { async } from "@firebase/util";
+
 const image = { uri: "https://i.ibb.co/X5v02CZ/fondopantallainicio.png" };
 
+
 export default function Welcome() {
+
+
   const [begin, setBegin] = useState(false);
 
   const { user } = useContext(UserContext);
