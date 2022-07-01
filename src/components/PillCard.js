@@ -1,9 +1,9 @@
 import { Box, VStack, HStack, Button, Text } from 'native-base';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StyleSheet } from 'react-native';
-import React from 'react';
 import ModalView from './ModalView';
 import Icon, { Icons } from './Icons';
+import React from 'react';
 
 export default function PillCard({
   name,
@@ -30,6 +30,7 @@ export default function PillCard({
         showModal={showModal}
         handleCloseModal={handleCloseModal}
         notes={datos.notas}
+        perfil_asoc={datos.usuario}
       ></ModalView>
       <Box alignItems="center" marginBottom={style ? '7' : '0'}>
         <Button
@@ -138,6 +139,14 @@ export default function PillCard({
                   : 'Todos los días') +
                   ' - ' +
                   horario}
+              </Text>
+              <Text
+                color="white"
+                fontWeight={'medium'}
+                fontSize="18"
+                style={styles.subtitulo_tarjetas}
+              >
+                {'Dirigido a: ' + datos.usuario}
               </Text>
             </HStack>
             {isToday ? (
