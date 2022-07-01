@@ -1,6 +1,8 @@
 import { Box, VStack, HStack, Text, Modal, Divider } from "native-base";
 import { StyleSheet } from "react-native";
-import React from "react";
+import React, { useState, useContext, useEffect } from 'react';
+import { UserContext } from '../../ContextProvider';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function ModalView({
   name,
@@ -10,6 +12,7 @@ export default function ModalView({
   showModal,
   handleCloseModal,
   notes,
+  perfil_asoc,
 }) {
   return (
     <Modal isOpen={showModal} onClose={() => handleCloseModal()}>
@@ -122,6 +125,15 @@ export default function ModalView({
           >
             <Text color="gray.700">Notas: </Text>
             {notes ? notes : "No se agregaron notas"}
+          </Text>
+          <Text
+            color="primary.600"
+            fontWeight={"medium"}
+            fontSize="18"
+            style={styles.subtitulo_tarjetas}
+          >
+            <Text color="gray.700">Dirigido a: </Text>
+            {perfil_asoc}
           </Text>
         </VStack>
       </Modal.Content>

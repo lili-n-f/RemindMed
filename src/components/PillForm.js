@@ -116,7 +116,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
   const [addUser, setAddUser] = useState(false); //para mostrar el input para agregar un nuevo usuario
   const [userOptions, setUserOptions] = useState([]); //las opciones de usuario que tiene para quién se toma el medicamento
   const [medUser, setMedUser] = useState(
-    itinerario?.usuario ?? 'Usuario actual'
+    itinerario?.usuario ?? ''
   ); //el usuario que toma el medicamento
   const [medUserName, setMedUserName] = useState('');
 
@@ -214,7 +214,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
     setAddUser(false);
     setNotes('');
     setTextDate('DD/MM/YYYY');
-    setMedUser('Usuario actual');
+    setMedUser('');
     setMedUserName('');
     getUserData();
   };
@@ -948,7 +948,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                     }
                   }}
                 >
-                  <Select.Item label="Yo" value="Usuario actual" />
+                  <Select.Item label="Yo" value= {usuario ? usuario.name : 'Usuario actual'} />
                   {
                     userOptions.map(
                       makeItem
@@ -970,7 +970,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                         variant="filled"
                         borderColor="primary.300"
                         placeholderTextColor="gray.500"
-                        placeholder="Nombre"
+                        placeholder= 'Nombre'
                         value={medUserName}
                         onChangeText={(value) => {
                           setMedUserName(value);
