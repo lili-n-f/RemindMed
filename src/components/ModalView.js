@@ -133,7 +133,7 @@ export default function ModalView({
             style={styles.subtitulo_tarjetas}
           >
             <Text color="gray.700">Dirigido a: </Text>
-            {perfil_asoc}
+            {perfil_asoc ? perfil_asoc : 'Persona no especificada'}
           </Text>
         </VStack>
       </Modal.Content>

@@ -146,7 +146,7 @@ export default function PillCard({
                 fontSize="18"
                 style={styles.subtitulo_tarjetas}
               >
-                {'Dirigido a: ' + datos.usuario}
+                {'Dirigido a: ' + (datos.usuario ? datos.usuario : 'Persona no especificada')}
               </Text>
             </HStack>
             {isToday ? (
