@@ -8,6 +8,7 @@ import {
   signOut,
 } from "firebase/auth";
 import { GoogleAuthProvider } from "firebase/auth";
+import * as Notifications from 'expo-notifications';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAreJKr3j90FE7CH2Z96El1DHNGQf2YSJU",
@@ -41,6 +42,8 @@ const register = async (name, email, password) => {
     const res = await createUserWithEmailAndPassword(auth, email, password);
     const user = res.user;
     //campos que tendrá la cuenta en sí
+    const token = (await Notifications.getExpoPushTokenAsync()).data;
+  
     await setDoc(doc(db, "users", user.uid), {
       uid: user.uid,
       name: name,
@@ -50,6 +53,7 @@ const register = async (name, email, password) => {
       sexo: null,
       sangre: null,
       notas: null,
+      token: token,
     });
   } catch (err) {
     console.error(err);
