@@ -37,6 +37,15 @@ export default function Medicines() {
 
   const { user } = useContext(UserContext);
   async function getData() {
+    async function modify(docu, id) {
+      try {
+        const ref = doc(db, "users", user.uid, "itinerario", id);
+        await updateDoc(ref, docu);
+      } catch (e) {
+        console.error("Error adding document: ", e);
+      }
+    }
+
     const dataList = [];
     console.log(user.uid);
     const querySnapshot = await getDocs(
@@ -45,8 +54,107 @@ export default function Medicines() {
     querySnapshot.forEach((doc) => {
       const object = doc.data();
       object["id"] = doc.id;
+
       if (object.activo) {
-        dataList.push(object);
+        var today = new Date();
+        today.setHours(0, 0, 0, 0);
+        var changed;
+
+        if (object.tipo_duracion == 2) {
+          //es hasta una fecha específica
+          if (object.fecha_final.toDate().setHours(0, 0, 0, 0) >= today) {
+            //si la fecha final es MAYOR o igual a la fecha actual (es en el futuro u hoy), aún está activo
+            dataList.push(object);
+          } else {
+            //ya no es activo, cambiamos esto...
+            changed = {
+              activo: false,
+              dias: object.dias,
+              dosis: object.dosis,
+              dosis_tipo: object.dosis_tipo,
+              fecha_final: object.fecha_final,
+              fecha_registro: object.fecha_registro,
+              ultima_act: object.ultima_act ?? null,
+              horario: object.horario,
+              nombre: object.nombre,
+              notas: object.notas,
+              repet_restantes: object.repet_restantes,
+              tipo_duracion: object.tipo_duracion,
+              usuario: object.usuario,
+            };
+            modify(changed, object.id); //se guardan los cambios
+          }
+        } else if (object.tipo_duracion == 3) {
+          //es hasta un cierto núm de repeticiones
+          if (object.repet_restantes != 0) {
+            //si todavía no se ha pasado la última repetición...
+            var repeats = false; //si esta variable resulta true al final, es que hoy se hace una repetición
+            if (object.dias) {
+              //se determina qué días específicamente se repiten y si hoy es uno de ellos
+              object.dias.map((dia, i) => {
+                if (today.getDay() === i && dia.selected) {
+                  repeats = true;
+                }
+              });
+            } else {
+              //se repite todos los días
+              repeats = true;
+            }
+            if (
+              repeats &&
+              (!object.ultima_act ||
+                object.ultima_act.toDate().getTime() != today.getTime())
+            ) {
+              //si se repite hoy y no se ha actualizado hoy (es decir, no se ha contabilizado la repetición de hoy), se actualiza
+              let repts = object.repet_restantes - 1;
+
+              changed = {
+                activo: object.activo,
+                dias: object.dias,
+                dosis: object.dosis,
+                dosis_tipo: object.dosis_tipo,
+                fecha_final: object.fecha_final,
+                fecha_registro: object.fecha_registro,
+                ultima_act: today, //cambia última actualización a hoy
+                horario: object.horario,
+                nombre: object.nombre,
+                notas: object.notas,
+                repet_restantes: repts, //cambia repeticiones a repet_restantes-1
+                tipo_duracion: object.tipo_duracion,
+                usuario: object.usuario,
+              };
+              modify(changed, object.id); //se guardan los cambios
+            }
+            dataList.push(object);
+          } else {
+            if (object.ultima_act.toDate().getTime() == today.getTime()) {
+              //si hoy fue la última actualización, entonces hoy es la última repetición
+              dataList.push(object);
+            } else {
+              //ya se hicieron todas sus repeticiones, ya no es activo...
+              changed = {
+                activo: false,
+                dias: object.dias,
+                dosis: object.dosis,
+                dosis_tipo: object.dosis_tipo,
+                fecha_final: object.fecha_final,
+                fecha_registro: object.fecha_registro,
+                ultima_act: object.ultima_act ?? null,
+                horario: object.horario,
+                nombre: object.nombre,
+                notas: object.notas,
+                repet_restantes: object.repet_restantes,
+                tipo_duracion: object.tipo_duracion,
+                usuario: object.usuario,
+              };
+              modify(changed, object.id); //se guardan los cambios
+            }
+          }
+        } else {
+          //se repite siempre...
+
+          dataList.push(object);
+        }
       }
     });
     setData(dataList);
