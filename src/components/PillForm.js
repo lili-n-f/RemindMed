@@ -11,6 +11,9 @@ import {
   Radio,
   Box,
   Divider,
+  Spinner,
+  Heading,
+  Center,
 } from "native-base";
 import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import React, { useState, useContext, useEffect } from "react";
@@ -143,10 +146,10 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
   useEffect(() => {
     // Aquí se verifica si se está cargando y si el usuario NO ES falsy (es decir, no null), en cuyo caso ya se cargó correctamente el usuario y se settea el loading como false para que se renderice la página que es
     // Depende de usuario porque cuando éste cambie, se revisará la condición
-    if (loading && usuario) {
+    if (loading && usuario && commonMeds) {
       setLoading(false);
     }
-  }, [usuario]);
+  }, [usuario, commonMeds]);
 
   const onChangeTime = (event, selectedTime) => {
     const currentTime = selectedTime;
@@ -501,551 +504,593 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
           <Icon type={Icons.AntDesign} name={"back"} color={"white"} />
         </Button>
       ) : null}
-      <View style={styles.container1}>
-        <Box w="60">
-          <Divider my="2" bg="green.500" thickness="4" />
-        </Box>
-        <Text style={styles.titulo}>
-          {itinerario ? "Modifica el recordatorio" : "Agrega un recordatorio"}
-        </Text>
-        <Box w="300">
-          <Divider my="2" bg="green.500" thickness="4" />
-        </Box>
-      </View>
-      <View style={{ paddingBottom: itinerario ? 330 : 300, paddingTop: 5 }}>
-        <ScrollView>
-          <FormControl
-            width={"90%"}
-            alignSelf={"center"}
-            isRequired
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <View style={styles.containerQ}>
-              <FormControl.Label>
-                <Text color="platinum.500" fontWeight="bold">
-                  Medicamento
-                </Text>
-              </FormControl.Label>
-              <VStack justifyContent="space-between">
-                <Select
-                  backgroundColor="white"
-                  borderRadius="20"
-                  minWidth="100%"
-                  borderColor="primary.300"
-                  placeholderTextColor="gray.500"
-                  accessibilityLabel="Escoja el medicamento"
-                  placeholder="Escoja el medicamento"
-                  selectedValue={med}
-                  onValueChange={(value) => {
-                    setMed(value);
-                    if (value == "Otro") {
-                      setAddMed(true); //con esto, se muestra input de nueva medicina
-                    } else {
-                      setAddMed(false);
-                    }
-                  }}
-                >
-                  {
-                    commonMeds
-                      .concat(medOptions)
-                      .sort((a, b) => a.localeCompare(b))
-                      .map(
-                        makeItem
-                      ) /*Con esto mostramos las medicinas comunes + las medicinas custom del usuario loggeado*/
-                  }
 
-                  <Select.Item label="Otro" value="Otro" />
-                </Select>
-                {addMed ? (
-                  <View>
+      {loading ? (
+        <View style={styles.loading}>
+          <HStack space={2} alignItems="center" justifyContent="center">
+            <Spinner accessibilityLabel="Cargando" color="#E5E5E5" size="lg" />
+            <Heading color="#E5E5E5" fontSize="lg">
+              Cargando...
+            </Heading>
+          </HStack>
+        </View>
+      ) : (
+        <>
+          <View style={styles.container1}>
+            <Box w="60">
+              <Divider my="2" bg="green.500" thickness="4" />
+            </Box>
+            <Text style={styles.titulo}>
+              {itinerario
+                ? "Modifica el recordatorio"
+                : "Agrega un recordatorio"}
+            </Text>
+            <Box w="300">
+              <Divider my="2" bg="green.500" thickness="4" />
+            </Box>
+          </View>
+          <View
+            style={{ paddingBottom: itinerario ? 330 : 300, paddingTop: 5 }}
+          >
+            <ScrollView>
+              <FormControl
+                width={"90%"}
+                alignSelf={"center"}
+                isRequired
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <View style={styles.containerQ}>
+                  <FormControl.Label>
+                    <Text color="platinum.500" fontWeight="bold">
+                      Medicamento
+                    </Text>
+                  </FormControl.Label>
+                  <VStack justifyContent="space-between">
+                    <Select
+                      backgroundColor="white"
+                      borderRadius="20"
+                      minWidth="100%"
+                      borderColor="primary.300"
+                      placeholderTextColor="gray.500"
+                      accessibilityLabel="Escoja el medicamento"
+                      placeholder="Escoja el medicamento"
+                      selectedValue={med}
+                      onValueChange={(value) => {
+                        setMed(value);
+                        if (value == "Otro") {
+                          setAddMed(true); //con esto, se muestra input de nueva medicina
+                        } else {
+                          setAddMed(false);
+                        }
+                      }}
+                    >
+                      {
+                        commonMeds
+                          .concat(medOptions)
+                          .sort((a, b) => a.localeCompare(b))
+                          .map(
+                            makeItem
+                          ) /*Con esto mostramos las medicinas comunes + las medicinas custom del usuario loggeado*/
+                      }
+
+                      <Select.Item label="Otro" value="Otro" />
+                    </Select>
+                    {addMed ? (
+                      <View>
+                        <FormControl.Label>
+                          <Text color="platinum.500" fontWeight="bold">
+                            Nombre del medicamento
+                          </Text>
+                        </FormControl.Label>
+                        <Input
+                          backgroundColor="white"
+                          borderRadius="20"
+                          variant="outline"
+                          borderColor="primary.300"
+                          placeholder="Ingrese nombre del medicamento"
+                          placeholderTextColor="gray.500"
+                          onChangeText={(text) => {
+                            setName(text);
+                          }}
+                          value={name}
+                        />
+                        {nameError ? (
+                          <Text style={styles.error}>
+                            * Debe introducir un nombre
+                          </Text>
+                        ) : null}
+                      </View>
+                    ) : null}
+                  </VStack>
+                </View>
+                <View style={styles.containerB}>
+                  <FormControl.Label>
+                    <Text color="white" fontWeight="bold">
+                      Horario
+                    </Text>
+                  </FormControl.Label>
+                  <Input
+                    backgroundColor="white"
+                    borderRadius="20"
+                    isReadOnly="true"
+                    textAlign="center"
+                    fontSize="lg"
+                    variant="outline"
+                    borderColor="primary.300"
+                    placeholder={textTime}
+                    placeholderTextColor="gray.500"
+                    width="100%"
+                    InputRightElement={
+                      <TouchableOpacity
+                        style={styles.mequieromatar}
+                        rounded="none"
+                        h="full"
+                        onPress={showTimePicker}
+                      >
+                        <Icon
+                          type={Icons.MaterialIcons}
+                          name="alarm"
+                          color={"#52489c"}
+                          size={35}
+                        />
+                      </TouchableOpacity>
+                    }
+                  />
+                  {hourError ? (
+                    <Text style={styles.error}>
+                      * Debe introducir un horario
+                    </Text>
+                  ) : null}
+                </View>
+                {showTime ? (
+                  <DateTimePicker
+                    mode="time"
+                    value={itinerario?.horario?.toDate() ?? new Date()}
+                    onChange={onChangeTime}
+                  />
+                ) : null}
+                <View style={styles.containerC}>
+                  <FormControl.Label>
+                    <Text color="platinum.500" fontWeight="bold">
+                      Repetir cada
+                    </Text>
+                  </FormControl.Label>
+                  <HStack justifyContent="space-between">
+                    <Select
+                      backgroundColor="white"
+                      borderRadius="20"
+                      minWidth="100%"
+                      borderColor="primary.300"
+                      placeholderTextColor="gray.500"
+                      accessibilityLabel="Escoja el intervalo"
+                      placeholder="Escoja el intervalo"
+                      onValueChange={(itemValue) => {
+                        setIntervalType(itemValue);
+                        if (itemValue === "Todos los días") {
+                          setLunes(null);
+                          setMartes(null);
+                          setMiercoles(null);
+                          setJueves(null);
+                          setViernes(null);
+                          setSabado(null);
+                          setDomingo(null);
+                        }
+                      }}
+                      selectedValue={intervalType}
+                      defaultValue={
+                        itinerario === null
+                          ? "Todos los días"
+                          : itinerario?.dias === null
+                          ? "Todos los días"
+                          : "Seleccionar días de la semana"
+                      }
+                    >
+                      <Select.Item
+                        label="Seleccionar días de la semana"
+                        value="Seleccionar días de la semana"
+                      />
+                      <Select.Item
+                        label="Todos los días"
+                        value="Todos los días"
+                      />
+                    </Select>
+                  </HStack>
+                </View>
+                {intervalType === "Seleccionar días de la semana" ||
+                lunes ||
+                martes ||
+                miercoles ||
+                jueves ||
+                viernes ||
+                sabado ||
+                domingo ? (
+                  <View style={styles.containerA}>
                     <FormControl.Label>
                       <Text color="platinum.500" fontWeight="bold">
-                        Nombre del medicamento
+                        Días de la semana
                       </Text>
                     </FormControl.Label>
+                    <Button.Group justifyContent="center" my="2">
+                      <Button
+                        style={styles.days}
+                        backgroundColor={domingo ? "cyan.500" : "white"}
+                        onPress={() => setDomingo(!domingo)}
+                        color="primary.700"
+                        fontWeight="bold"
+                        variant="subtle"
+                        width="8"
+                        height="8"
+                        borderRadius="50"
+                        padding="0"
+                      >
+                        <Text color={domingo ? "white" : "black"}>D</Text>
+                      </Button>
+                      <Button
+                        fontWeight="bold"
+                        backgroundColor={lunes ? "cyan.500" : "white"}
+                        onPress={() => setLunes(!lunes)}
+                        color="primary.700"
+                        variant="subtle"
+                        width="8"
+                        height="8"
+                        borderRadius="50"
+                        padding="0"
+                      >
+                        <Text color={lunes ? "white" : "black"}>L</Text>
+                      </Button>
+                      <Button
+                        fontWeight="bold"
+                        onPress={() => setMartes(!martes)}
+                        backgroundColor={martes ? "cyan.500" : "white"}
+                        color="primary.700"
+                        variant="subtle"
+                        width="8"
+                        height="8"
+                        padding="0"
+                        borderRadius="50"
+                      >
+                        <Text color={martes ? "white" : "black"}>M</Text>
+                      </Button>
+                      <Button
+                        fontWeight="bold"
+                        backgroundColor={miercoles ? "cyan.500" : "white"}
+                        onPress={() => setMiercoles(!miercoles)}
+                        color="primary.700"
+                        variant="subtle"
+                        width="8"
+                        height="8"
+                        borderRadius="50"
+                        padding="0"
+                      >
+                        <Text color={miercoles ? "white" : "black"}>M</Text>
+                      </Button>
+                      <Button
+                        fontWeight="bold"
+                        backgroundColor={jueves ? "cyan.500" : "white"}
+                        onPress={() => setJueves(!jueves)}
+                        color="primary.700"
+                        variant="subtle"
+                        width="8"
+                        height="8"
+                        borderRadius="50"
+                        padding="0"
+                      >
+                        <Text color={jueves ? "white" : "black"}>J</Text>
+                      </Button>
+                      <Button
+                        fontWeight="bold"
+                        backgroundColor={viernes ? "cyan.500" : "white"}
+                        onPress={() => setViernes(!viernes)}
+                        color="primary.700"
+                        variant="subtle"
+                        width="8"
+                        height="8"
+                        borderRadius="50"
+                        padding="0"
+                      >
+                        <Text color={viernes ? "white" : "black"}>V</Text>
+                      </Button>
+                      <Button
+                        fontWeight="bold"
+                        backgroundColor={sabado ? "cyan.500" : "white"}
+                        onPress={() => setSabado(!sabado)}
+                        color="primary.700"
+                        variant="subtle"
+                        width="8"
+                        height="8"
+                        borderRadius="50"
+                        padding="0"
+                      >
+                        <Text color={sabado ? "white" : "black"}>S</Text>
+                      </Button>
+                    </Button.Group>
+                    {dayError ? (
+                      <Text style={styles.error}>
+                        * Debe introducir los Todos los días
+                      </Text>
+                    ) : null}
+                  </View>
+                ) : null}
+                <View style={styles.containerD}>
+                  <FormControl.Label>
+                    <Text color="platinum.500" fontWeight="bold">
+                      Duración
+                    </Text>
+                  </FormControl.Label>
+                  <Radio.Group
+                    name="duracionRadio"
+                    value={durationType}
+                    onChange={(value) => {
+                      if ((value === 1) | (value === 2) | (value === 3)) {
+                        console.log(value);
+                        setDurationType(value);
+                      }
+                    }}
+                  >
+                    <VStack space={3}>
+                      <Radio value={1}>
+                        <Text color="white">Por siempre</Text>
+                      </Radio>
+                      <Radio value={2} onPress={showDatePicker}>
+                        <Text color="white">Hasta {textDate}</Text>
+                        {showDate ? (
+                          <DateTimePicker
+                            mode="date"
+                            value={new Date()}
+                            minimumDate={new Date()}
+                            onChange={onChangeDate}
+                          />
+                        ) : null}
+                      </Radio>
+                      <Radio value={3}>
+                        <HStack width="10" space={2} alignItems="center">
+                          <Input
+                            height="8"
+                            width="10"
+                            backgroundColor="white"
+                            textAlign="center"
+                            variant="filled"
+                            placeholderTextColor="primary.800"
+                            borderRadius="20"
+                            keyboardType="numeric"
+                            placeholder="1"
+                            value={repetitions}
+                            onChangeText={(value) => {
+                              if (
+                                value.startsWith("0") ||
+                                value.includes("-") ||
+                                value.includes(",") ||
+                                value.includes(" ")
+                              ) {
+                                setRepetitions("");
+                              } else {
+                                setRepetitions(value);
+                              }
+                            }}
+                          />
+                          <Text color="white">veces</Text>
+                        </HStack>
+                      </Radio>
+                    </VStack>
+                  </Radio.Group>
+                  {durationError ? (
+                    <Text style={styles.error}>
+                      * Debe introducir la duración
+                    </Text>
+                  ) : null}
+                </View>
+              </FormControl>
+              <FormControl width={"90%"} alignSelf={"center"} pb="10">
+                <View style={styles.containerE}>
+                  <FormControl.Label>
+                    <Text color="platinum.500" fontWeight="bold">
+                      Dosis
+                    </Text>
+                  </FormControl.Label>
+                  <HStack justifyContent="space-between">
                     <Input
                       backgroundColor="white"
                       borderRadius="20"
+                      textAlign="center"
                       variant="outline"
+                      keyboardType="numeric"
                       borderColor="primary.300"
-                      placeholder="Ingrese nombre del medicamento"
+                      placeholder="0"
                       placeholderTextColor="gray.500"
-                      onChangeText={(text) => {
-                        setName(text);
+                      width="20%"
+                      value={dose}
+                      onChangeText={(value) => {
+                        if (
+                          value.startsWith("0") ||
+                          value.includes("-") ||
+                          value.includes(",") ||
+                          value.includes(" ")
+                        ) {
+                          setDose("");
+                        } else {
+                          setDose(value);
+                        }
                       }}
-                      value={name}
                     />
-                    {nameError ? (
-                      <Text style={styles.error}>
-                        * Debe introducir un nombre
-                      </Text>
-                    ) : null}
-                  </View>
-                ) : null}
-              </VStack>
-            </View>
-            <View style={styles.containerB}>
-              <FormControl.Label>
-                <Text color="white" fontWeight="bold">
-                  Horario
-                </Text>
-              </FormControl.Label>
-              <Input
-                backgroundColor="white"
-                borderRadius="20"
-                isReadOnly="true"
-                textAlign="center"
-                fontSize="lg"
-                variant="outline"
-                borderColor="primary.300"
-                placeholder={textTime}
-                placeholderTextColor="gray.500"
-                width="100%"
-                InputRightElement={
-                  <TouchableOpacity
-                    style={styles.mequieromatar}
-                    rounded="none"
-                    h="full"
-                    onPress={showTimePicker}
-                  >
-                    <Icon
-                      type={Icons.MaterialIcons}
-                      name="alarm"
-                      color={"#52489c"}
-                      size={35}
-                    />
-                  </TouchableOpacity>
-                }
-              />
-              {hourError ? (
-                <Text style={styles.error}>* Debe introducir un horario</Text>
-              ) : null}
-            </View>
-            {showTime ? (
-              <DateTimePicker
-                mode="time"
-                value={itinerario?.horario?.toDate() ?? new Date()}
-                onChange={onChangeTime}
-              />
-            ) : null}
-            <View style={styles.containerC}>
-              <FormControl.Label>
-                <Text color="platinum.500" fontWeight="bold">
-                  Repetir cada
-                </Text>
-              </FormControl.Label>
-              <HStack justifyContent="space-between">
-                <Select
-                  backgroundColor="white"
-                  borderRadius="20"
-                  minWidth="100%"
-                  borderColor="primary.300"
-                  placeholderTextColor="gray.500"
-                  accessibilityLabel="Escoja el intervalo"
-                  placeholder="Escoja el intervalo"
-                  onValueChange={(itemValue) => {
-                    setIntervalType(itemValue);
-                    if (itemValue === "Todos los días") {
-                      setLunes(null);
-                      setMartes(null);
-                      setMiercoles(null);
-                      setJueves(null);
-                      setViernes(null);
-                      setSabado(null);
-                      setDomingo(null);
-                    }
-                  }}
-                  selectedValue={intervalType}
-                  defaultValue={
-                    itinerario === null
-                      ? "Todos los días"
-                      : itinerario?.dias === null
-                      ? "Todos los días"
-                      : "Seleccionar días de la semana"
-                  }
-                >
-                  <Select.Item
-                    label="Seleccionar días de la semana"
-                    value="Seleccionar días de la semana"
-                  />
-                  <Select.Item label="Todos los días" value="Todos los días" />
-                </Select>
-              </HStack>
-            </View>
-            {intervalType === "Seleccionar días de la semana" ||
-            lunes ||
-            martes ||
-            miercoles ||
-            jueves ||
-            viernes ||
-            sabado ||
-            domingo ? (
-              <View style={styles.containerA}>
-                <FormControl.Label>
-                  <Text color="platinum.500" fontWeight="bold">
-                    Días de la semana
-                  </Text>
-                </FormControl.Label>
-                <Button.Group justifyContent="center" my="2">
-                  <Button
-                    style={styles.days}
-                    backgroundColor={domingo ? "cyan.500" : "white"}
-                    onPress={() => setDomingo(!domingo)}
-                    color="primary.700"
-                    fontWeight="bold"
-                    variant="subtle"
-                    width="8"
-                    height="8"
-                    borderRadius="50"
-                    padding="0"
-                  >
-                    <Text color={domingo ? "white" : "black"}>D</Text>
-                  </Button>
-                  <Button
-                    fontWeight="bold"
-                    backgroundColor={lunes ? "cyan.500" : "white"}
-                    onPress={() => setLunes(!lunes)}
-                    color="primary.700"
-                    variant="subtle"
-                    width="8"
-                    height="8"
-                    borderRadius="50"
-                    padding="0"
-                  >
-                    <Text color={lunes ? "white" : "black"}>L</Text>
-                  </Button>
-                  <Button
-                    fontWeight="bold"
-                    onPress={() => setMartes(!martes)}
-                    backgroundColor={martes ? "cyan.500" : "white"}
-                    color="primary.700"
-                    variant="subtle"
-                    width="8"
-                    height="8"
-                    padding="0"
-                    borderRadius="50"
-                  >
-                    <Text color={martes ? "white" : "black"}>M</Text>
-                  </Button>
-                  <Button
-                    fontWeight="bold"
-                    backgroundColor={miercoles ? "cyan.500" : "white"}
-                    onPress={() => setMiercoles(!miercoles)}
-                    color="primary.700"
-                    variant="subtle"
-                    width="8"
-                    height="8"
-                    borderRadius="50"
-                    padding="0"
-                  >
-                    <Text color={miercoles ? "white" : "black"}>M</Text>
-                  </Button>
-                  <Button
-                    fontWeight="bold"
-                    backgroundColor={jueves ? "cyan.500" : "white"}
-                    onPress={() => setJueves(!jueves)}
-                    color="primary.700"
-                    variant="subtle"
-                    width="8"
-                    height="8"
-                    borderRadius="50"
-                    padding="0"
-                  >
-                    <Text color={jueves ? "white" : "black"}>J</Text>
-                  </Button>
-                  <Button
-                    fontWeight="bold"
-                    backgroundColor={viernes ? "cyan.500" : "white"}
-                    onPress={() => setViernes(!viernes)}
-                    color="primary.700"
-                    variant="subtle"
-                    width="8"
-                    height="8"
-                    borderRadius="50"
-                    padding="0"
-                  >
-                    <Text color={viernes ? "white" : "black"}>V</Text>
-                  </Button>
-                  <Button
-                    fontWeight="bold"
-                    backgroundColor={sabado ? "cyan.500" : "white"}
-                    onPress={() => setSabado(!sabado)}
-                    color="primary.700"
-                    variant="subtle"
-                    width="8"
-                    height="8"
-                    borderRadius="50"
-                    padding="0"
-                  >
-                    <Text color={sabado ? "white" : "black"}>S</Text>
-                  </Button>
-                </Button.Group>
-                {dayError ? (
-                  <Text style={styles.error}>
-                    * Debe introducir los Todos los días
-                  </Text>
-                ) : null}
-              </View>
-            ) : null}
-            <View style={styles.containerD}>
-              <FormControl.Label>
-                <Text color="platinum.500" fontWeight="bold">
-                  Duración
-                </Text>
-              </FormControl.Label>
-              <Radio.Group
-                name="duracionRadio"
-                value={durationType}
-                onChange={(value) => {
-                  if ((value === 1) | (value === 2) | (value === 3)) {
-                    console.log(value);
-                    setDurationType(value);
-                  }
-                }}
-              >
-                <VStack space={3}>
-                  <Radio value={1}>
-                    <Text color="white">Por siempre</Text>
-                  </Radio>
-                  <Radio value={2} onPress={showDatePicker}>
-                    <Text color="white">Hasta {textDate}</Text>
-                    {showDate ? (
-                      <DateTimePicker
-                        mode="date"
-                        value={new Date()}
-                        minimumDate={new Date()}
-                        onChange={onChangeDate}
+                    <Select
+                      backgroundColor="white"
+                      borderRadius="20"
+                      minWidth="75%"
+                      borderColor="primary.300"
+                      placeholderTextColor="gray.500"
+                      accessibilityLabel="Escoja la dosificación"
+                      placeholder="Escoja la dosificación"
+                      selectedValue={doseType}
+                      onValueChange={(value) => {
+                        setDoseType(value);
+                      }}
+                    >
+                      <Select.Item label="Ampolla(s)" value="Ampolla(s)" />
+                      <Select.Item label="Gota(s)" value="Gota(s)" />
+                      <Select.Item label="mL" value="mL" />
+                      <Select.Item label="Pastilla(s)" value="Pastilla(s)" />
+                      <Select.Item label="Gramo(s)" value="Gramo(s)" />
+                      <Select.Item label="Cucharada(s)" value="Cucharada(s)" />
+                      <Select.Item
+                        label="Cucharadita(s)"
+                        value="Cucharadita(s)"
                       />
-                    ) : null}
-                  </Radio>
-                  <Radio value={3}>
-                    <HStack width="10" space={2} alignItems="center">
-                      <Input
-                        height="8"
-                        width="10"
-                        backgroundColor="white"
-                        textAlign="center"
-                        variant="filled"
-                        placeholderTextColor="primary.800"
-                        borderRadius="20"
-                        keyboardType="numeric"
-                        placeholder="1"
-                        value={repetitions}
-                        onChangeText={(value) => {
-                          if (
-                            value.startsWith("0") ||
-                            value.includes("-") ||
-                            value.includes(",") ||
-                            value.includes(" ")
-                          ) {
-                            setRepetitions("");
-                          } else {
-                            setRepetitions(value);
-                          }
-                        }}
+                      <Select.Item label="Unidad(es)" value="Unidad(es)" />
+                      <Select.Item label="Taza(s)" value="Taza(s)" />
+                      <Select.Item label="Spray(s)" value="Spray(s)" />
+                      <Select.Item
+                        label="Supositorio(s)"
+                        value="Supositorio(s)"
                       />
-                      <Text color="white">veces</Text>
-                    </HStack>
-                  </Radio>
-                </VStack>
-              </Radio.Group>
-              {durationError ? (
-                <Text style={styles.error}>* Debe introducir la duración</Text>
-              ) : null}
-            </View>
-          </FormControl>
-          <FormControl width={"90%"} alignSelf={"center"} pb="10">
-            <View style={styles.containerE}>
-              <FormControl.Label>
-                <Text color="platinum.500" fontWeight="bold">
-                  Dosis
-                </Text>
-              </FormControl.Label>
-              <HStack justifyContent="space-between">
-                <Input
-                  backgroundColor="white"
-                  borderRadius="20"
-                  textAlign="center"
-                  variant="outline"
-                  keyboardType="numeric"
-                  borderColor="primary.300"
-                  placeholder="0"
-                  placeholderTextColor="gray.500"
-                  width="20%"
-                  value={dose}
-                  onChangeText={(value) => {
-                    if (
-                      value.startsWith("0") ||
-                      value.includes("-") ||
-                      value.includes(",") ||
-                      value.includes(" ")
-                    ) {
-                      setDose("");
-                    } else {
-                      setDose(value);
-                    }
-                  }}
-                />
-                <Select
-                  backgroundColor="white"
-                  borderRadius="20"
-                  minWidth="75%"
-                  borderColor="primary.300"
-                  placeholderTextColor="gray.500"
-                  accessibilityLabel="Escoja la dosificación"
-                  placeholder="Escoja la dosificación"
-                  selectedValue={doseType}
-                  onValueChange={(value) => {
-                    setDoseType(value);
-                  }}
-                >
-                  <Select.Item label="Ampolla(s)" value="Ampolla(s)" />
-                  <Select.Item label="Gota(s)" value="Gota(s)" />
-                  <Select.Item label="mL" value="mL" />
-                  <Select.Item label="Pastilla(s)" value="Pastilla(s)" />
-                  <Select.Item label="Gramo(s)" value="Gramo(s)" />
-                  <Select.Item label="Cucharada(s)" value="Cucharada(s)" />
-                  <Select.Item label="Cucharadita(s)" value="Cucharadita(s)" />
-                  <Select.Item label="Unidad(es)" value="Unidad(es)" />
-                  <Select.Item label="Taza(s)" value="Taza(s)" />
-                  <Select.Item label="Spray(s)" value="Spray(s)" />
-                  <Select.Item label="Supositorio(s)" value="Supositorio(s)" />
-                  <Select.Item label="Cucharadita(s)" value="Cucharadita(s)" />
-                  <Select.Item label="Inyección(es)" value="Inyección(es)" />
-                </Select>
-              </HStack>
-            </View>
+                      <Select.Item
+                        label="Cucharadita(s)"
+                        value="Cucharadita(s)"
+                      />
+                      <Select.Item
+                        label="Inyección(es)"
+                        value="Inyección(es)"
+                      />
+                    </Select>
+                  </HStack>
+                </View>
 
-            <View style={styles.containerE}>
-              <FormControl.Label>
-                <Text color="platinum.500" fontWeight="bold">
-                  ¿Quién lo toma?
-                </Text>
-              </FormControl.Label>
-              <VStack justifyContent="space-between">
-                <Select
-                  backgroundColor="white"
-                  borderRadius="20"
-                  minWidth="100%"
-                  borderColor="primary.300"
-                  placeholderTextColor="gray.500"
-                  accessibilityLabel="Escoja la persona que toma el medicamento"
-                  placeholder="Escoja la persona que toma el medicamento"
-                  selectedValue={medUser}
-                  onValueChange={(value) => {
-                    setMedUser(value);
-                    if (value == "Otro") {
-                      setAddUser(true); //con esto, se muestra input de nuevo usuario de medicina
-                    } else {
-                      setAddUser(false);
-                    }
-                  }}
-                >
-                  <Select.Item
-                    label="Yo"
-                    value={usuario ? usuario.name : "Usuario actual"}
-                  />
-                  {
-                    userOptions.map(
-                      makeItem
-                    ) /*Con esto mostramos los perfiles asociados al usuario loggeado: usuarios de medicinas antes agregados*/
-                  }
-                  <Select.Item label="Otro" value="Otro" />
-                </Select>
-                {addUser ? (
-                  <View>
-                    <FormControl isRequired>
-                      <FormControl.Label>
-                        <Text color="platinum.500" fontWeight="bold">
-                          Nombre de quién toma el medicamento
-                        </Text>
-                      </FormControl.Label>
-                      <Input
-                        backgroundColor="white"
-                        borderRadius="20"
-                        variant="filled"
-                        borderColor="primary.300"
-                        placeholderTextColor="gray.500"
-                        placeholder="Nombre"
-                        value={medUserName}
-                        onChangeText={(value) => {
-                          setMedUserName(value);
-                        }}
+                <View style={styles.containerE}>
+                  <FormControl.Label>
+                    <Text color="platinum.500" fontWeight="bold">
+                      ¿Quién lo toma?
+                    </Text>
+                  </FormControl.Label>
+                  <VStack justifyContent="space-between">
+                    <Select
+                      backgroundColor="white"
+                      borderRadius="20"
+                      minWidth="100%"
+                      borderColor="primary.300"
+                      placeholderTextColor="gray.500"
+                      accessibilityLabel="Escoja la persona que toma el medicamento"
+                      placeholder="Escoja la persona que toma el medicamento"
+                      selectedValue={medUser}
+                      onValueChange={(value) => {
+                        setMedUser(value);
+                        if (value == "Otro") {
+                          setAddUser(true); //con esto, se muestra input de nuevo usuario de medicina
+                        } else {
+                          setAddUser(false);
+                        }
+                      }}
+                    >
+                      <Select.Item
+                        label="Yo"
+                        value={usuario ? usuario.name : "Usuario actual"}
                       />
-                    </FormControl>
-                    {medUserError ? (
-                      <Text style={styles.error}>
-                        * Debe introducir un nombre
-                      </Text>
+                      {
+                        userOptions.map(
+                          makeItem
+                        ) /*Con esto mostramos los perfiles asociados al usuario loggeado: usuarios de medicinas antes agregados*/
+                      }
+                      <Select.Item label="Otro" value="Otro" />
+                    </Select>
+                    {addUser ? (
+                      <View>
+                        <FormControl isRequired>
+                          <FormControl.Label>
+                            <Text color="platinum.500" fontWeight="bold">
+                              Nombre de quién toma el medicamento
+                            </Text>
+                          </FormControl.Label>
+                          <Input
+                            backgroundColor="white"
+                            borderRadius="20"
+                            variant="filled"
+                            borderColor="primary.300"
+                            placeholderTextColor="gray.500"
+                            placeholder="Nombre"
+                            value={medUserName}
+                            onChangeText={(value) => {
+                              setMedUserName(value);
+                            }}
+                          />
+                        </FormControl>
+                        {medUserError ? (
+                          <Text style={styles.error}>
+                            * Debe introducir un nombre
+                          </Text>
+                        ) : null}
+                      </View>
                     ) : null}
-                  </View>
-                ) : null}
-              </VStack>
-            </View>
+                  </VStack>
+                </View>
 
-            <View style={styles.containerE}>
-              <FormControl.Label>
-                <Text color="platinum.500" fontWeight="bold">
-                  Notas
-                </Text>
-              </FormControl.Label>
-              <Input
-                backgroundColor="white"
-                borderRadius="20"
-                variant="filled"
-                borderColor="primary.300"
-                placeholderTextColor="gray.500"
-                placeholder="Descripción o notas"
-                value={notes}
-                onChangeText={(value) => {
-                  setNotes(value);
-                }}
-              />
-            </View>
-            {disable ? (
-              <Button
-                isLoading
-                isLoadingText="Subiendo..."
-                style={{
-                  marginTop: 15,
-                  width: "60%",
-                  marginLeft: "20%",
-                  borderRadius: 20,
-                }}
-                bg={"cyan.500"}
-              ></Button>
-            ) : (
-              <Button
-                onPress={() => {
-                  setDisable(true);
-                  onSubmit();
-                }}
-                style={{
-                  marginTop: 15,
-                  width: "60%",
-                  marginLeft: "20%",
-                  borderRadius: 20,
-                }}
-                bg={"cyan.500"}
-              >
-                <Text fontWeight="bold" color="white">
-                  ¡Listo!
-                </Text>
-              </Button>
-            )}
-          </FormControl>
-        </ScrollView>
-      </View>
+                <View style={styles.containerE}>
+                  <FormControl.Label>
+                    <Text color="platinum.500" fontWeight="bold">
+                      Notas
+                    </Text>
+                  </FormControl.Label>
+                  <Input
+                    backgroundColor="white"
+                    borderRadius="20"
+                    variant="filled"
+                    borderColor="primary.300"
+                    placeholderTextColor="gray.500"
+                    placeholder="Descripción o notas"
+                    value={notes}
+                    onChangeText={(value) => {
+                      setNotes(value);
+                    }}
+                  />
+                </View>
+                {disable ? (
+                  <Button
+                    isLoading
+                    isLoadingText="Subiendo..."
+                    style={{
+                      marginTop: 15,
+                      width: "60%",
+                      marginLeft: "20%",
+                      borderRadius: 20,
+                    }}
+                    bg={"cyan.500"}
+                  ></Button>
+                ) : (
+                  <Button
+                    onPress={() => {
+                      setDisable(true);
+                      onSubmit();
+                    }}
+                    style={{
+                      marginTop: 15,
+                      width: "60%",
+                      marginLeft: "20%",
+                      borderRadius: 20,
+                    }}
+                    bg={"cyan.500"}
+                  >
+                    <Text fontWeight="bold" color="white">
+                      ¡Listo!
+                    </Text>
+                  </Button>
+                )}
+              </FormControl>
+            </ScrollView>
+          </View>
+        </>
+      )}
     </>
   );
 };
 
 const styles = StyleSheet.create({
+  loading: {
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   titulo: {
     color: "#E5E5E5",
     fontWeight: "bold",
