@@ -1,4 +1,4 @@
-import { Permissions, Notifications } from 'expo';
+/*import { Permissions, Notifications } from 'expo';
 import React from 'react';
 
 export default class Notification extends React.Component{
@@ -32,4 +32,4 @@ export default class Notification extends React.Component{
     render(){
         return <></>
     }
-}
+}*/
