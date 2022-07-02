@@ -15,193 +15,222 @@ import {
   TextArea,
 } from "native-base";
 import Icon, { Icons } from "../components/Icons";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import Profile from "./Profile";
+import AlertMessage from "../components/AlertMessage";
 
 const image = { uri: "https://i.ibb.co/ypq3LQ1/fondo.png" };
 
-export default function ProfileEdit({ data }) {
-  const { user } = useContext(UserContext);
-  const [showDate, setShowDate] = useState(false);
-  const [textDate, setTextDate] = useState("DD/MM/YYYY");
+export default function ProfileEdit({
+  nombre,
+  sangre,
+  sexo,
+  notas,
+  uid,
+  email,
+  perfiles_asoc,
+  handleGoBack,
+}) {
+  //se pasa como parámetro la info del usuario de la cuenta
+
+  const [disable, setDisable] = useState(false);
 
   const [done, setDone] = useState(false);
+  const [name, setName] = useState(nombre);
+  const [sex, setSex] = useState(sexo);
+  const [blood, setBlood] = useState(sangre);
+  const [notes, setNotes] = useState(notas);
 
-  const onChangeDate = (event, selectedDate) => {
-    const currentDate = selectedDate;
-    setShowDate(false);
-    let tempDate =
-      currentDate.getDate() +
-      "/" +
-      (currentDate.getMonth() + 1) +
-      "/" +
-      currentDate.getFullYear();
-    setTextDate(tempDate);
+  const handleCloseAlert = () => {
+    setDone(false);
   };
 
-  var information = {
-    fecha_nac: aa, //aqui debe ir la info que se va a guardar
-  };
-
-  async function modify(info) {
+  async function modify() {
+    setDisable(true);
     try {
-      const usr = doc(db, "users", user.uid);
-      await updateDoc(ref, info);
+      console.log("modify");
+
+      var updatedUser = {
+        email: email,
+        name: !name || name === "" || /^\s*$/.test(name) ? nombre : name, //si el usuario nombre es vacío, se coloca el nombre original
+        notas: notes,
+        perfiles_asoc: perfiles_asoc,
+        sangre: blood,
+        sexo: sex,
+        uid: uid,
+      };
+
+      const usr = doc(db, "users", uid);
+      await updateDoc(usr, updatedUser);
       setDone(true);
     } catch (e) {
       console.error("Error adding document: ", e);
     }
+    setDisable(false);
   }
-  return done ? (
-    <Profile />
-  ) : (
-    <ImageBackground
-      source={image}
-      resizeMode="cover"
-      style={{ width: "100%", height: "100%" }}
-    >
-      <View style={styles.container1}>
-        <Box w="60">
-          <Divider my="2" bg="green.500" thickness="4" />
-        </Box>
-        <Text style={styles.titulo}>Editar perfil</Text>
-        <Box w="300">
-          <Divider my="2" bg="green.500" thickness="4" />
-        </Box>
-      </View>
-      <View style={{ paddingBottom: 200, paddingTop: 5 }}>
-        <ScrollView top={30} marginRight={20} marginLeft={20}>
-          <View style={styles.containerQ}>
-            <Text color="platinum.500" fontWeight="bold" margin={1}>
-              Nombre:
-            </Text>
-            <Input
-              backgroundColor="white"
-              borderRadius="20"
-              minWidth="100%"
-              borderColor="primary.300"
-              placeholderTextColor="gray.500"
-              accessibilityLabel="Edite su nombre"
-              placeholder="Escriba su nombre" //NOMBRE TO-DO
-            />
-          </View>
-          <View style={styles.containerQ}>
-            <HStack justifyContent="space-between" alignItems="center">
+  return (
+    <>
+      {done ? (
+        <AlertMessage
+          mNumber={0}
+          header={"Se ha modificado con éxito"}
+          handleCloseAlert={handleCloseAlert}
+        />
+      ) : null}
+      <ImageBackground
+        source={image}
+        resizeMode="cover"
+        style={{ width: "100%", height: "100%" }}
+      >
+        <Button
+          borderRadius="full"
+          onPress={() => handleGoBack()}
+          mt="5"
+          ml="5"
+          style={{ position: "absolute", zIndex: 10 }}
+        >
+          <Icon type={Icons.AntDesign} name={"back"} color={"white"} />
+        </Button>
+        <View style={styles.container1}>
+          <Box w="60">
+            <Divider my="2" bg="green.500" thickness="4" />
+          </Box>
+          <Text style={styles.titulo}>Editar perfil</Text>
+          <Box w="210">
+            <Divider my="2" bg="green.500" thickness="4" />
+          </Box>
+        </View>
+        <View style={{ paddingBottom: 170, paddingTop: 5 }}>
+          <ScrollView paddingRight={20} paddingLeft={20}>
+            <View style={styles.containerQ}>
               <Text color="platinum.500" fontWeight="bold" margin={1}>
-                Fecha de nacimiento:
+                Nombre:
               </Text>
-              <Text color="platinum.500" margin={1}>
-                {textDate}
-              </Text>
-              <Button
-                borderRadius="full"
-                style={{ alignSelf: "flex-start" }}
-                onPress={() => {
-                  setShowDate(true);
+              <Input
+                backgroundColor="white"
+                borderRadius="20"
+                minWidth="100%"
+                borderColor="primary.300"
+                placeholderTextColor="gray.500"
+                accessibilityLabel="Edite su nombre"
+                defaultValue={nombre}
+                placeholder={nombre}
+                value={name}
+                onChangeText={(text) => {
+                  setName(text);
                 }}
-              >
-                <Icon
-                  type={Icons.MaterialCommunityIcons}
-                  name={"calendar"}
-                  color={"white"}
-                />
-              </Button>
-            </HStack>
-
-            {showDate ? (
-              <DateTimePicker
-                mode="date"
-                value={new Date()}
-                maximumDate={new Date()}
-                onChange={onChangeDate}
               />
-            ) : null}
-          </View>
+            </View>
 
-          <View style={styles.containerQ}>
-            <Text color="platinum.500" fontWeight="bold" margin={1}>
-              Sexo:
-            </Text>
-            <Select
-              backgroundColor="white"
-              borderRadius="20"
-              minWidth="100%"
-              borderColor="primary.300"
-              placeholderTextColor="gray.500"
-              accessibilityLabel="Seleccione su sexo"
-              placeholder="Seleccione su sexo"
-            >
-              <Select.Item //selección de sexo
-                label="Mujer"
-                value="mujer"
-              />
-              <Select.Item label="Hombre" value="hombre" />
-              <Select.Item
-                label="Prefiero no responder"
-                value="na" //puse esto como un no aplica
-              />
-            </Select>
-          </View>
-
-          <View style={styles.containerQ}>
-            <Text color="platinum.500" fontWeight="bold" margin={1}>
-              Grupo sanguíneo:
-            </Text>
-            <HStack justifyContent="space-between">
+            <View style={styles.containerQ}>
+              <Text color="platinum.500" fontWeight="bold" margin={1}>
+                Sexo:
+              </Text>
               <Select
                 backgroundColor="white"
                 borderRadius="20"
                 minWidth="100%"
                 borderColor="primary.300"
                 placeholderTextColor="gray.500"
-                accessibilityLabel="Seleccione su grupo sanguíneo"
-                placeholder="Seleccione su grupo sanguíneo"
+                accessibilityLabel="Seleccione su sexo"
+                placeholder="Seleccione su sexo"
+                selectedValue={sex}
+                onValueChange={(selectedValue) => {
+                  setSex(selectedValue);
+                }}
               >
-                <Select.Item //Tipos de sangre
-                  label="A+"
-                  value="a positivo"
+                <Select.Item //selección de sexo
+                  label="Mujer"
+                  value="Mujer"
                 />
-                <Select.Item label="A-" value="a negativo" />
-                <Select.Item label="B+" value="b positivo" />
-                <Select.Item label="B-" value="b negativo" />
-                <Select.Item label="AB+" value="ab positivo" />
-                <Select.Item label="AB-" value="ab negativo" />
-                <Select.Item label="O+" value="o positivo" />
-                <Select.Item label="O-" value="o negativo" />
+                <Select.Item label="Hombre" value="Hombre" />
+                <Select.Item
+                  label="Prefiero no responder"
+                  value="N/A" //puse esto como un no aplica
+                />
               </Select>
-            </HStack>
-          </View>
+            </View>
 
-          <View style={styles.containerQ}>
-            <Text color="platinum.500" fontWeight="bold" margin={1}>
-              Notas:
-            </Text>
-            <Box alignItems="center" w="100%">
-              <TextArea
-                h={40}
-                placeholder="Agregue sus notas (alergias, condiciones médicas, otros)"
-                placeholderTextColor="gray.500"
-                fontSize={13}
-                w="100%"
-                maxW="400"
-                backgroundColor="white"
-                borderRadius="20"
-                borderColor="primary.300"
-              />
-            </Box>
-          </View>
-          <Button
-            borderRadius={"10"}
-            marginTop={"5"}
-            alignSelf={"flex-end"}
-            width="25%"
-            onPress={() => setDone(true)} //TO-DO GUARDADO
-          >
-            Guardar
-          </Button>
-        </ScrollView>
-      </View>
-    </ImageBackground>
+            <View style={styles.containerQ}>
+              <Text color="platinum.500" fontWeight="bold" margin={1}>
+                Grupo sanguíneo:
+              </Text>
+              <HStack justifyContent="space-between">
+                <Select
+                  backgroundColor="white"
+                  borderRadius="20"
+                  minWidth="100%"
+                  borderColor="primary.300"
+                  placeholderTextColor="gray.500"
+                  accessibilityLabel="Seleccione su grupo sanguíneo"
+                  placeholder="Seleccione su grupo sanguíneo"
+                  selectedValue={blood}
+                  onValueChange={(selectedValue) => {
+                    setBlood(selectedValue);
+                  }}
+                >
+                  <Select.Item //Tipos de sangre
+                    label="A+"
+                    value="A+"
+                  />
+                  <Select.Item label="A-" value="A-" />
+                  <Select.Item label="B+" value="B+" />
+                  <Select.Item label="B-" value="B-" />
+                  <Select.Item label="AB+" value="AB+" />
+                  <Select.Item label="AB-" value="AB-" />
+                  <Select.Item label="O+" value="O+" />
+                  <Select.Item label="O-" value="O-" />
+                </Select>
+              </HStack>
+            </View>
+
+            <View style={styles.containerQ}>
+              <Text color="platinum.500" fontWeight="bold" margin={1}>
+                Notas:
+              </Text>
+              <Box alignItems="center" w="100%">
+                <TextArea
+                  h={40}
+                  placeholder="Agregue sus notas (alergias, condiciones médicas...)"
+                  placeholderTextColor="gray.500"
+                  fontSize={13}
+                  w="100%"
+                  maxW="400"
+                  backgroundColor="white"
+                  borderRadius="20"
+                  borderColor="primary.300"
+                  defaultValue={notas}
+                  value={notes}
+                  onChangeText={(text) => {
+                    setNotes(text);
+                  }}
+                />
+              </Box>
+            </View>
+            <HStack justifyContent="center" marginBottom={5}>
+              {disable ? (
+                <Button
+                  borderRadius={20}
+                  marginTop={"5"}
+                  width="60%"
+                  bg={"cyan.500"}
+                  isLoading
+                  isLoadingText="Guardando..."
+                ></Button>
+              ) : (
+                <Button
+                  borderRadius={20}
+                  marginTop={"5"}
+                  width="60%"
+                  bg={"cyan.500"}
+                  onPress={() => modify()}
+                >
+                  Guardar
+                </Button>
+              )}
+            </HStack>
+          </ScrollView>
+        </View>
+      </ImageBackground>
+    </>
   );
 }
 
@@ -210,13 +239,13 @@ const styles = StyleSheet.create({
     color: "#E5E5E5",
     fontWeight: "bold",
     fontSize: 40,
-    marginRight: 170,
     lineHeight: 40,
   },
   container1: {
     color: "#FFFF",
-    top: 40,
-    left: 40,
+    marginTop: 20,
+    alignItems: "center",
+    width: "100%",
   },
   subtitulo: {
     fontWeight: "600",

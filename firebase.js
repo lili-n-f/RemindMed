@@ -8,7 +8,6 @@ import {
   signOut,
 } from "firebase/auth";
 import { GoogleAuthProvider } from "firebase/auth";
-import * as Notifications from 'expo-notifications';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAreJKr3j90FE7CH2Z96El1DHNGQf2YSJU",
@@ -32,8 +31,10 @@ export const googleProvider = new GoogleAuthProvider();
 const login = async (email, password) => {
   try {
     await signInWithEmailAndPassword(auth, email, password);
+    return true;
   } catch (err) {
     console.error(err);
+    return false;
   }
 };
 //Aquí definimos como se va a crear el user
@@ -42,21 +43,20 @@ const register = async (name, email, password) => {
     const res = await createUserWithEmailAndPassword(auth, email, password);
     const user = res.user;
     //campos que tendrá la cuenta en sí
-    const token = (await Notifications.getExpoPushTokenAsync()).data;
-  
     await setDoc(doc(db, "users", user.uid), {
       uid: user.uid,
       name: name,
       email: email,
-      perfiles_asoc: [],
-      fecha_nac: null,
+      perfiles_asoc: [], //usuarios de los cual el usuario controla los medicamentos
+      medicinas_asoc: [], //medicinas custom que agregue el usuario
       sexo: null,
       sangre: null,
       notas: null,
-      token: token,
     });
+    return true;
   } catch (err) {
     console.error(err);
+    return false;
   }
 };
 
