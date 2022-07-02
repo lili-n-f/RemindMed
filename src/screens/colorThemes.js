@@ -1,4 +1,4 @@
-// Light theme colors
+// tema de Colores claras
 export const lightColors = {
     background: '#FFFFFF',
     primary: '#283747',
@@ -6,7 +6,7 @@ export const lightColors = {
     error: '#283747',
   };
   
-  // Dark theme colors
+  // Tema de colores oscuros
   export const darkColors = {
     background: '#808080',
     primary: '#283747',
@@ -14,7 +14,7 @@ export const lightColors = {
     error: '#283747',
   };
   
-  // Dark theme colors
+  // teme de clores oscuros
   export const sizes = {
     // global sizes
     base: 16,
@@ -22,7 +22,7 @@ export const lightColors = {
     radius: 6,
     padding: 25,
   
-    // font sizes
+    // Tamano de letras
     h1: 26,
     h2: 20,
     h3: 18,

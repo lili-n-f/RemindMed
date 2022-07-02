@@ -69,9 +69,10 @@ export default class AgendaScreen extends Component {
             <View style={{ flex: 1 }}>
 
                 <Agenda
-                    // The list of items that have to be displayed in agenda. If you want to render item as empty date
-                    // the value of date key has to be an empty array []. If there exists no value for date key it is
-                    // considered that the date in question is not yet loaded
+                    
+//La lista de elementos que deben mostrarse en la agenda.
+// Si desea representar el elemento como una fecha vacía, el valor de la clave de fecha debe ser una matriz vacía []. Si no existe ningún valor para la clave de fecha, es
+//consideró que la fecha en cuestión aún no está cargada
                     items={this.state.items}
                     /*  items={{
                           '2021-01-19': [{ name: 'item 1 - any js object' }],
@@ -81,55 +82,56 @@ export default class AgendaScreen extends Component {
                       }} */
                     markingType={'custom'}
 
-                    // Callback that gets called when items for a certain month should be loaded (month became visible)
+                    //Devolución de llamada que se llama cuando se deben cargar elementos para un mes determinado (el mes se hizo visible)
                     //  loadItemsForMonth={(month) => { console.log('trigger items loading') }}
                     loadItemsForMonth={this.loadItems.bind(this)}
 
-                    // Callback that fires when the calendar is opened or closed
+                    // Devolución de llamada que se activa cuando se abre o se cierra el calendario
                     onCalendarToggled={(calendarOpened) => { console.log(calendarOpened) }}
-                    // Callback that gets called on day press
+                    // Devolución de llamada que se llama en la prensa del día
                     // onDayPress={(day) => { console.log('day pressed') }}
-                    // Callback that gets called when day changes while scrolling agenda list
+                    // Devolución de llamada que se llama cuando cambia el día mientras se desplaza la lista de agenda
                     onDayChange={(day) => { console.log('day changed') }}
-                    // Initially selected day
+                    // Día seleccionado inicialmente
                     // selected={'2021-01-19'}
-                    // Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined
+                    // Fecha mínima que se puede seleccionar, las fechas anteriores a minDate aparecerán atenuadas. Predeterminado = indefinido
+                    
                     minDate={'2020-01-01'}
-                    // Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
+                    // Fecha máxima que se puede seleccionar, las fechas posteriores a maxDate aparecerán atenuadas. Predeterminado = indefinido
                     // maxDate={'2022-05-30'}
-                    // Max amount of months allowed to scroll to the past. Default = 50
+                    // Cantidad máxima de meses permitidos para desplazarse al pasado. Predeterminado = 50
                     pastScrollRange={12}
-                    // Max amount of months allowed to scroll to the future. Default = 50
+                    // Cantidad máxima de meses permitidos para desplazarse al futuro. Predeterminado = 50
                     futureScrollRange={12}
-                    // Specify how each item should be rendered in agenda
+                    // Especificar cómo se debe representar cada elemento en la agenda
                     //  renderItem={(item, firstItemInDay) => { return (<View />); }}
                     renderItem={this.renderItem.bind(this)}
                     // displayLoadingIndicator={true}
-                    // Specify how each date should be rendered. day can be undefined if the item is not first in that day.
+                    // Especifique cómo debe representarse cada fecha. El día puede estar indefinido si el artículo no es el primero en ese día.
                     //  renderDay={(day, item) => { return (<View />); }}
                     // renderDay={(day, item) => (<Text>{day ? day.day : 'item'}</Text>)}
                     /* onDayPress={(day) => {
                          getSelectedDayEvents(day.dateString);
-                         //to change the month and year on top of agenda
+                         //para cambiar el mes y el año en la parte superior de la agenda
                          setDate(moment(day.dateString).format("MMMM YYYY"));
                          //set the date in case onRefresh is executed
                          setDateToRefresh(day.dateString);
                      }
                      }*/
-                    // Specify how empty date content with no items should be rendered
+                    // Especifique cómo se debe representar el contenido de fecha vacío sin elementos
                     //renderEmptyDate={() => { return (<View />); }}
                     renderEmptyDate={this.renderEmptyDate.bind(this)}
 
-                    // Specify how agenda knob should look like
+                    // Especifique cómo debe verse la perilla de la agenda
                     // renderKnob={() => { return (<View />); }}
                     renderKnob={this.renderKnobIcon.bind(this)}
-                    // Specify what should be rendered instead of ActivityIndicator
+                    // Especifique qué se debe representar en lugar de ActivityIndicator
                     //    renderEmptyData={() => { return (<View />); }}
-                    // Specify your item comparison function for increased performance
+                    // Especifique su función de comparación de artículos para un mayor rendimiento
                     rowHasChanged={(r1, r2) => { return r1.text !== r2.text }}
-                    // Hide knob button. Default = false
+                    // Ocultar botón de perilla. Predeterminado = falso
                     hideKnob={false}
-                    // By default, agenda dates are marked if they have at least one item, but you can override this if needed
+                    // De forma predeterminada, las fechas de la agenda están marcadas si tienen al menos un elemento, pero puede anular esto si es necesario
 
                     markedDates={{
                         '2021-01-16': { selected: true, marked: true, startingDay: true },
@@ -137,15 +139,15 @@ export default class AgendaScreen extends Component {
                         '2021-01-18': { disabled: true }
                     }}
                     firstDay={1}
-                    // If disabledByDefault={true} dates flagged as not disabled will be enabled. Default = false
+                    //Si disabledByDefault={true}, se habilitarán las fechas marcadas como no deshabilitadas. Default = false
                     disabledByDefault={false}
-                    // If provided, a standard RefreshControl will be added for "Pull to Refresh" functionality. Make sure to also set the refreshing prop correctly.
+                    // Si se proporciona, se agregará un RefreshControl estándar para la funcionalidad "Pull to Refresh". Asegúrese también de configurar correctamente el apoyo refrescante.
                     onRefresh={() => console.log('refreshing...')}
-                    // Set this true while waiting for new data from a refresh
+                    // Establezca esto como verdadero mientras espera nuevos datos de una actualización
                     refreshing={false}
-                    // Add a custom RefreshControl component, used to provide pull-to-refresh functionality for the ScrollView.
+                    // Agregue un componente RefreshControl personalizado, que se usa para proporcionar la funcionalidad de extracción para actualizar para ScrollView.
                     //  refreshControl={null}
-                    // Agenda theme
+                    // Tema de Agenda
                     showScrollIndicator={true}
                     scrollEnabled={true}
 
@@ -168,7 +170,7 @@ export default class AgendaScreen extends Component {
                         textDayHeaderFontWeight: 'bold'
 
                     }}
-                    // Agenda container style
+                    // Agenda container
 
                     style={{
 
