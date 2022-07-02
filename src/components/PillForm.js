@@ -55,7 +55,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
 
   const [addMed, setAddMed] = useState(false);
   const [medOptions, setMedOptions] = useState([]);
-  const [commonMeds, setCommonMeds] = useState([]); //TO-DO
+  const [commonMeds, setCommonMeds] = useState([]);
   const [med, setMed] = useState(itinerario?.nombre ?? "");
   const [name, setName] = useState("");
 
@@ -128,7 +128,8 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
 
   const getMedData = async () => {
     // Se trae los medicamentos cargados en la BD
-    //TO-DO
+    const md = await getDoc(doc(db, "meds", "PYs6hF2O1L5mY93trPWL"));
+    setCommonMeds(md.data().medicamentos_comunes);
   };
 
   useEffect(() => {
@@ -198,7 +199,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
     setSabado(false);
     setDomingo(false);
     setName("");
-    setMed(""); //IDK TO-DO
+    setMed("");
     setAddMed(false);
     setShowTime(false);
     setTextTime("--:--");
@@ -549,17 +550,15 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                     }
                   }}
                 >
-                  <Select.Item
-                    label={
-                      "Medicamento mientras tanto" /*TO-DO: IMPLEMENTACIÓN DE MEDICAMENTOS DESDE LA BD */
-                    }
-                    value="Prueba"
-                  />
                   {
-                    medOptions.map(
-                      makeItem
-                    ) /*Con esto mostramos los medicinas custom del usuario loggeado */
+                    commonMeds
+                      .concat(medOptions)
+                      .sort((a, b) => a.localeCompare(b))
+                      .map(
+                        makeItem
+                      ) /*Con esto mostramos las medicinas comunes + las medicinas custom del usuario loggeado*/
                   }
+
                   <Select.Item label="Otro" value="Otro" />
                 </Select>
                 {addMed ? (
