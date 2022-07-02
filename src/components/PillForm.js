@@ -1,5 +1,5 @@
-import { db } from '../../firebase';
-import { collection, addDoc, updateDoc, doc, getDoc } from 'firebase/firestore';
+import { db } from "../../firebase";
+import { collection, addDoc, updateDoc, doc, getDoc } from "firebase/firestore";
 import {
   VStack,
   HStack,
@@ -11,14 +11,14 @@ import {
   Radio,
   Box,
   Divider,
-} from 'native-base';
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
-import React, { useState, useContext, useEffect } from 'react';
-import Icon, { Icons } from './Icons';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import AlertMessage from './AlertMessage';
-import { UserContext } from '../../ContextProvider';
-import { useIsFocused } from '@react-navigation/native';
+} from "native-base";
+import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import React, { useState, useContext, useEffect } from "react";
+import Icon, { Icons } from "./Icons";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import AlertMessage from "./AlertMessage";
+import { UserContext } from "../../ContextProvider";
+import { useIsFocused } from "@react-navigation/native";
 
 const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
   const [disable, setDisable] = useState(false);
@@ -56,56 +56,56 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
   const [addMed, setAddMed] = useState(false);
   const [medOptions, setMedOptions] = useState([]);
   const [commonMeds, setCommonMeds] = useState([]); //TO-DO
-  const [med, setMed] = useState(itinerario?.nombre ?? '');
-  const [name, setName] = useState('');
+  const [med, setMed] = useState(itinerario?.nombre ?? "");
+  const [name, setName] = useState("");
 
   const [showTime, setShowTime] = useState(false); //para mostrar el time picker cuando es true
   const [textTime, setTextTime] = useState(
     //la hora mostrada como texto (si no hay, el default es --:--)
     itinerario && itinerario.horario
       ? getTime(itinerario.horario.toDate())
-      : '--:--'
+      : "--:--"
   );
   const [time, setTime] = useState(itinerario?.horario.toDate() ?? null);
 
   function getTime(time) {
     let tempTime =
-      parseInt(time.getHours()) <= 9 ? '0' + time.getHours() : time.getHours();
-    tempTime += ':';
+      parseInt(time.getHours()) <= 9 ? "0" + time.getHours() : time.getHours();
+    tempTime += ":";
     tempTime +=
       parseInt(time.getMinutes()) <= 9
-        ? '0' + time.getMinutes()
+        ? "0" + time.getMinutes()
         : time.getMinutes();
     return tempTime;
   }
 
   const [intervalType, setIntervalType] = useState(
-    itinerario?.dias ? 'Seleccionar días de la semana' : 'Todos los días'
+    itinerario?.dias ? "Seleccionar días de la semana" : "Todos los días"
   );
 
   const [durationType, setDurationType] = useState(
     itinerario?.tipo_duracion ?? 1
   ); //1=por siempre; finalDate="01/01/1970". 2=hasta fecha; finalDate=fecha. 3=x repeticiones; finalDate=cálculo de fecha con repetitions y intervalType
   const [finalDate, setFinalDate] = useState(
-    itinerario?.fecha_final ?? '01/01/1970'
+    itinerario?.fecha_final ?? "01/01/1970"
   );
   const [repetitions, setRepetitions] = useState(
-    itinerario?.repet_restantes?.toString() ?? ''
+    itinerario?.repet_restantes?.toString() ?? ""
   );
 
-  const [dose, setDose] = useState(itinerario?.dosis ?? '');
-  const [doseType, setDoseType] = useState(itinerario?.dosis_tipo ?? '');
+  const [dose, setDose] = useState(itinerario?.dosis ?? "");
+  const [doseType, setDoseType] = useState(itinerario?.dosis_tipo ?? "");
 
-  const [notes, setNotes] = useState(itinerario?.notas ?? '');
+  const [notes, setNotes] = useState(itinerario?.notas ?? "");
 
   const [showDate, setShowDate] = useState(false); //para mostrar el date picker cuando es true
   const [textDate, setTextDate] = useState(
     //la fecha mostrada como texto (si no hay, el default es DD/MM/YYYY)
-    (itinerario?.fecha_final?.toDate().getUTCDate() ?? 'DD') +
-      '/' +
-      (itinerario?.fecha_final?.toDate().getUTCMonth() ?? 'MM') +
-      '/' +
-      (itinerario?.fecha_final?.toDate().getUTCFullYear() ?? 'YYYY')
+    (itinerario?.fecha_final?.toDate().getUTCDate() ?? "DD") +
+      "/" +
+      (itinerario?.fecha_final?.toDate().getUTCMonth() ?? "MM") +
+      "/" +
+      (itinerario?.fecha_final?.toDate().getUTCFullYear() ?? "YYYY")
   );
 
   const isFocused = useIsFocused();
@@ -115,14 +115,12 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
 
   const [addUser, setAddUser] = useState(false); //para mostrar el input para agregar un nuevo usuario
   const [userOptions, setUserOptions] = useState([]); //las opciones de usuario que tiene para quién se toma el medicamento
-  const [medUser, setMedUser] = useState(
-    itinerario?.usuario ?? ''
-  ); //el usuario que toma el medicamento
-  const [medUserName, setMedUserName] = useState('');
+  const [medUser, setMedUser] = useState(itinerario?.usuario ?? ""); //el usuario que toma el medicamento
+  const [medUserName, setMedUserName] = useState("");
 
   const getUserData = async () => {
     // Se trae la data del usuario loggeado
-    const usr = await getDoc(doc(db, 'users', user.uid));
+    const usr = await getDoc(doc(db, "users", user.uid));
     setUsuario(usr.data()); // IMPORTANTE el .data() para que se guarde correctamente
     setUserOptions(usr.data().perfiles_asoc);
     setMedOptions(usr.data().medicinas_asoc);
@@ -155,12 +153,12 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
 
     let tempTime =
       parseInt(currentTime.getHours()) <= 9
-        ? '0' + currentTime.getHours() //para que las horas aparezcan como 02:05 en lugar de 2:5
+        ? "0" + currentTime.getHours() //para que las horas aparezcan como 02:05 en lugar de 2:5
         : currentTime.getHours();
-    tempTime += ':';
+    tempTime += ":";
     tempTime +=
       parseInt(currentTime.getMinutes()) <= 9
-        ? '0' + currentTime.getMinutes()
+        ? "0" + currentTime.getMinutes()
         : currentTime.getMinutes();
     setTextTime(tempTime);
     setTime(currentTime);
@@ -175,9 +173,9 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
     setShowDate(false);
     let tempDate =
       currentDate.getDate() +
-      '/' +
+      "/" +
       (currentDate.getMonth() + 1) +
-      '/' +
+      "/" +
       currentDate.getFullYear();
     setTextDate(tempDate);
   };
@@ -199,85 +197,85 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
     setViernes(false);
     setSabado(false);
     setDomingo(false);
-    setName('');
-    setMed(''); //IDK TO-DO
+    setName("");
+    setMed(""); //IDK TO-DO
     setAddMed(false);
     setShowTime(false);
-    setTextTime('--:--');
+    setTextTime("--:--");
     setTime(null);
-    setIntervalType('Todos los días');
+    setIntervalType("Todos los días");
     setDurationType(1);
-    setFinalDate('01/01/1970');
-    setRepetitions('');
-    setDose('');
-    setDoseType('');
+    setFinalDate("01/01/1970");
+    setRepetitions("");
+    setDose("");
+    setDoseType("");
     setAddUser(false);
-    setNotes('');
-    setTextDate('DD/MM/YYYY');
-    setMedUser('');
-    setMedUserName('');
+    setNotes("");
+    setTextDate("DD/MM/YYYY");
+    setMedUser("");
+    setMedUserName("");
     getUserData();
   };
 
   async function upload(doc) {
     try {
       // actualizado para que sea dentro de la colección users e itinerario
-      const ref = collection(db, 'users', user.uid, 'itinerario');
+      const ref = collection(db, "users", user.uid, "itinerario");
       const docRef = await addDoc(ref, doc);
-      console.log('Document written with ID: ', docRef.id);
+      console.log("Document written with ID: ", docRef.id);
       setSuccess(true);
       resetInputs();
       setDisable(false);
     } catch (e) {
-      console.error('Error adding document: ', e);
+      console.error("Error adding document: ", e);
     }
   }
 
   async function modify(docu) {
     try {
-      const ref = doc(db, 'users', user.uid, 'itinerario', itinerario?.id);
+      const ref = doc(db, "users", user.uid, "itinerario", itinerario?.id);
       await updateDoc(ref, docu);
       setSuccess(true);
       setDisable(false);
     } catch (e) {
-      console.error('Error adding document: ', e);
+      console.error("Error adding document: ", e);
     }
   }
 
   function validateErrors() {
     let errors = [];
     if (
-      med === '' ||
-      (med === 'Otro' && (!name || name === '' || /^\s*$/.test(name)))
+      med === "" ||
+      (med === "Otro" && (!name || name === "" || /^\s*$/.test(name)))
     ) {
       setNameError(true);
-      errors.push('- Nombre del medicamento');
+      errors.push("- Nombre del medicamento");
     }
     if (time === null) {
       setHourError(true);
-      errors.push('- Horario');
+      errors.push("- Horario");
     }
     if (
       (durationType != 1 && durationType != 2 && durationType != 3) ||
-      (durationType == 3 && repetitions === '') ||
-      (durationType == 2 && textDate === 'DD/MM/YYYY')
+      (durationType == 3 && repetitions === "") ||
+      (durationType == 2 && textDate === "DD/MM/YYYY")
     ) {
       setDurationError(true);
-      errors.push('- Duración');
+      errors.push("- Duración");
     }
     if (
-      intervalType === 'Seleccionar días de la semana' &&
+      intervalType === "Seleccionar días de la semana" &&
       !(lunes || martes || miercoles || jueves || viernes || sabado || domingo)
     ) {
       setDayError(true);
-      errors.push('- Frecuencia');
+      errors.push("- Frecuencia");
     }
     if (
-      medUser === 'Otro' &&
-      (!medUserName || medUserName === '' || /^\s*$/.test(medUserName))
+      medUser === "Otro" &&
+      (!medUserName || medUserName === "" || /^\s*$/.test(medUserName))
     ) {
       setMedUserError(true);
-      errors.push('- Nombre de quién toma el medicamento');
+      errors.push("- Nombre de quién toma el medicamento");
     }
     return errors;
   }
@@ -334,11 +332,11 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
           uid: usuario.uid,
         };
 
-        const usr = doc(db, 'users', usuario.uid);
+        const usr = doc(db, "users", usuario.uid);
         await updateDoc(usr, updatedUser);
       }
     } catch (e) {
-      console.error('Error adding document: ', e);
+      console.error("Error adding document: ", e);
     }
   }
 
@@ -353,22 +351,22 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
 
       if (errors.length === 0) {
         let dias;
-        intervalType === 'Seleccionar días de la semana'
+        intervalType === "Seleccionar días de la semana"
           ? (dias = [
-              { key: 'Sunday', selected: domingo },
-              { key: 'Monday', selected: lunes },
-              { key: 'Tuesday', selected: martes },
-              { key: 'Wednesday', selected: miercoles },
-              { key: 'Thursday', selected: jueves },
-              { key: 'Friday', selected: viernes },
-              { key: 'Saturday', selected: sabado },
+              { key: "Sunday", selected: domingo },
+              { key: "Monday", selected: lunes },
+              { key: "Tuesday", selected: martes },
+              { key: "Wednesday", selected: miercoles },
+              { key: "Thursday", selected: jueves },
+              { key: "Friday", selected: viernes },
+              { key: "Saturday", selected: sabado },
             ])
           : (dias = null);
 
         let finalDate;
         console.log(durationType);
         if (durationType == 2) {
-          var dateParts = textDate.split('/'); //se obtiene día, mes, año
+          var dateParts = textDate.split("/"); //se obtiene día, mes, año
           finalDate = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
           //de este modo se crea una nueva fecha con año, mes (se debe restar uno porque empieza desde 0 el número de los meses), y día
         } else {
@@ -384,7 +382,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
 
         var newMed = {
           activo: true,
-          nombre: med === 'Otro' ? name : med, //si escogió agregar un nuevo medicamento (opción "Otro") se coloca su nombre, si no se coloca lo escogido en el select (med)
+          nombre: med === "Otro" ? name : med, //si escogió agregar un nuevo medicamento (opción "Otro") se coloca su nombre, si no se coloca lo escogido en el select (med)
           fecha_registro: new Date(), //esto para hacer los cálculos de las fechas finales
           horario: time,
           dias: dias, //SI ESTE VALOR ES NULL, SE SABE QUE EL INTERVALO ES EN Todos los días, de lo contrario, Seleccionar días de la semana
@@ -393,14 +391,14 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
           repet_restantes: repet_restantes, //SE DEBE ACTUALIZAR CADA VEZ QUE SUENE LA ALARMA (OJO caso de intervalo en Todos los días es literal, caso de intervalo en Seleccionar días de la semana es por cada semana)
           dosis: dose, //ojoooo estos campos son opcionales, por tanto si dosis es 0 o vacío no se llenó
           dosis_tipo: doseType, //ojoooo si doseType es vacío la dosis no se llenó
-          usuario: medUser === 'Otro' ? medUserName : medUser, //si escogió agregar un nuevo usuario (opción "Otro") se coloca su nombre, si no se coloca lo escogido en el select (medUser)
+          usuario: medUser === "Otro" ? medUserName : medUser, //si escogió agregar un nuevo usuario (opción "Otro") se coloca su nombre, si no se coloca lo escogido en el select (medUser)
           notas: notes, //ojoooo notas es opcional, puede estar vacío
         };
         console.log(JSON.stringify(newMed));
 
         upload(newMed);
 
-        if (medUser === 'Otro' || med === 'Otro') {
+        if (medUser === "Otro" || med === "Otro") {
           //si se agregó un nuevo usuario a los perfiles asociados o un med, se guarda en la BD
           modifyUser();
         }
@@ -413,21 +411,21 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
 
       if (errors.length === 0) {
         let dias;
-        intervalType === 'Seleccionar días de la semana'
+        intervalType === "Seleccionar días de la semana"
           ? (dias = [
-              { key: 'Sunday', selected: domingo },
-              { key: 'Monday', selected: lunes },
-              { key: 'Tuesday', selected: martes },
-              { key: 'Wednesday', selected: miercoles },
-              { key: 'Thursday', selected: jueves },
-              { key: 'Friday', selected: viernes },
-              { key: 'Saturday', selected: sabado },
+              { key: "Sunday", selected: domingo },
+              { key: "Monday", selected: lunes },
+              { key: "Tuesday", selected: martes },
+              { key: "Wednesday", selected: miercoles },
+              { key: "Thursday", selected: jueves },
+              { key: "Friday", selected: viernes },
+              { key: "Saturday", selected: sabado },
             ])
           : (dias = null);
 
         let finalDate;
         if (durationType == 2) {
-          var dateParts = textDate.split('/');
+          var dateParts = textDate.split("/");
           finalDate = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
         } else {
           finalDate = null;
@@ -441,7 +439,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
         }
         var changeMed = {
           activo: true,
-          nombre: med === 'Otro' ? name : med, //si escogió agregar un nuevo medicamento (opción "Otro") se coloca su nombre, si no se coloca lo escogido en el select (med)
+          nombre: med === "Otro" ? name : med, //si escogió agregar un nuevo medicamento (opción "Otro") se coloca su nombre, si no se coloca lo escogido en el select (med)
           fecha_registro: new Date(), //esto para hacer los cálculos de las fechas finales
           horario: time,
           dias: dias, //SI ESTE VALOR ES NULL, SE SABE QUE EL INTERVALO ES EN Todos los días, de lo contrario, Seleccionar días de la semana
@@ -450,13 +448,13 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
           repet_restantes: repet_restantes, //SE DEBE ACTUALIZAR CADA VEZ QUE SUENE LA ALARMA (OJO caso de intervalo en Todos los días es literal, caso de intervalo en Seleccionar días de la semana es por cada semana)
           dosis: dose, //ojoooo estos campos son opcionales, por tanto si dosis es 0 o vacío no se llenó
           dosis_tipo: doseType, //ojoooo si doseType es vacío la dosis no se llenó
-          usuario: medUser === 'Otro' ? medUserName : medUser, //si escogió agregar un nuevo usuario (opción "Otro") se coloca su nombre, si no se coloca lo escogido en el select (medUser)
+          usuario: medUser === "Otro" ? medUserName : medUser, //si escogió agregar un nuevo usuario (opción "Otro") se coloca su nombre, si no se coloca lo escogido en el select (medUser)
           notas: notes, //ojoooo notas es opcional, puede estar vacío
         };
         console.log(changeMed);
         modify(changeMed);
 
-        if (medUser === 'Otro' || med === 'Otro') {
+        if (medUser === "Otro" || med === "Otro") {
           //si se agregó un nuevo usuario a los perfiles asociados o un med, se guarda en la BD
           modifyUser();
         }
@@ -478,16 +476,16 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
           mNumber={0}
           header={
             itinerario
-              ? 'Se ha modificado con éxito'
-              : 'Se ha agregado con éxito'
+              ? "Se ha modificado con éxito"
+              : "Se ha agregado con éxito"
           }
           handleCloseAlert={handleCloseAlert}
         />
       ) : dataError.length > 0 ? (
         <AlertMessage
           mNumber={3}
-          header={'Le falta completar los siguientes campos:'}
-          message={dataError.join('\n')}
+          header={"Le falta completar los siguientes campos:"}
+          message={dataError.join("\n")}
           handleCloseAlert={handleCloseAlert}
         />
       ) : null}
@@ -497,9 +495,9 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
           onPress={() => handleGoBack()}
           mt="5"
           ml="5"
-          style={{ position: 'absolute', zIndex: 10 }}
+          style={{ position: "absolute", zIndex: 10 }}
         >
-          <Icon type={Icons.AntDesign} name={'back'} color={'white'} />
+          <Icon type={Icons.AntDesign} name={"back"} color={"white"} />
         </Button>
       ) : null}
       <View style={styles.container1}>
@@ -507,7 +505,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
           <Divider my="2" bg="green.500" thickness="4" />
         </Box>
         <Text style={styles.titulo}>
-          {itinerario ? 'Modifica el recordatorio' : 'Agrega un recordatorio'}
+          {itinerario ? "Modifica el recordatorio" : "Agrega un recordatorio"}
         </Text>
         <Box w="300">
           <Divider my="2" bg="green.500" thickness="4" />
@@ -516,14 +514,14 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
       <View style={{ paddingBottom: itinerario ? 330 : 300, paddingTop: 5 }}>
         <ScrollView>
           <FormControl
-            width={'90%'}
-            alignSelf={'center'}
+            width={"90%"}
+            alignSelf={"center"}
             isRequired
             style={{
-              display: 'flex',
-              justifyContent: 'center',
-              flexDirection: 'column',
-              alignItems: 'center',
+              display: "flex",
+              justifyContent: "center",
+              flexDirection: "column",
+              alignItems: "center",
             }}
           >
             <View style={styles.containerQ}>
@@ -544,7 +542,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                   selectedValue={med}
                   onValueChange={(value) => {
                     setMed(value);
-                    if (value == 'Otro') {
+                    if (value == "Otro") {
                       setAddMed(true); //con esto, se muestra input de nueva medicina
                     } else {
                       setAddMed(false);
@@ -553,7 +551,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                 >
                   <Select.Item
                     label={
-                      'Medicamento mientras tanto' /*TO-DO: IMPLEMENTACIÓN DE MEDICAMENTOS DESDE LA BD */
+                      "Medicamento mientras tanto" /*TO-DO: IMPLEMENTACIÓN DE MEDICAMENTOS DESDE LA BD */
                     }
                     value="Prueba"
                   />
@@ -619,7 +617,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                     <Icon
                       type={Icons.MaterialIcons}
                       name="alarm"
-                      color={'#52489c'}
+                      color={"#52489c"}
                       size={35}
                     />
                   </TouchableOpacity>
@@ -653,7 +651,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                   placeholder="Escoja el intervalo"
                   onValueChange={(itemValue) => {
                     setIntervalType(itemValue);
-                    if (itemValue === 'Todos los días') {
+                    if (itemValue === "Todos los días") {
                       setLunes(null);
                       setMartes(null);
                       setMiercoles(null);
@@ -663,12 +661,13 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                       setDomingo(null);
                     }
                   }}
+                  selectedValue={intervalType}
                   defaultValue={
                     itinerario === null
-                      ? 'Todos los días'
+                      ? "Todos los días"
                       : itinerario?.dias === null
-                      ? 'Todos los días'
-                      : 'Seleccionar días de la semana'
+                      ? "Todos los días"
+                      : "Seleccionar días de la semana"
                   }
                 >
                   <Select.Item
@@ -679,7 +678,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                 </Select>
               </HStack>
             </View>
-            {intervalType === 'Seleccionar días de la semana' ||
+            {intervalType === "Seleccionar días de la semana" ||
             lunes ||
             martes ||
             miercoles ||
@@ -696,7 +695,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                 <Button.Group justifyContent="center" my="2">
                   <Button
                     style={styles.days}
-                    backgroundColor={domingo ? 'cyan.500' : 'white'}
+                    backgroundColor={domingo ? "cyan.500" : "white"}
                     onPress={() => setDomingo(!domingo)}
                     color="primary.700"
                     fontWeight="bold"
@@ -706,11 +705,11 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                     borderRadius="50"
                     padding="0"
                   >
-                    <Text color={domingo ? 'white' : 'black'}>D</Text>
+                    <Text color={domingo ? "white" : "black"}>D</Text>
                   </Button>
                   <Button
                     fontWeight="bold"
-                    backgroundColor={lunes ? 'cyan.500' : 'white'}
+                    backgroundColor={lunes ? "cyan.500" : "white"}
                     onPress={() => setLunes(!lunes)}
                     color="primary.700"
                     variant="subtle"
@@ -719,12 +718,12 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                     borderRadius="50"
                     padding="0"
                   >
-                    <Text color={lunes ? 'white' : 'black'}>L</Text>
+                    <Text color={lunes ? "white" : "black"}>L</Text>
                   </Button>
                   <Button
                     fontWeight="bold"
                     onPress={() => setMartes(!martes)}
-                    backgroundColor={martes ? 'cyan.500' : 'white'}
+                    backgroundColor={martes ? "cyan.500" : "white"}
                     color="primary.700"
                     variant="subtle"
                     width="8"
@@ -732,11 +731,11 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                     padding="0"
                     borderRadius="50"
                   >
-                    <Text color={martes ? 'white' : 'black'}>M</Text>
+                    <Text color={martes ? "white" : "black"}>M</Text>
                   </Button>
                   <Button
                     fontWeight="bold"
-                    backgroundColor={miercoles ? 'cyan.500' : 'white'}
+                    backgroundColor={miercoles ? "cyan.500" : "white"}
                     onPress={() => setMiercoles(!miercoles)}
                     color="primary.700"
                     variant="subtle"
@@ -745,11 +744,11 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                     borderRadius="50"
                     padding="0"
                   >
-                    <Text color={miercoles ? 'white' : 'black'}>M</Text>
+                    <Text color={miercoles ? "white" : "black"}>M</Text>
                   </Button>
                   <Button
                     fontWeight="bold"
-                    backgroundColor={jueves ? 'cyan.500' : 'white'}
+                    backgroundColor={jueves ? "cyan.500" : "white"}
                     onPress={() => setJueves(!jueves)}
                     color="primary.700"
                     variant="subtle"
@@ -758,11 +757,11 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                     borderRadius="50"
                     padding="0"
                   >
-                    <Text color={jueves ? 'white' : 'black'}>J</Text>
+                    <Text color={jueves ? "white" : "black"}>J</Text>
                   </Button>
                   <Button
                     fontWeight="bold"
-                    backgroundColor={viernes ? 'cyan.500' : 'white'}
+                    backgroundColor={viernes ? "cyan.500" : "white"}
                     onPress={() => setViernes(!viernes)}
                     color="primary.700"
                     variant="subtle"
@@ -771,11 +770,11 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                     borderRadius="50"
                     padding="0"
                   >
-                    <Text color={viernes ? 'white' : 'black'}>V</Text>
+                    <Text color={viernes ? "white" : "black"}>V</Text>
                   </Button>
                   <Button
                     fontWeight="bold"
-                    backgroundColor={sabado ? 'cyan.500' : 'white'}
+                    backgroundColor={sabado ? "cyan.500" : "white"}
                     onPress={() => setSabado(!sabado)}
                     color="primary.700"
                     variant="subtle"
@@ -784,7 +783,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                     borderRadius="50"
                     padding="0"
                   >
-                    <Text color={sabado ? 'white' : 'black'}>S</Text>
+                    <Text color={sabado ? "white" : "black"}>S</Text>
                   </Button>
                 </Button.Group>
                 {dayError ? (
@@ -840,12 +839,12 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                         value={repetitions}
                         onChangeText={(value) => {
                           if (
-                            value.startsWith('0') ||
-                            value.includes('-') ||
-                            value.includes(',') ||
-                            value.includes(' ')
+                            value.startsWith("0") ||
+                            value.includes("-") ||
+                            value.includes(",") ||
+                            value.includes(" ")
                           ) {
-                            setRepetitions('');
+                            setRepetitions("");
                           } else {
                             setRepetitions(value);
                           }
@@ -861,7 +860,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
               ) : null}
             </View>
           </FormControl>
-          <FormControl width={'90%'} alignSelf={'center'} pb="10">
+          <FormControl width={"90%"} alignSelf={"center"} pb="10">
             <View style={styles.containerE}>
               <FormControl.Label>
                 <Text color="platinum.500" fontWeight="bold">
@@ -882,12 +881,12 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                   value={dose}
                   onChangeText={(value) => {
                     if (
-                      value.startsWith('0') ||
-                      value.includes('-') ||
-                      value.includes(',') ||
-                      value.includes(' ')
+                      value.startsWith("0") ||
+                      value.includes("-") ||
+                      value.includes(",") ||
+                      value.includes(" ")
                     ) {
-                      setDose('');
+                      setDose("");
                     } else {
                       setDose(value);
                     }
@@ -941,14 +940,17 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                   selectedValue={medUser}
                   onValueChange={(value) => {
                     setMedUser(value);
-                    if (value == 'Otro') {
+                    if (value == "Otro") {
                       setAddUser(true); //con esto, se muestra input de nuevo usuario de medicina
                     } else {
                       setAddUser(false);
                     }
                   }}
                 >
-                  <Select.Item label="Yo" value= {usuario ? usuario.name : 'Usuario actual'} />
+                  <Select.Item
+                    label="Yo"
+                    value={usuario ? usuario.name : "Usuario actual"}
+                  />
                   {
                     userOptions.map(
                       makeItem
@@ -970,7 +972,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                         variant="filled"
                         borderColor="primary.300"
                         placeholderTextColor="gray.500"
-                        placeholder= 'Nombre'
+                        placeholder="Nombre"
                         value={medUserName}
                         onChangeText={(value) => {
                           setMedUserName(value);
@@ -1012,11 +1014,11 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                 isLoadingText="Subiendo..."
                 style={{
                   marginTop: 15,
-                  width: '60%',
-                  marginLeft: '20%',
+                  width: "60%",
+                  marginLeft: "20%",
                   borderRadius: 20,
                 }}
-                bg={'cyan.500'}
+                bg={"cyan.500"}
               ></Button>
             ) : (
               <Button
@@ -1026,11 +1028,11 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
                 }}
                 style={{
                   marginTop: 15,
-                  width: '60%',
-                  marginLeft: '20%',
+                  width: "60%",
+                  marginLeft: "20%",
                   borderRadius: 20,
                 }}
-                bg={'cyan.500'}
+                bg={"cyan.500"}
               >
                 <Text fontWeight="bold" color="white">
                   ¡Listo!
@@ -1046,66 +1048,66 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
 
 const styles = StyleSheet.create({
   titulo: {
-    color: '#E5E5E5',
-    fontWeight: 'bold',
+    color: "#E5E5E5",
+    fontWeight: "bold",
     fontSize: 40,
     lineHeight: 40,
-    textAlign: 'center',
+    textAlign: "center",
   },
 
   container1: {
-    color: '#FFFF',
+    color: "#FFFF",
     marginTop: 20,
-    alignItems: 'center',
-    width: '100%',
+    alignItems: "center",
+    width: "100%",
   },
   mequieromatar: {
     width: 50,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   containerQ: {
-    backgroundColor: '#3e3675',
-    width: '100%',
+    backgroundColor: "#3e3675",
+    width: "100%",
     padding: 10,
     borderRadius: 20,
   },
   error: {
-    color: 'red',
+    color: "red",
     fontSize: 11,
   },
 
   containerA: {
     marginTop: 15,
-    backgroundColor: '#3e3675',
-    width: '100%',
+    backgroundColor: "#3e3675",
+    width: "100%",
     padding: 10,
     borderRadius: 20,
   },
   days: {
-    textAlign: 'center',
+    textAlign: "center",
     padding: 0,
   },
   containerB: {
     marginTop: 15,
-    backgroundColor: '#3e3675',
-    width: '100%',
+    backgroundColor: "#3e3675",
+    width: "100%",
     padding: 10,
     borderRadius: 20,
   },
   containerC: {
     marginTop: 15,
-    backgroundColor: '#3e3675',
-    width: '100%',
+    backgroundColor: "#3e3675",
+    width: "100%",
     padding: 10,
     borderRadius: 20,
   },
 
   containerD: {
     marginTop: 15,
-    backgroundColor: '#3e3675',
-    width: '100%',
+    backgroundColor: "#3e3675",
+    width: "100%",
 
     padding: 10,
     borderRadius: 20,
@@ -1115,8 +1117,8 @@ const styles = StyleSheet.create({
     marginTop: 15,
     paddingBottom: 15,
 
-    backgroundColor: '#3e3675',
-    width: '100%',
+    backgroundColor: "#3e3675",
+    width: "100%",
     padding: 10,
     borderRadius: 20,
   },
