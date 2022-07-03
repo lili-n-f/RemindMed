@@ -36,8 +36,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
   const [medUserError, setMedUserError] = useState(false);
 
   //BOTONES DE DIAS DE LA SEMANA
-  const [lunes, setLunes] = useState(
-    itinerario?.dias?.[1]?.selected ?? false);
+  const [lunes, setLunes] = useState(itinerario?.dias?.[1]?.selected ?? false);
   const [martes, setMartes] = useState(
     itinerario?.dias?.[2]?.selected ?? false
   );
@@ -145,9 +144,7 @@ const PillForm = ({ newPill, itinerario = null, handleGoBack = null }) => {
   }, [isFocused]);
 
   useEffect(() => {
-    // Aquí se verifica si se está cargando y si el usuario NO ES falsy (es decir, no null), en cuyo caso ya se cargó correctamente el usuario y se settea el loading como false para que se renderice la página que es
-    // Depende de usuario porque cuando éste cambie, se revisará la condición
-    if (loading && usuario && commonMeds) {
+    if (loading && usuario !== null && commonMeds !== []) {
       setLoading(false);
     }
   }, [usuario, commonMeds]);
