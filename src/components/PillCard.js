@@ -1,8 +1,9 @@
 import { Box, VStack, HStack, Button, Text } from 'native-base';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StyleSheet } from 'react-native';
-import React from 'react';
 import ModalView from './ModalView';
+import Icon, { Icons } from './Icons';
+import React from 'react';
 
 export default function PillCard({
   name,
@@ -13,6 +14,7 @@ export default function PillCard({
   handleShowForm,
   handleDelete,
   style,
+  isToday = false,
 }) {
   const [showModal, setShowModal] = React.useState(false);
   const handleCloseModal = () => {
@@ -28,9 +30,9 @@ export default function PillCard({
         showModal={showModal}
         handleCloseModal={handleCloseModal}
         notes={datos.notas}
-        category={datos.categoria}
+        perfil_asoc={datos.usuario}
       ></ModalView>
-      <Box alignItems="center" marginBottom={style ? '8' : '0'}>
+      <Box alignItems="center" marginBottom={style ? '7' : '0'}>
         <Button
           variant="unstyled"
           width="90%"
@@ -41,27 +43,72 @@ export default function PillCard({
           padding="0"
           onPress={() => setShowModal(true)}
         >
-          <VStack space="2" w="100%">
+          <VStack space="0.5" w="100%">
             <Box px="4" pt="4">
-              <Text color="white" pb="2" style={styles.titulo_tarjeta}>
-                {name.charAt(0).toUpperCase() + name.slice(1)}
-              </Text>
+              <HStack
+                space={4}
+                w="100%"
+                pb="1"
+                //backgroundColor={'red.500'}
+                //alignItems={'flex-end'}
+              >
+                <Text
+                  color="white"
+                  style={styles.titulo_tarjeta}
+                  alignSelf={'center'}
+                  pt="1"
+                >
+                  {name.charAt(0).toUpperCase() + name.slice(1)}
+                </Text>
+                <Button
+                  variant="unstyled"
+                  padding={0}
+                  onPress={() => handleShowForm(datos)}
+                  marginLeft="auto"
+                >
+                  <Icon
+                    type={Icons.Feather}
+                    name={'edit'}
+                    color={'#B1DD4B'}
+                    // style={{ backgroundColor: 'blue' }}
+                    size={29}
+                  />
+                </Button>
+                <Button
+                  variant="unstyled"
+                  padding={0}
+                  onPress={() => handleDelete(datos)}
+                >
+                  <Icon
+                    type={Icons.MaterialIcons}
+                    name={'delete-outline'}
+                    color="red"
+                    // style={{ backgroundColor: 'blue' }}
+                    size={36}
+                  />
+                </Button>
+              </HStack>
               <Text
                 color="white"
                 fontWeight={'medium'}
                 fontSize="18"
-                top={'-2'}
                 style={styles.subtitulo_tarjetas}
               >
                 {'Tomar: ' + dosis}
               </Text>
             </Box>
-            <HStack space={3} flexDirection="column" w="100%" px="4" pb="4">
+            <HStack
+              space={3}
+              flexDirection="column"
+              w="100%"
+              px="4"
+              pb={!isToday ? '5' : '0'}
+              paddingY={'0'}
+            >
               <Text
                 color="white"
                 fontWeight={'medium'}
                 fontSize="18"
-                top={'-15'}
                 style={styles.subtitulo_tarjetas}
               >
                 {(days
@@ -93,25 +140,112 @@ export default function PillCard({
                   ' - ' +
                   horario}
               </Text>
-              <HStack space={2} w="100%">
-                <Button
-                  variant="subtle"
-                  borderRadius={'10'}
-                  onPress={() => handleShowForm(datos)}
-                  marginLeft="auto"
-                >
-                  Editar
-                </Button>
-                <Button
-                  variant="subtle"
-                  colorScheme={'red'}
-                  borderRadius={'10'}
-                  onPress={() => handleDelete(datos)}
-                >
-                  Eliminar
-                </Button>
-              </HStack>
+              <Text
+                color="white"
+                fontWeight={'medium'}
+                fontSize="18"
+                style={styles.subtitulo_tarjetas}
+              >
+                {'Dirigido a: ' + (datos.usuario ? datos.usuario : 'Persona no especificada')}
+              </Text>
             </HStack>
+            {isToday ? (
+              <HStack
+                bg="primary.100"
+                marginTop={'2'}
+                borderRadius="20"
+                borderTopLeftRadius={'none'}
+                borderTopRightRadius={'none'}
+                w="100%"
+              >
+                <Button
+                  variant="unstyled"
+                  borderTopLeftRadius={'none'}
+                  borderTopRightRadius={'none'}
+                  borderBottomRightRadius={'none'}
+                  borderRightWidth="0.5"
+                  borderRightColor={'platinum.500'}
+                  width="1/2"
+                  bg="primary.400"
+                  borderRadius="20"
+                  justifyContent="center"
+                  paddingY="5"
+                >
+                  <HStack space={2} w="100%">
+                    <Icon
+                      type={Icons.AntDesign}
+                      name={'close'}
+                      color={'#F6F6F6'}
+                      // style={{ backgroundColor: 'blue' }}
+                      size={29}
+                    />
+                    <Text
+                      color="white"
+                      fontWeight={'medium'}
+                      fontSize="18"
+                      textAlign={'center'}
+                      style={styles.subtitulo_tarjetas}
+                    >
+                      Omitir
+                    </Text>
+                  </HStack>
+                </Button>
+                <Button
+                  // borderRightWidth="0.5"
+                  // borderRightColor={'platinum.500'}
+                  variant="unstyled"
+                  width="1/2"
+                  bg="primary.400"
+                  // borderRadius="none"
+                  justifyContent="center"
+                  paddingY="5"
+                  borderTopLeftRadius={'none'}
+                  borderTopRightRadius={'none'}
+                  borderBottomLeftRadius={'none'}
+                  borderRadius="20"
+                >
+                  <HStack space={2} w="100%">
+                    <Icon
+                      type={Icons.AntDesign}
+                      name={'check'}
+                      color={'#F6F6F6'}
+                      // style={{ backgroundColor: 'blue' }}
+                      size={29}
+                    />
+                    <Text
+                      color="white"
+                      fontWeight={'medium'}
+                      fontSize="18"
+                      textAlign={'center'}
+                      style={styles.subtitulo_tarjetas}
+                    >
+                      Tomado
+                    </Text>
+                  </HStack>
+                </Button>
+                {/* <Button
+                variant="unstyled"
+                borderTopLeftRadius={'none'}
+                borderTopRightRadius={'none'}
+                borderBottomLeftRadius={'none'}
+                width="1/3"
+                bg="primary.400"
+                borderRadius="20"
+                justifyContent="center"
+                paddingY="5"
+              >
+                <Text
+                  textAlign={'center'}
+                  color="white"
+                  fontWeight={'medium'}
+                  fontSize="18"
+                  style={styles.subtitulo_tarjetas}
+                >
+                  En otro momento
+                </Text>
+              </Button> */}
+              </HStack>
+            ) : null}
           </VStack>
         </Button>
       </Box>

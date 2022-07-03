@@ -1,22 +1,22 @@
-import { initializeApp } from 'firebase/app';
-import { getFirestore, setDoc, doc } from 'firebase/firestore';
+import { initializeApp } from "firebase/app";
+import { getFirestore, setDoc, doc } from "firebase/firestore";
 import {
   getAuth,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
   signOut,
-} from 'firebase/auth';
-import { GoogleAuthProvider } from 'firebase/auth';
+} from "firebase/auth";
+import { GoogleAuthProvider } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyAreJKr3j90FE7CH2Z96El1DHNGQf2YSJU',
-  authDomain: 'remindmed-c6f9b.firebaseapp.com',
-  projectId: 'remindmed-c6f9b',
-  storageBucket: 'remindmed-c6f9b.appspot.com',
-  messagingSenderId: '184289951030',
-  appId: '1:184289951030:web:9e91dae52be92c3db9c797',
-  measurementId: 'G-WVYL08XNDV',
+  apiKey: "AIzaSyAreJKr3j90FE7CH2Z96El1DHNGQf2YSJU",
+  authDomain: "remindmed-c6f9b.firebaseapp.com",
+  projectId: "remindmed-c6f9b",
+  storageBucket: "remindmed-c6f9b.appspot.com",
+  messagingSenderId: "184289951030",
+  appId: "1:184289951030:web:9e91dae52be92c3db9c797",
+  measurementId: "G-WVYL08XNDV",
 };
 
 // Initialize Firebase
@@ -47,7 +47,8 @@ const register = async (name, email, password) => {
       uid: user.uid,
       name: name,
       email: email,
-      perfiles_asoc: [],
+      perfiles_asoc: [], //usuarios de los cual el usuario controla los medicamentos
+      medicinas_asoc: [], //medicinas custom que agregue el usuario
       sexo: null,
       sangre: null,
       notas: null,
@@ -62,9 +63,12 @@ const register = async (name, email, password) => {
 const sendPasswordReset = async (email) => {
   try {
     await sendPasswordResetEmail(auth, email);
-    console.log('Password reset link sent!');
+    console.log("Password reset link sent!");
+    return true;
   } catch (err) {
-    console.error(err);
+    console.log(err);
+    return false;
+    
   }
 };
 //signout normal

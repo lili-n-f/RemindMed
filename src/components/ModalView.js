@@ -1,6 +1,8 @@
-import { Box, VStack, HStack, Text, Modal, Divider } from 'native-base';
-import { StyleSheet } from 'react-native';
-import React from 'react';
+import { Box, VStack, HStack, Text, Modal, Divider } from "native-base";
+import { StyleSheet } from "react-native";
+import React, { useState, useContext, useEffect } from 'react';
+import { UserContext } from '../../ContextProvider';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function ModalView({
   name,
@@ -10,23 +12,29 @@ export default function ModalView({
   showModal,
   handleCloseModal,
   notes,
-  category,
+  perfil_asoc,
 }) {
   return (
     <Modal isOpen={showModal} onClose={() => handleCloseModal()}>
       <Modal.Content
         width="90%"
-        paddingY={'10'}
-        style={{ marginTop: 'auto', marginBottom: 'auto' }}
+        paddingY={"10"}
+        style={{ marginTop: "auto", marginBottom: "auto" }}
         bg="platinum.500"
         alignSelf="center"
         borderRadius="20"
-        justifyContent={'flex-start'}
+        justifyContent={"flex-start"}
       >
         <Modal.CloseButton />
-        <Box pt="2" pb="5" justifyContent={'center'}>
+        <Box pt="2" pb="5" justifyContent={"center"}>
           <Box w="50">
-            <Divider my="2" bg="green.500" thickness="4" alignItems='flex-start' marginLeft={49}/>
+            <Divider
+              my="2"
+              bg="green.500"
+              thickness="4"
+              alignItems="flex-start"
+              marginLeft={49}
+            />
           </Box>
           <Text
             color="primary.600"
@@ -37,14 +45,20 @@ export default function ModalView({
             Información de la medicina
           </Text>
           <Box w="120">
-            <Divider my="2" bg="green.500" thickness="4" alignItems='flex-start' marginLeft={49}/>
+            <Divider
+              my="2"
+              bg="green.500"
+              thickness="4"
+              alignItems="flex-start"
+              marginLeft={49}
+            />
           </Box>
         </Box>
 
-        <VStack space={2} w="100%" paddingX={'5'}>
+        <VStack space={2} w="100%" paddingX={"5"}>
           <Text
             color="primary.600"
-            fontWeight={'medium'}
+            fontWeight={"medium"}
             fontSize="18"
             style={styles.subtitulo_tarjetas}
           >
@@ -53,51 +67,50 @@ export default function ModalView({
           </Text>
           <Text
             color="primary.600"
-            fontWeight={'medium'}
+            fontWeight={"medium"}
             fontSize="18"
             style={styles.subtitulo_tarjetas}
           >
             <Text color="gray.700">Dosis: </Text>
-            { dosis}
+            {dosis}
           </Text>
           <Text
             color="primary.600"
-            fontWeight={'medium'}
+            fontWeight={"medium"}
             fontSize="18"
             style={styles.subtitulo_tarjetas}
           >
             <Text color="gray.700">Frecuencia: </Text>
-            {
-              (days
-                ? 'Cada semana (' +
-                  days
-                    ?.map((day, i) =>
-                      day.selected
-                        ? i === 0
-                          ? 'Domingo'
-                          : i === 1
-                          ? 'Lunes'
-                          : i === 2
-                          ? 'Martes'
-                          : i === 3
-                          ? 'Miércoles'
-                          : i === 4
-                          ? 'Jueves'
-                          : i === 5
-                          ? 'Viernes'
-                          : i === 6
-                          ? 'Sábado'
-                          : null
+            {days
+              ? "Cada semana (" +
+                days
+                  ?.map((day, i) =>
+                    day.selected
+                      ? i === 0
+                        ? "Domingo"
+                        : i === 1
+                        ? "Lunes"
+                        : i === 2
+                        ? "Martes"
+                        : i === 3
+                        ? "Miércoles"
+                        : i === 4
+                        ? "Jueves"
+                        : i === 5
+                        ? "Viernes"
+                        : i === 6
+                        ? "Sábado"
                         : null
-                    )
-                    .filter((a) => a)
-                    .join(', ') +
-                  ')'
-                : 'Todos los días')}
+                      : null
+                  )
+                  .filter((a) => a)
+                  .join(", ") +
+                ")"
+              : "Todos los días"}
           </Text>
           <Text
             color="primary.600"
-            fontWeight={'medium'}
+            fontWeight={"medium"}
             fontSize="18"
             style={styles.subtitulo_tarjetas}
           >
@@ -106,21 +119,21 @@ export default function ModalView({
           </Text>
           <Text
             color="primary.600"
-            fontWeight={'medium'}
-            fontSize="18"
-            style={styles.subtitulo_tarjetas}
-          >
-            <Text color="gray.700">categoría: </Text>
-            {category}
-          </Text>
-          <Text
-            color="primary.600"
-            fontWeight={'medium'}
+            fontWeight={"medium"}
             fontSize="18"
             style={styles.subtitulo_tarjetas}
           >
             <Text color="gray.700">Notas: </Text>
-            {notes}
+            {notes ? notes : "No se agregaron notas"}
+          </Text>
+          <Text
+            color="primary.600"
+            fontWeight={"medium"}
+            fontSize="18"
+            style={styles.subtitulo_tarjetas}
+          >
+            <Text color="gray.700">Dirigido a: </Text>
+            {perfil_asoc ? perfil_asoc : 'Persona no especificada'}
           </Text>
         </VStack>
       </Modal.Content>
@@ -130,11 +143,11 @@ export default function ModalView({
 
 const styles = StyleSheet.create({
   titulo: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 40,
   },
   container1: {
-    alignItems: 'flex-start',
+    alignItems: "flex-start",
     top: 35,
     margin: 20,
   },
@@ -142,11 +155,11 @@ const styles = StyleSheet.create({
     left: 10,
   },
   titulo_tarjeta: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 20,
   },
   subtitulo_tarjetas: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 17,
   },
 });

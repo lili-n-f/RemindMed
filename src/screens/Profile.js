@@ -16,23 +16,19 @@ import Icon, { Icons } from '../components/Icons';
 import { logout } from '../../firebase';
 import { UserContext } from '../../ContextProvider';
 import { db } from '../../firebase';
-import {
-  collection,
-  doc,
-  getDocs,
-  updateDoc,
-  getDoc,
-} from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 
 import { useIsFocused, useFocusEffect } from '@react-navigation/native';
 import Loading from '../components/Loading';
 import ProfileEdit from './ProfileEdit';
+import UserAlertDialog from '../components/UserAlertDialog';
 
 const image = { uri: 'https://i.ibb.co/ypq3LQ1/fondo.png' };
 
 //Componente correspondiente al perfil del usuario.
 export default function Profile() {
   const [disable, setDisable] = useState(false);
+  const [alertDialog, setAlertDialog] = useState(false); //mostrar o no alerta
 
   const isFocused = useIsFocused();
   const { user } = useContext(UserContext);
@@ -56,6 +52,16 @@ export default function Profile() {
     }
   }, [usuario]);
 
+  //cierra sesion si el usuario lo acciona en el alert
+  const handleLogOut = (logout_) => {
+    if (logout_) {
+      setDisable(true);
+      logout();
+      setDisable(false);
+    }
+    setAlertDialog(false);
+  };
+
   const getData = async () => {
     // Se trae la data del usuario
     const usr = await getDoc(doc(db, 'users', user.uid));
@@ -72,6 +78,15 @@ export default function Profile() {
       resizeMode="cover"
       style={{ width: '100%', height: '100%' }}
     >
+      {alertDialog ? (
+        <UserAlertDialog
+          isOpen={alertDialog}
+          title={'Cerrar sesión'}
+          buttonName={'Cerrar sesión'}
+          description={'Estas seguro de que quieres cerrar sesión?'}
+          handleClose={handleLogOut}
+        ></UserAlertDialog>
+      ) : null}
       <View style={styles.container1}>
         <Box w="60">
           <Divider my="2" bg="green.500" thickness="4" />
@@ -160,9 +175,7 @@ export default function Profile() {
               alignSelf={'center'}
               width="50%"
               onPress={() => {
-                setDisable(true);
-                logout();
-                setDisable(false);
+                setAlertDialog(true);
               }}
               isDisabled={disable}
             >

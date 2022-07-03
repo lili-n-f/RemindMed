@@ -1,12 +1,15 @@
+
 import { Box, Text, FormControl, Button } from 'native-base';
 import React, { useState, useContext } from 'react';
 import { ImageBackground, StyleSheet, View, TextInput } from 'react-native';
-import { login } from '../../firebase.js';
+import { login, sendPasswordReset } from '../../firebase.js';
 import { UserContext } from '../../ContextProvider';
 import Loading from '../components/Loading.js';
 import Register from './Register.js';
 import NavigationBar from '../components/NavigationBar.js';
 import AlertMessage from '../components/AlertMessage.js';
+import { signOut } from 'firebase/auth';
+
 
 const image = { uri: 'https://i.ibb.co/wSBCgBb/Android-Large-12.png' };
 
@@ -22,7 +25,8 @@ export default function Login() {
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [userNotfound, setUserNotFound] = useState(false);
-
+  const [userNotfound2, setUserNotFound2] = useState(false);
+  const [userFoundP, setUserFoundP] = useState(false);
   const [dataError, setDataError] = useState([]);
 
   const { user, loading } = useContext(UserContext);
@@ -33,6 +37,12 @@ export default function Login() {
   };
   const handleCloseAlertUser = () => {
     setUserNotFound(false);
+  };
+  const handleCloseAlertUser2 = () => {
+    setUserNotFound2(false);
+  };
+  const handleCloseAlertUserP = () => {
+    setUserFoundP(false);
   };
 
   function validateErrors() {
@@ -70,6 +80,31 @@ export default function Login() {
     setDisable(false);
   };
 
+  const handleForgotPassword = async (e) => {
+    setDisable(true);
+
+    if (email != "") {
+      e.preventDefault();
+
+      try {
+        const success = await sendPasswordReset(email);
+        if (!success) {
+          setUserNotFound2(true);
+          console.log('bro')
+        } else {
+          setUserFoundP(true);
+        }
+      } catch (e) {
+        console.log(e)
+        console.log('Correo inválido.');
+        setUserNotFound2(true);
+      }
+    } else {
+      setUserNotFound2(true);
+    }
+    setDisable(false);
+  };
+
   return register ? (
     <Register />
   ) : user ? (
@@ -92,6 +127,25 @@ export default function Login() {
           handleCloseAlert={handleCloseAlertUser}
         />
       ) : null}
+      {userNotfound2 ? (
+        <AlertMessage
+          mNumber={1}
+          header={'Correo inválido'}
+          message={'Por favor intente nuevamente'}
+          handleCloseAlert={handleCloseAlertUser2}
+        />
+      ) : null}
+
+    {userFoundP ? (
+        <AlertMessage
+        mNumber={0}
+        header={'Correo de reestablecimiento enviado'}
+        message={'Ingrese a su correo para reestablecer su contraseña'}
+        handleCloseAlert={handleCloseAlertUserP}      
+        />
+          ) : null}
+
+
       <ImageBackground
         source={image}
         resizeMode="cover"
@@ -150,11 +204,19 @@ export default function Login() {
 
               <Text
                 color="green.500"
-                fontWeight="bold"
+                fontWeight="medium"
                 onPress={() => setRegister(true)}
                 paddingBottom="2"
               >
                 ¿Aún no te has registrado? Regístrate aquí
+              </Text>
+              <Text
+                color="green.500"
+                fontWeight="medium"
+                onPress={handleForgotPassword}
+                paddingBottom="2"
+              >
+                Olvidé mi contraseña
               </Text>
 
               <View style={styles.buttonA}>
