@@ -3,8 +3,7 @@ import { Divider, Box, Button } from "native-base";
 import React, { useState, useContext } from "react";
 import { UserContext } from "../../ContextProvider";
 import Register from "./Register";
-import Medicines from "./Medicines";
-import NavigationBar from '../components/NavigationBar';
+import NavigationBar from "../components/NavigationBar";
 
 const image = { uri: "https://i.ibb.co/X5v02CZ/fondopantallainicio.png" };
 

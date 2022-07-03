@@ -31,8 +31,10 @@ export const googleProvider = new GoogleAuthProvider();
 const login = async (email, password) => {
   try {
     await signInWithEmailAndPassword(auth, email, password);
+    return true;
   } catch (err) {
     console.error(err);
+    return false;
   }
 };
 //Aquí definimos como se va a crear el user
@@ -40,14 +42,21 @@ const register = async (name, email, password) => {
   try {
     const res = await createUserWithEmailAndPassword(auth, email, password);
     const user = res.user;
-    //campos que tendrá la cuenta en sí, agregar según consideren
+    //campos que tendrá la cuenta en sí
     await setDoc(doc(db, "users", user.uid), {
       uid: user.uid,
       name: name,
       email: email,
+      perfiles_asoc: [], //usuarios de los cual el usuario controla los medicamentos
+      medicinas_asoc: [], //medicinas custom que agregue el usuario
+      sexo: null,
+      sangre: null,
+      notas: null,
     });
+    return true;
   } catch (err) {
     console.error(err);
+    return false;
   }
 };
 

@@ -30,7 +30,7 @@ export default function AlertMessage({
           top: 16,
           right: 16,
           left: 16,
-          zIndex: 10,
+          zIndex: 100,
         }}
       >
         <Alert w="100%" status={statusArray[mNumber]}>
