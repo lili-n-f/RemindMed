@@ -26,7 +26,7 @@ export default function Login() {
   const [passwordError, setPasswordError] = useState(false);
   const [userNotfound, setUserNotFound] = useState(false);
   const [userNotfound2, setUserNotFound2] = useState(false);
-
+  const [userFoundP, setUserFoundP] = useState(false);
   const [dataError, setDataError] = useState([]);
 
   const { user, loading } = useContext(UserContext);
@@ -75,7 +75,7 @@ export default function Login() {
   };
 
   const handleForgotPassword = async (e) => {
-    // setDisable(true);
+    setDisable(true);
 
     if (email != "") {
       e.preventDefault();
@@ -85,6 +85,8 @@ export default function Login() {
         if (!success) {
           setUserNotFound2(true);
           console.log('bro')
+        } else {
+          setUserFoundP(true);
         }
       } catch (e) {
         console.log(e)
@@ -92,9 +94,9 @@ export default function Login() {
         setUserNotFound2(true);
       }
     } else {
-      console.log("xd");
+      setUserNotFound2(true);
     }
-    // setDisable(false);
+    setDisable(false);
   };
 
   return register ? (
@@ -126,12 +128,18 @@ export default function Login() {
           message={'Por favor intente nuevamente'}
           handleCloseAlert={handleCloseAlertUser}
         />
-      ) : <AlertMessage
-      mNumber={0}
-      header={'Correo de reestablecimiento enviado'}
-      message={'Ingrese a su correo para reestablecer su contraseña'}
-      handleCloseAlert={handleCloseAlertUser}      
-   />}      
+      ) : null}
+
+    {userFoundP ? (
+        <AlertMessage
+        mNumber={0}
+        header={'Correo de reestablecimiento enviado'}
+        message={'Ingrese a su correo para reestablecer su contraseña'}
+        handleCloseAlert={handleCloseAlertUser}      
+        />
+          ) : null}
+
+
       <ImageBackground
         source={image}
         resizeMode="cover"
