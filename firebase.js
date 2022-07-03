@@ -64,8 +64,11 @@ const sendPasswordReset = async (email) => {
   try {
     await sendPasswordResetEmail(auth, email);
     console.log("Password reset link sent!");
+    return true;
   } catch (err) {
     console.error(err);
+    return false;
+    
   }
 };
 //signout normal

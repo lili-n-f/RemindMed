@@ -8,6 +8,7 @@ import Loading from '../components/Loading.js';
 import Register from './Register.js';
 import NavigationBar from '../components/NavigationBar.js';
 import AlertMessage from '../components/AlertMessage.js';
+import { sendPasswordResetEmail, signOut } from 'firebase/auth';
 
 
 const image = { uri: 'https://i.ibb.co/wSBCgBb/Android-Large-12.png' };
@@ -24,6 +25,7 @@ export default function Login() {
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [userNotfound, setUserNotFound] = useState(false);
+  const [userNotfound2, setUserNotFound2] = useState(false);
 
   const [dataError, setDataError] = useState([]);
 
@@ -72,6 +74,28 @@ export default function Login() {
     setDisable(false);
   };
 
+  const handleForgotPassword = async (e) => {
+    // setDisable(true);
+
+    if (email != "") {
+      e.preventDefault();
+      const correo = email.replace(' ', '').toLowerCase();
+      try {
+        const success = await sendPasswordReset(correo);
+        if (!success) {
+          setUserNotFound2(true);
+          console.log('bro')
+        }
+      } catch (e) {
+        console.log('Correo inválido.');
+        setUserNotFound2(true);
+      }
+    } else {
+      console.log("xd");
+    }
+    // setDisable(false);
+  };
+
   return register ? (
     <Register />
   ) : user ? (
@@ -94,6 +118,14 @@ export default function Login() {
           handleCloseAlert={handleCloseAlertUser}
         />
       ) : null}
+      {userNotfound2 ? (
+        <AlertMessage
+          mNumber={1}
+          header={'Correo inválido'}
+          message={'Por favor intente nuevamente'}
+          handleCloseAlert={handleCloseAlertUser}
+        />
+      ) : null}      
       <ImageBackground
         source={image}
         resizeMode="cover"
@@ -152,11 +184,19 @@ export default function Login() {
 
               <Text
                 color="green.500"
-                fontWeight="bold"
+                fontWeight="medium"
                 onPress={() => setRegister(true)}
                 paddingBottom="2"
               >
                 ¿Aún no te has registrado? Regístrate aquí
+              </Text>
+              <Text
+                color="green.500"
+                fontWeight="medium"
+                onPress={handleForgotPassword}
+                paddingBottom="2"
+              >
+                Olvidé mi contraseña
               </Text>
 
               <View style={styles.buttonA}>
