@@ -55,10 +55,23 @@ export default function PillCard({
                 <Text
                   color="white"
                   style={styles.titulo_tarjeta}
-                  alignSelf={'center'}
+                  maxW="full"
+                  alignSelf={
+                    name.length > 20 && name.includes(' ')
+                      ? 'flex-start'
+                      : 'center'
+                  }
                   pt="1"
                 >
-                  {name.charAt(0).toUpperCase() + name.slice(1)}
+                  {name.length > 20 && name.includes(' ')
+                    ? (name.charAt(0).toUpperCase() + name.slice(1)).split(
+                        ' '
+                      )[0] +
+                      '\n' +
+                      (name.charAt(0).toUpperCase() + name.slice(1)).split(
+                        ' '
+                      )[1]
+                    : name.charAt(0).toUpperCase() + name.slice(1)}
                 </Text>
                 <Button
                   variant="unstyled"
@@ -146,7 +159,8 @@ export default function PillCard({
                 fontSize="18"
                 style={styles.subtitulo_tarjetas}
               >
-                {'Dirigido a: ' + (datos.usuario ? datos.usuario : 'Persona no especificada')}
+                {'Dirigido a: ' +
+                  (datos.usuario ? datos.usuario : 'Persona no especificada')}
               </Text>
             </HStack>
             {isToday ? (
