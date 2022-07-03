@@ -66,7 +66,7 @@ const sendPasswordReset = async (email) => {
     console.log("Password reset link sent!");
     return true;
   } catch (err) {
-    console.error(err);
+    console.log(err);
     return false;
     
   }

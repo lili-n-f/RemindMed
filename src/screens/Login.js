@@ -2,13 +2,13 @@
 import { Box, Text, FormControl, Button } from 'native-base';
 import React, { useState, useContext } from 'react';
 import { ImageBackground, StyleSheet, View, TextInput } from 'react-native';
-import { login } from '../../firebase.js';
+import { login, sendPasswordReset } from '../../firebase.js';
 import { UserContext } from '../../ContextProvider';
 import Loading from '../components/Loading.js';
 import Register from './Register.js';
 import NavigationBar from '../components/NavigationBar.js';
 import AlertMessage from '../components/AlertMessage.js';
-import { sendPasswordResetEmail, signOut } from 'firebase/auth';
+import { signOut } from 'firebase/auth';
 
 
 const image = { uri: 'https://i.ibb.co/wSBCgBb/Android-Large-12.png' };
@@ -79,14 +79,15 @@ export default function Login() {
 
     if (email != "") {
       e.preventDefault();
-      const correo = email.replace(' ', '').toLowerCase();
+
       try {
-        const success = await sendPasswordReset(correo);
+        const success = await sendPasswordReset(email);
         if (!success) {
           setUserNotFound2(true);
           console.log('bro')
         }
       } catch (e) {
+        console.log(e)
         console.log('Correo inválido.');
         setUserNotFound2(true);
       }
@@ -125,7 +126,12 @@ export default function Login() {
           message={'Por favor intente nuevamente'}
           handleCloseAlert={handleCloseAlertUser}
         />
-      ) : null}      
+      ) : <AlertMessage
+      mNumber={0}
+      header={'Correo de reestablecimiento enviado'}
+      message={'Ingrese a su correo para reestablecer su contraseña'}
+      handleCloseAlert={handleCloseAlertUser}      
+   />}      
       <ImageBackground
         source={image}
         resizeMode="cover"
