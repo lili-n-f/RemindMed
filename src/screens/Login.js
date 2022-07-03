@@ -38,6 +38,12 @@ export default function Login() {
   const handleCloseAlertUser = () => {
     setUserNotFound(false);
   };
+  const handleCloseAlertUser2 = () => {
+    setUserNotFound2(false);
+  };
+  const handleCloseAlertUserP = () => {
+    setUserFoundP(false);
+  };
 
   function validateErrors() {
     let errors = [];
@@ -126,7 +132,7 @@ export default function Login() {
           mNumber={1}
           header={'Correo inválido'}
           message={'Por favor intente nuevamente'}
-          handleCloseAlert={handleCloseAlertUser}
+          handleCloseAlert={handleCloseAlertUser2}
         />
       ) : null}
 
@@ -135,7 +141,7 @@ export default function Login() {
         mNumber={0}
         header={'Correo de reestablecimiento enviado'}
         message={'Ingrese a su correo para reestablecer su contraseña'}
-        handleCloseAlert={handleCloseAlertUser}      
+        handleCloseAlert={handleCloseAlertUserP}      
         />
           ) : null}
 
