@@ -24,14 +24,6 @@ const TabArr = [
     component: PillFormPage,
   },
   {
-    route: "Seguimiento",
-    label: "Seguimiento",
-    type: Icons.Ionicons,
-    activeIcon: "calendar",
-    inActiveIcon: "calendar-outline",
-    component: Tracking,
-  },
-  {
     route: "Perfil",
     label: "Perfil",
     type: Icons.Ionicons,
