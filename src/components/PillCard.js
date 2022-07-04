@@ -1,9 +1,9 @@
-import { Box, VStack, HStack, Button, Text } from 'native-base';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { StyleSheet } from 'react-native';
-import ModalView from './ModalView';
-import Icon, { Icons } from './Icons';
-import React from 'react';
+import { Box, VStack, HStack, Button, Text } from "native-base";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet } from "react-native";
+import ModalView from "./ModalView";
+import Icon, { Icons } from "./Icons";
+import React from "react";
 
 export default function PillCard({
   name,
@@ -32,7 +32,7 @@ export default function PillCard({
         notes={datos.notas}
         perfil_asoc={datos.usuario}
       ></ModalView>
-      <Box alignItems="center" marginBottom={style ? '7' : '0'}>
+      <Box alignItems="center" marginBottom={style ? "7" : "0"}>
         <Button
           variant="unstyled"
           width="90%"
@@ -57,20 +57,26 @@ export default function PillCard({
                   style={styles.titulo_tarjeta}
                   maxW="full"
                   alignSelf={
-                    name.length > 20 && name.includes(' ')
-                      ? 'flex-start'
-                      : 'center'
+                    name.length > 20 && name.includes(" ")
+                      ? "flex-start"
+                      : "center"
                   }
                   pt="1"
                 >
-                  {name.length > 20 && name.includes(' ')
-                    ? (name.charAt(0).toUpperCase() + name.slice(1)).split(
-                        ' '
-                      )[0] +
-                      '\n' +
-                      (name.charAt(0).toUpperCase() + name.slice(1)).split(
-                        ' '
-                      )[1]
+                  {name.length > 20 && name.includes(" ")
+                    ? (name.charAt(0).toUpperCase() + name.slice(1))
+                        .split(" ")
+                        .map(
+                          (word, i) =>
+                            word +
+                            (i ===
+                            (
+                              name.charAt(0).toUpperCase() + name.slice(1)
+                            ).split(" ").length -
+                              1
+                              ? ""
+                              : "\n")
+                        )
                     : name.charAt(0).toUpperCase() + name.slice(1)}
                 </Text>
                 <Button
@@ -81,8 +87,8 @@ export default function PillCard({
                 >
                   <Icon
                     type={Icons.Feather}
-                    name={'edit'}
-                    color={'#B1DD4B'}
+                    name={"edit"}
+                    color={"#B1DD4B"}
                     // style={{ backgroundColor: 'blue' }}
                     size={29}
                   />
@@ -94,7 +100,7 @@ export default function PillCard({
                 >
                   <Icon
                     type={Icons.MaterialIcons}
-                    name={'delete-outline'}
+                    name={"delete-outline"}
                     color="red"
                     // style={{ backgroundColor: 'blue' }}
                     size={36}
@@ -103,11 +109,11 @@ export default function PillCard({
               </HStack>
               <Text
                 color="white"
-                fontWeight={'medium'}
+                fontWeight={"medium"}
                 fontSize="18"
                 style={styles.subtitulo_tarjetas}
               >
-                {'Tomar: ' + dosis}
+                {"Tomar: " + dosis}
               </Text>
             </Box>
             <HStack
@@ -115,55 +121,55 @@ export default function PillCard({
               flexDirection="column"
               w="100%"
               px="4"
-              pb={!isToday ? '5' : '0'}
-              paddingY={'0'}
+              pb={"5"}
+              paddingY={"0"}
             >
               <Text
                 color="white"
-                fontWeight={'medium'}
+                fontWeight={"medium"}
                 fontSize="18"
                 style={styles.subtitulo_tarjetas}
               >
                 {(days
-                  ? 'Cada semana (' +
+                  ? "Cada semana (" +
                     days
                       .map((day, i) =>
                         day.selected
                           ? i === 0
-                            ? 'D'
+                            ? "D"
                             : i === 1
-                            ? 'L'
+                            ? "L"
                             : i === 2
-                            ? 'M'
+                            ? "M"
                             : i === 3
-                            ? 'Mi'
+                            ? "Mi"
                             : i === 4
-                            ? 'J'
+                            ? "J"
                             : i === 5
-                            ? 'V'
+                            ? "V"
                             : i === 6
-                            ? 'S'
+                            ? "S"
                             : null
                           : null
                       )
                       .filter((a) => a)
-                      .join(' / ') +
-                    ')'
-                  : 'Todos los días') +
-                  ' - ' +
+                      .join(" / ") +
+                    ")"
+                  : "Todos los días") +
+                  " - " +
                   horario}
               </Text>
               <Text
                 color="white"
-                fontWeight={'medium'}
+                fontWeight={"medium"}
                 fontSize="18"
                 style={styles.subtitulo_tarjetas}
               >
-                {'Dirigido a: ' +
-                  (datos.usuario ? datos.usuario : 'Persona no especificada')}
+                {"Dirigido a: " +
+                  (datos.usuario ? datos.usuario : "Persona no especificada")}
               </Text>
             </HStack>
-            {isToday ? (
+            {/* {isToday ? (
               <HStack
                 bg="primary.100"
                 marginTop={'2'}
@@ -236,8 +242,8 @@ export default function PillCard({
                       Tomado
                     </Text>
                   </HStack>
-                </Button>
-                {/* <Button
+                </Button> */}
+            {/* <Button
                 variant="unstyled"
                 borderTopLeftRadius={'none'}
                 borderTopRightRadius={'none'}
@@ -258,8 +264,8 @@ export default function PillCard({
                   En otro momento
                 </Text>
               </Button> */}
-              </HStack>
-            ) : null}
+            {/* </HStack>
+            ) : null} */}
           </VStack>
         </Button>
       </Box>
@@ -269,13 +275,13 @@ export default function PillCard({
 
 const styles = StyleSheet.create({
   titulo: {
-    color: '#E5E5E5',
-    fontWeight: 'bold',
+    color: "#E5E5E5",
+    fontWeight: "bold",
     fontSize: 40,
   },
   container1: {
-    color: '#FFFF',
-    alignItems: 'flex-start',
+    color: "#FFFF",
+    alignItems: "flex-start",
     top: 35,
     margin: 20,
   },
@@ -283,13 +289,13 @@ const styles = StyleSheet.create({
     left: 10,
   },
   titulo_tarjeta: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 20,
-    color: '#F6F6F6',
+    color: "#F6F6F6",
   },
   subtitulo_tarjetas: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 17,
-    color: '#E3E3E3',
+    color: "#E3E3E3",
   },
 });
