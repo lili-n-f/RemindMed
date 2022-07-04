@@ -23,14 +23,7 @@ const TabArr = [
     inActiveIcon: "add-circle-outline",
     component: PillFormPage,
   },
-  {
-    route: "Seguimiento",
-    label: "Seguimiento",
-    type: Icons.Ionicons,
-    activeIcon: "calendar",
-    inActiveIcon: "calendar-outline",
-    component: Tracking,
-  },
+
   {
     route: "Perfil",
     label: "Perfil",
