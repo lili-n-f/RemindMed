@@ -1,34 +1,35 @@
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { TouchableOpacity, StyleSheet, Text } from "react-native";
-import Medicines from "../screens/Medicines";
-import PillFormPage from "../screens/PillFormPage";
-import Profile from "../screens/Profile";
-import Tracking from "../screens/Tracking";
-import Icon, { Icons } from "./Icons";
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { TouchableOpacity, StyleSheet, Text } from 'react-native';
+import Medicines from '../screens/Medicines';
+import PillFormPage from '../screens/PillFormPage';
+import Profile from '../screens/Profile';
+import Tracking from '../screens/Tracking';
+import Icon, { Icons } from './Icons';
 
 const TabArr = [
   {
-    route: "Itinerario",
-    label: "Itinerario",
+    route: 'Itinerario',
+    label: 'Itinerario',
     type: Icons.MaterialCommunityIcons,
-    activeIcon: "pill",
-    inActiveIcon: "pill",
+    activeIcon: 'pill',
+    inActiveIcon: 'pill',
     component: Medicines,
   },
   {
-    route: "Agregar",
-    label: "Agregar",
+    route: 'Agregar',
+    label: 'Agregar',
     type: Icons.Ionicons,
-    activeIcon: "add-circle",
-    inActiveIcon: "add-circle-outline",
+    activeIcon: 'add-circle',
+    inActiveIcon: 'add-circle-outline',
     component: PillFormPage,
   },
+
   {
-    route: "Perfil",
-    label: "Perfil",
+    route: 'Perfil',
+    label: 'Perfil',
     type: Icons.Ionicons,
-    activeIcon: "person",
-    inActiveIcon: "person-outline",
+    activeIcon: 'person',
+    inActiveIcon: 'person-outline',
     component: Profile,
   },
 ];
@@ -48,11 +49,11 @@ const TabButton = (props) => {
       <Icon
         type={item.type}
         name={focused ? item.activeIcon : item.inActiveIcon}
-        color={focused ? "#52489c" : "#bab6d7"}
+        color={focused ? '#52489c' : '#bab6d7'}
       />
       <Text
         style={{
-          color: focused ? "#52489c" : "#bab6d7",
+          color: focused ? '#52489c' : '#bab6d7',
         }}
       >
         {item.label}
@@ -68,7 +69,7 @@ export default function NavigationBar() {
         headerShown: false,
         tabBarStyle: {
           height: 60,
-          position: "absolute",
+          position: 'absolute',
           bottom: 16,
           right: 16,
           left: 16,
@@ -96,7 +97,7 @@ export default function NavigationBar() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
